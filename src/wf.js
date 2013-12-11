@@ -1,16 +1,22 @@
-function Base(tag){
-	tag = tag ? tag : "div";
-	this.container = document.createElement(tag);
+function Base(args){
+	args=args?args:{};
+	args.tag = args.tag ? args.tag : "div";
+	this.container = document.createElement(args.tag);
 
 	this.container.className = "element-container";
+	if(args.className){
+		this.container.className += " " + args.className;
+	}
 }
 
 Base.prototype.append = function(element){
 	this.container.appendChild(element.container);
+	return this;
 }
 
 Base.prototype.addClass = function(className){
 	this.container.classList.add(className);
+	return this;
 }
 
 function Container(args){
@@ -24,30 +30,13 @@ function Container(args){
 	}
 }
 
-function Txt(args){
-	var elem=document.createElement('span');
-	args=args?args:{};
-
-	elem.innerHTML=args.value?args.value:"Some text.";
-
-	if(args.className){
-		elem.classList.add(args.className);
-	}
-
-	this.setValue=function(value){
-		elem.innerHTML=value;
-	};
-
-	this.getElement=function(){
-		return elem;
-	}
-
-	//return elem;
-
-};
+Container.prototype = Object.create(Base.prototype);
 
 function Button(args){
-	Base.call(this,"span");
+	Base.call(this,{
+		tag:"button",
+		className:"button",
+	});
 	args=args?args:{};
 
 	this.container.innerHTML=args.value?args.value:"Submit";
@@ -77,65 +66,96 @@ function Button(args){
 	//return elem;
 }
 
+Button.prototype = Object.create(Base.prototype);
+
 function Toggle(args){
-	var self=this;
-	args=args?args:{};
-	var elem = document.createElement('span');
-	var switcher = document.createElement('div');
-	var state=args.state?args.state:0;
+	Base.call(this,{
+		tag:"span",
+		className:"toggle",
+	});
+	args = args?args:{};
+	var self = this;
+	this.switcher = document.createElement('span');
+	this.value = args.value ? args.value : 0;
 
-	elem.className="toggle";
-	switcher.className="toggle-switcher";
+	this.switcher.className="toggle-switcher";
 
-	if(state==1){
-		elem.classList.add("on");
-		//switcher.classList.add("active");
-		switcher.innerHTML="ON";
+	if(this.value == 1){
+		this.value = 1;
+		this.addClass("on");
+		this.switcher.innerHTML = "ON";
 	}
 	else{
-		switcher.innerHTML="OFF";
-
+		this.value = 0;
+		this.addClass("off");
+		this.switcher.innerHTML = "OFF";
 	}
 
-	$(elem).click(function(){
-		if(args.onOn && state==0){
-			state=1;
-			elem.classList.add("on");
-			$(switcher).animate({
-				//float:'right'
-				//right:0,
-				left:'50%'
-			},'fast');
-			switcher.innerHTML="ON";
-			args.onOn();
-
-		}
-		else if(args.onOff && state==1){
-			state=0;
-			elem.classList.remove("on");
-			$(switcher).animate({
-				//float:'left'
-				left:0,
-				//right:'50%'
-			},'fast');
-			switcher.innerHTML="OFF";
-			args.onOff();
-		}
-			//args.onOn();
+	$(this.container).click(function(){
+		self.toggle();
 	});
+
+	this.container.appendChild(this.switcher);
+
+	//return elem;
+}
+
+Toggle.prototype = Object.create(Base.prototype);
+
+Toggle.prototype.on = function(){
+	if(this.value == 0){
+		this.value = 1;
+		this.addClass("on");
+		this.switcher.innerHTML = "ON";
+	}
+	
+}
+
+Toggle.prototype.off = function(){
+	if(this.value == 1){
+		this.value = 0;
+		this.addClass("off");
+		this.switcher.innerHTML = "OFF";
+	}
+	
+}
+
+Toggle.prototype.toggle = function(){
+	if(this.value == 0){
+		this.value = 1;
+		this.addClass("on");
+		this.switcher.innerHTML = "ON";
+	}
+	else{
+		this.value = 0;
+		this.addClass("off");
+		this.switcher.innerHTML = "OFF";
+	}
+	
+}
+
+
+function Txt(args){
+	var elem=document.createElement('span');
+	args=args?args:{};
+
+	elem.innerHTML=args.value?args.value:"Some text.";
+
+	if(args.className){
+		elem.classList.add(args.className);
+	}
+
+	this.setValue=function(value){
+		elem.innerHTML=value;
+	};
 
 	this.getElement=function(){
 		return elem;
 	}
 
-	this.activate=function(){
-
-	}
-
-	elem.appendChild(switcher);
-
 	//return elem;
-}
+
+};
 
 
 function TextInput(args){
@@ -160,6 +180,3 @@ function TextInput(args){
 		return elem;
 	}
 }
-
-
-Container.prototype = Base.prototype;
