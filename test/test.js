@@ -31,9 +31,12 @@ $(document).ready(function(){
 		mode:"full",
 	});
 	var b = new Button();
+	var t = new Toggle();
 
 	document.body.appendChild(w.container);
 
-	w.append(b);
+	w
+		.append(b)
+		.append(t);
 });
 
