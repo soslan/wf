@@ -27,6 +27,7 @@ B.prototype.set=function(){
 
 ////////////////////////////////////////// WF TESTING 
 $(document).ready(function(){
+	less.watch();
 	var w = new Container({
 		mode:"full",
 	});
