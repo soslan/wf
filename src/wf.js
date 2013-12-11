@@ -19,6 +19,11 @@ Base.prototype.addClass = function(className){
 	return this;
 }
 
+Base.prototype.removeClass = function(className){
+	this.container.classList.remove(className);
+	return this;
+}
+
 function Container(args){
 	Base.call(this);
 	args=args?args:{};
@@ -34,8 +39,8 @@ Container.prototype = Object.create(Base.prototype);
 
 function Button(args){
 	Base.call(this,{
-		tag:"button",
-		className:"button",
+		tag:"span",
+		className:"button inline",
 	});
 	args=args?args:{};
 
@@ -71,7 +76,7 @@ Button.prototype = Object.create(Base.prototype);
 function Toggle(args){
 	Base.call(this,{
 		tag:"span",
-		className:"toggle",
+		className:"toggle inline",
 	});
 	args = args?args:{};
 	var self = this;
@@ -83,11 +88,13 @@ function Toggle(args){
 	if(this.value == 1){
 		this.value = 1;
 		this.addClass("on");
+		this.removeClass("off");
 		this.switcher.innerHTML = "ON";
 	}
 	else{
 		this.value = 0;
 		this.addClass("off");
+		this.removeClass("on");
 		this.switcher.innerHTML = "OFF";
 	}
 
@@ -106,6 +113,7 @@ Toggle.prototype.on = function(){
 	if(this.value == 0){
 		this.value = 1;
 		this.addClass("on");
+		this.removeClass("off");
 		this.switcher.innerHTML = "ON";
 	}
 	
@@ -115,6 +123,7 @@ Toggle.prototype.off = function(){
 	if(this.value == 1){
 		this.value = 0;
 		this.addClass("off");
+		this.removeClass("on");
 		this.switcher.innerHTML = "OFF";
 	}
 	
@@ -122,14 +131,10 @@ Toggle.prototype.off = function(){
 
 Toggle.prototype.toggle = function(){
 	if(this.value == 0){
-		this.value = 1;
-		this.addClass("on");
-		this.switcher.innerHTML = "ON";
+		this.on();
 	}
 	else{
-		this.value = 0;
-		this.addClass("off");
-		this.switcher.innerHTML = "OFF";
+		this.off();
 	}
 	
 }
