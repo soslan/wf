@@ -1,3 +1,29 @@
+function Base(tag){
+	tag = tag ? tag : "div";
+	this.container = document.createElement(tag);
+
+	this.container.className = "element-container";
+}
+
+Base.prototype.append = function(element){
+	this.container.appendChild(element.container);
+}
+
+Base.prototype.addClass = function(className){
+	this.container.classList.add(className);
+}
+
+function Container(args){
+	Base.call(this);
+	args=args?args:{};
+
+	this.addClass("container");
+
+	if(args.mode == "full"){
+		this.addClass("container-full");
+	}
+}
+
 function Txt(args){
 	var elem=document.createElement('span');
 	args=args?args:{};
@@ -21,14 +47,15 @@ function Txt(args){
 };
 
 function Button(args){
+	Base.call(this,"span");
 	args=args?args:{};
-	var elem = document.createElement('span');
-	elem.innerHTML=args.value?args.value:"Submit";
 
-	elem.className="button";
+	this.container.innerHTML=args.value?args.value:"Submit";
+
+	this.container.classList.add("button");
 	var timer;
 
-	$(elem).click(function(){
+	$(this.container).click(function(){
 		if(args.callback)
 			args.callback();
 	});
@@ -45,10 +72,6 @@ function Button(args){
 
 	this.stopTimeOut=function(){
 		clearTimeout(timer);
-	}
-
-	this.getElement=function(){
-		return elem;
 	}
 
 	//return elem;
@@ -137,3 +160,6 @@ function TextInput(args){
 		return elem;
 	}
 }
+
+
+Container.prototype = Base.prototype;
