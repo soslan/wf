@@ -36,9 +36,11 @@ $(document).ready(function(){
 
 	var s = new Slider({
 		onChange:function(args){
-			console.log(args.progress);
+			console.log(args.value);
 			//alert(args.progress);
 		},
+		start:0,
+		end:255,
 	});
 
 	document.body.appendChild(w.container);
