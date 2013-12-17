@@ -139,6 +139,118 @@ Toggle.prototype.toggle = function(){
 	
 }
 
+function List(args){
+	Base.call(this,{
+		className:"list",
+	});
+	args = args?args:{};
+	var self = this;
+}
+
+function Slider(args){
+	Base.call(this,{
+		className:"slider inline",
+	});
+	args = args?args:{};
+	var self = this;
+
+	var sliderButton = document.createElement('span');
+	var progress = document.createElement('span');
+
+	sliderButton.className = "slider-button";
+	progress.className = "slider-progress";
+	this.progressValue = 0;
+
+	var pressed = false;
+	var initialMousePosition;
+	var savedPosition;
+
+	var savedMouseUp;
+	var savedMouseMove;
+
+
+	$(sliderButton).mousedown(function(e){
+		if(e.which == 1){
+			sliderButton.classList.add('active');
+			pressed = true;
+			initialMousePosition = e.pageX;
+			savedPosition = $(sliderButton).position().left;
+
+			$(document).bind('mouseup',function(e){
+				if(e.which == 1){
+					sliderButton.classList.remove('active');
+					pressed = false;
+
+					if(args.onChange){
+						args.onChange({
+							progress:self.progressValue,
+						});
+					}
+					$(document).unbind('mouseup');
+					$(document).unbind('mousemove');
+				}
+			});
+
+			$(document).bind('mousemove',function(e){
+				if(pressed){
+					var shift = e.pageX - initialMousePosition;
+					var newPosition = savedPosition + shift;
+					if(newPosition < -5){
+						newPosition = -5;
+					}
+					else if(newPosition >= $(self.container).width()-6){
+						newPosition = $(self.container).width() - 6;
+					}
+					self.progressValue = 100 * (newPosition +5) / ($(self.container).width() - 1);
+					$(sliderButton).css({left:newPosition + "px"});
+					$(progress).css({width:newPosition+"px"});
+			
+				}
+
+			});
+
+		}
+		e.stopPropagation();
+		return false;
+	});
+
+	
+
+	$(this.container).click(function(e){
+		var newPosition = e.pageX - $(this).offset().left;
+		if(newPosition <0){
+			newPosition = 0;
+		}
+		else if(newPosition >= $(self.container).width()){
+			newPosition = $(self.container).width() - 6;
+		}
+		self.progressValue = 100 * (newPosition) / ($(self.container).width() - 1);
+		$(sliderButton).animate({left:newPosition - 5},'fast');
+		$(progress).animate({width:newPosition - 5},'fast');
+		if(args.onChange){
+			args.onChange({
+				progress:self.progressValue,
+			});
+		}
+
+		return false;
+	});
+
+
+
+	this.container.appendChild(progress);
+	this.container.appendChild(sliderButton);
+}
+
+Slider.prototype = Object.create(Base.prototype);
+
+Slider.prototype.getProgress = function(){
+	return $(sliderButton).position
+}
+
+Slider.prototype.setPosition = function(newPosition){
+
+}
 
 function Txt(args){
 	var elem=document.createElement('span');
