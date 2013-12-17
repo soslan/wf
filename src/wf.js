@@ -161,6 +161,9 @@ function Slider(args){
 	progress.className = "slider-progress";
 	this.progressValue = 0;
 
+	this.start = args.start ? args.start : 0;
+	this.end = args.end ? args.end : 100;
+
 	var pressed = false;
 	var initialMousePosition;
 	var savedPosition;
@@ -168,8 +171,13 @@ function Slider(args){
 	var savedMouseUp;
 	var savedMouseMove;
 
-
+	$(sliderButton).click(function(e){
+		e.stopPropagation();
+		return false;
+	})
 	$(sliderButton).mousedown(function(e){
+		e.stopPropagation();
+		e.preventDefault();
 		if(e.which == 1){
 			sliderButton.classList.add('active');
 			pressed = true;
@@ -177,6 +185,7 @@ function Slider(args){
 			savedPosition = $(sliderButton).position().left;
 
 			$(document).bind('mouseup',function(e){
+				e.stopPropagation();
 				if(e.which == 1){
 					sliderButton.classList.remove('active');
 					pressed = false;
@@ -184,11 +193,15 @@ function Slider(args){
 					if(args.onChange){
 						args.onChange({
 							progress:self.progressValue,
+							value:self.getValue(),
 						});
 					}
 					$(document).unbind('mouseup');
 					$(document).unbind('mousemove');
 				}
+
+				
+				return false;
 			});
 
 			$(document).bind('mousemove',function(e){
@@ -230,9 +243,10 @@ function Slider(args){
 		if(args.onChange){
 			args.onChange({
 				progress:self.progressValue,
+				value:self.getValue(),
 			});
 		}
-
+		
 		return false;
 	});
 
@@ -245,7 +259,11 @@ function Slider(args){
 Slider.prototype = Object.create(Base.prototype);
 
 Slider.prototype.getProgress = function(){
-	return $(sliderButton).position
+	return $(sliderButton).position;
+}
+
+Slider.prototype.getValue = function(){
+	return this.start + (this.progressValue * 1.0 * (this.end - this.start) / 100)
 }
 
 Slider.prototype.setPosition = function(newPosition){
