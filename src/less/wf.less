@@ -22,6 +22,10 @@
 	display:inline-block;
 }
 
+.element-container.inline{
+	margin-right: 5px;
+}
+
 .container-full{
 	position:fixed;
 	width:100%;
@@ -68,4 +72,37 @@
 
 .toggle.off > .toggle-switcher{
 	background-color: @gray;
+}
+
+//SLIDER
+
+.slider{
+	cursor:pointer;
+	margin-right:10px;
+	margin-left:5px;
+	height: 5px;
+	width: 100px;
+	background-color: @light-gray;
+}
+
+.slider-button{
+	cursor:pointer;
+	position:absolute;
+	top:-3px;
+	width:11px;
+	height:11px;
+	//border-radius:50%;
+	background-color: @gray;
+}
+
+.slider-button.active{
+	background-color: @main-color;
+}
+
+.slider-progress{
+	background-color: @gray;
+	position: absolute;
+	height: 5px;
+//display: inline-block;
+//width: 50%;
 }

@@ -34,10 +34,19 @@ $(document).ready(function(){
 	var b = new Button();
 	var t = new Toggle();
 
+	var s = new Slider({
+		onChange:function(args){
+			console.log(args.progress);
+			//alert(args.progress);
+		},
+	});
+
 	document.body.appendChild(w.container);
 
 	w
 		.append(b)
-		.append(t);
+		.append(t)
+		.append(s)
+		;
 });
 
