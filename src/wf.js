@@ -7,6 +7,12 @@ function Base(args){
 	if(args.className){
 		this.container.className += " " + args.className;
 	}
+
+	$(this.container).mousedown(function(e){
+		e.stopPropagation();
+		e.preventDefault();
+		return false;
+	})
 }
 
 Base.prototype.append = function(element){
@@ -81,9 +87,13 @@ function Button(args){
 	this.container.classList.add("button");
 	var timer;
 
-	$(this.container).click(function(){
-		if(args.callback)
-			args.callback();
+	$(this.container).click(function(e){
+		e.stopPropagation();
+		e.preventDefault();
+		if(args.onClick){
+			args.onClick();
+		}
+		return false;
 	});
 
 	this.setTimeOut=function(time){
