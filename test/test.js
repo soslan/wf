@@ -25,23 +25,45 @@ B.prototype.set=function(){
 	//return this.x;
 }
 
+
+function log(val,logC){
+	var div=document.createElement('div');
+	div.innerHTML = val;
+	logC.insertBefore(div,logC.firstChild);
+	setTimeout(function(){
+		$(div).fadeOut('fast',function(){
+			logC.removeChild(div);
+		});
+	},1000);
+
+
+}
+
 ////////////////////////////////////////// WF TESTING 
 $(document).ready(function(){
 	//less.watch();
 	var w = new Container({
 		mode:"full",
+		direction:"v",
 	});
 	var testC = new Container({
 		direction:"v",
 		flex:1,
 	});
+
+	var logC = document.createElement('div');
+	testC.contentBlock.appendChild(logC);
+
 	var b = new Button();
 	var t = new Toggle();
 
 	var s = new Slider({
 		onChange:function(args){
-			console.log(args.value);
+			log("Slider onChange value: "+args.value.toFixed(2),logC);
 			//alert(args.progress);
+		},
+		onChanged:function(args){
+			log("Slider onChanged value: "+args.value.toFixed(2),logC);
 		},
 		start:0,
 		end:255,
