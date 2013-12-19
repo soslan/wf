@@ -25,17 +25,49 @@ Base.prototype.removeClass = function(className){
 }
 
 function Container(args){
-	Base.call(this);
+	var self = this;
+	Base.call(this,{
+		tag:"span",
+		className:"container",
+	});
 	args=args?args:{};
 
-	this.addClass("container");
+	if(args.flex){
+		this.container.style.flex = args.flex;
+	}
+
+	if(args.direction){
+		if(args.direction == 'v'){
+			this.container.style.flexDirection = 'column';
+		}
+	}
+
+	//this.addClass("container");
+
+	this.contentBlock = document.createElement('div');
+
+	this.contentBlock.className = "container-content";
 
 	if(args.mode == "full"){
 		this.addClass("container-full");
 	}
+
+	this.container.appendChild(this.contentBlock);
+
+
 }
 
 Container.prototype = Object.create(Base.prototype);
+
+Container.prototype.append = function(element){
+	this.contentBlock.appendChild(element.container);
+	return this;
+}
+
+Container.prototype.appendContainer = function(element){
+	this.container.appendChild(element.container);
+	return this;
+}
 
 function Button(args){
 	Base.call(this,{
@@ -217,6 +249,12 @@ function Slider(args){
 					self.progressValue = 100 * (newPosition +5) / ($(self.container).width() - 1);
 					$(sliderButton).css({left:newPosition + "px"});
 					$(progress).css({width:newPosition+"px"});
+					if(args.onMove){
+						args.onMove({
+							progress:self.progressValue,
+							value:self.getValue(),
+						});
+					}
 			
 				}
 

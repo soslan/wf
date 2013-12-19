@@ -31,6 +31,10 @@ $(document).ready(function(){
 	var w = new Container({
 		mode:"full",
 	});
+	var testC = new Container({
+		direction:"v",
+		flex:1,
+	});
 	var b = new Button();
 	var t = new Toggle();
 
@@ -49,6 +53,7 @@ $(document).ready(function(){
 		.append(b)
 		.append(t)
 		.append(s)
+		.appendContainer(testC)
 		;
 });
 
