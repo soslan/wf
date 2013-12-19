@@ -61,7 +61,11 @@ $(document).ready(function(){
 	});
 
 
-	var t = new Toggle();
+	var t = new Toggle({
+		onToggle:function(args){
+			log("Toggle onToggle value: "+args.value,logC);
+		}
+	});
 
 	var s = new Slider({
 		onChange:function(args){

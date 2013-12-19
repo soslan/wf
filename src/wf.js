@@ -142,6 +142,11 @@ function Toggle(args){
 
 	$(this.container).click(function(){
 		self.toggle();
+		if(args.onToggle){
+			args.onToggle({
+				value:self.value,
+			});
+		}
 	});
 
 	this.container.appendChild(this.switcher);
