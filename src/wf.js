@@ -222,8 +222,8 @@ function Slider(args){
 					sliderButton.classList.remove('active');
 					pressed = false;
 
-					if(args.onChange){
-						args.onChange({
+					if(args.onChanged){
+						args.onChanged({
 							progress:self.progressValue,
 							value:self.getValue(),
 						});
@@ -249,8 +249,8 @@ function Slider(args){
 					self.progressValue = 100 * (newPosition +5) / ($(self.container).width() - 1);
 					$(sliderButton).css({left:newPosition + "px"});
 					$(progress).css({width:newPosition+"px"});
-					if(args.onMove){
-						args.onMove({
+					if(args.onChange){
+						args.onChange({
 							progress:self.progressValue,
 							value:self.getValue(),
 						});
@@ -280,6 +280,13 @@ function Slider(args){
 		$(progress).animate({width:newPosition - 5},'fast');
 		if(args.onChange){
 			args.onChange({
+				progress:self.progressValue,
+				value:self.getValue(),
+			});
+		}
+
+		if(args.onChanged){
+			args.onChanged({
 				progress:self.progressValue,
 				value:self.getValue(),
 			});
