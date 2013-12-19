@@ -54,7 +54,13 @@ $(document).ready(function(){
 	var logC = document.createElement('div');
 	testC.contentBlock.appendChild(logC);
 
-	var b = new Button();
+	var b = new Button({
+		onClick:function(){
+			log("Button onClick",logC);
+		}
+	});
+
+
 	var t = new Toggle();
 
 	var s = new Slider({
