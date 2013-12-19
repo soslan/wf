@@ -8,11 +8,11 @@ function Base(args){
 		this.container.className += " " + args.className;
 	}
 
-	$(this.container).mousedown(function(e){
+	/*$(this.container).mousedown(function(e){
 		e.stopPropagation();
 		e.preventDefault();
 		return false;
-	})
+	})*/
 }
 
 Base.prototype.append = function(element){
@@ -354,24 +354,21 @@ function Txt(args){
 
 
 function TextInput(args){
-	args=args?args:{};
-	var elem = document.createElement('input');
+	Base.call(this,{
+		className:"text-input inline",
+	});
+	args = args?args:{};
+	var self = this;
 
-	elem.setAttribute("type","text");
-	elem.className="input-text";
-	if(args.class){
-		elem.classList.add(args.class);
-	}
+	this.inputElement = document.createElement('input');
+	this.inputElement.setAttribute('type','text');
 
-	this.setValue=function(value){
-		$(elem).val(value);
-	}
+	this.container.appendChild(this.inputElement);
 
-	this.getValue=function(){
-		return $(elem).val();
-	};
 
-	this.getElement=function(){
-		return elem;
-	}
+
+	
+	
 }
+
+TextInput.prototype = Object.create(Base.prototype);

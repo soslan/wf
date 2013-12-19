@@ -79,9 +79,12 @@ $(document).ready(function(){
 		end:255,
 	});
 
+	var ti = new TextInput();
+
 	document.body.appendChild(w.container);
 
 	w
+		.append(ti)
 		.append(b)
 		.append(t)
 		.append(s)
