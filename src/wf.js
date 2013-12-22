@@ -33,7 +33,6 @@ Base.prototype.removeClass = function(className){
 function Container(args){
 	var self = this;
 	Base.call(this,{
-		tag:"span",
 		className:"container",
 	});
 	args=args?args:{};
@@ -188,10 +187,20 @@ Toggle.prototype.toggle = function(){
 
 function List(args){
 	Base.call(this,{
+		tag:"ul",
 		className:"list",
 	});
 	args = args?args:{};
 	var self = this;
+
+
+}
+
+List.prototype = Object.create(Base.prototype);
+
+List.prototype.append = function(element){
+	var li = document.createElement('li');
+	li.appendChild(element.container);
 }
 
 function Slider(args){
@@ -371,13 +380,20 @@ function TextInput(args){
 				value:self.inputElement.value,
 			});
 		};
-
-	}
-
-
-
-	
-	
+	}	
 }
 
 TextInput.prototype = Object.create(Base.prototype);
+
+function Select(args){
+	Base.call(this,{
+		className:"text-input inline",
+	});
+	args = args?args:{};
+	var self = this;
+
+	var button = new Button();
+
+}
+
+Select.prototype = Object.create(Base.prototype);
