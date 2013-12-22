@@ -365,6 +365,15 @@ function TextInput(args){
 
 	this.container.appendChild(this.inputElement);
 
+	if(args.onChange){
+		$(this.inputElement)[0].oninput = function () {
+			args.onChange({
+				value:self.inputElement.value,
+			});
+		};
+
+	}
+
 
 
 	

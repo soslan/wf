@@ -79,7 +79,11 @@ $(document).ready(function(){
 		end:255,
 	});
 
-	var ti = new TextInput();
+	var ti = new TextInput({
+		onChange:function(args){
+			log("TextInput onChange value: "+args.value,logC);
+		}
+	});
 
 	document.body.appendChild(w.container);
 
