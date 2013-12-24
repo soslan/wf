@@ -81,7 +81,9 @@ function Button(args){
 	});
 	args=args?args:{};
 
-	//this.container.innerHTML=args.value?args.value:"Button";
+	if(args.value){
+		this.container.innerHTML=args.value;
+	}
 
 	this.container.classList.add("button");
 	var timer;
@@ -387,7 +389,7 @@ TextInput.prototype = Object.create(Base.prototype);
 
 function Span(args){
 	Base.call(this,{
-		className:"span",
+		className:"span inline",
 	});
 	args = args?args:{};
 	var self = this;
@@ -420,7 +422,9 @@ function Select(args){
 		},
 	});
 	this.selectedSpan = new Span({value:""});
+	this.icon = new Icon('angle-down');
 	this.button.append(this.selectedSpan);
+	this.button.append(this.icon);
 	this.optionsContainer = document.createElement('div');
 
 	this.optionsContainer.className = "select-options";
@@ -441,17 +445,23 @@ Select.prototype = Object.create(Base.prototype);
 Select.prototype.show = function(){
 	var self=this;
 	self.active = true;
-	$(this.optionsContainer).slideDown(function(){
-		self.button.addClass('active');
-	});
+
+	$(this.optionsContainer)
+		.width($(self.container).outerWidth())
+		.slideDown();
+	self.button.addClass('active');
+	self.icon.container.classList.remove('fa-angle-down');
+	self.icon.container.classList.add('fa-angle-up');
 };
 
 Select.prototype.fold = function(){
 	var self=this;
 	self.active = false;
-	$(this.optionsContainer).slideUp(function(){
-		self.button.removeClass('active');
-	});
+	$(this.optionsContainer).slideUp();
+	self.button.removeClass('active');
+
+	self.icon.container.classList.remove('fa-angle-up');
+	self.icon.container.classList.add('fa-angle-down');
 };
 
 Select.prototype.setSelectedValue = function(value){
@@ -482,3 +492,8 @@ Select.prototype.append = function(value, select){
 	return this;
 
 };
+
+function Icon(domain){
+	this.container = document.createElement('i');
+	this.container.className = "icon inline fa fa-"+domain;
+}

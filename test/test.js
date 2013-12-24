@@ -57,7 +57,8 @@ $(document).ready(function(){
 	var b = new Button({
 		onClick:function(){
 			log("Button onClick",logC);
-		}
+		},
+		value:"Button",
 	});
 
 
