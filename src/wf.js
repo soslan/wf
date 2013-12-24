@@ -81,7 +81,7 @@ function Button(args){
 	});
 	args=args?args:{};
 
-	this.container.innerHTML=args.value?args.value:"Submit";
+	//this.container.innerHTML=args.value?args.value:"Button";
 
 	this.container.classList.add("button");
 	var timer;
@@ -385,15 +385,100 @@ function TextInput(args){
 
 TextInput.prototype = Object.create(Base.prototype);
 
-function Select(args){
+function Span(args){
 	Base.call(this,{
-		className:"text-input inline",
+		className:"span",
 	});
 	args = args?args:{};
 	var self = this;
 
-	var button = new Button();
+	if(args.value){
+		this.container.innerHTML = args.value;
+	}
+
+
+}
+
+function Select(args){
+	Base.call(this,{
+		className:"inline",
+	});
+	args = args?args:{};
+	var self = this;
+
+	this.active = false;
+
+	this.button = new Button({
+		onClick:function(){
+			if(self.active){
+				self.fold();
+			}
+			else{
+				self.show();
+			}
+			
+		},
+	});
+	this.selectedSpan = new Span({value:""});
+	this.button.append(this.selectedSpan);
+	this.optionsContainer = document.createElement('div');
+
+	this.optionsContainer.className = "select-options";
+
+	this.selectedOptionElement;
+
+
+
+	this.container.appendChild(this.button.container);
+	this.container.appendChild(this.optionsContainer);
+
+
 
 }
 
 Select.prototype = Object.create(Base.prototype);
+
+Select.prototype.show = function(){
+	var self=this;
+	self.active = true;
+	$(this.optionsContainer).slideDown(function(){
+		self.button.addClass('active');
+	});
+};
+
+Select.prototype.fold = function(){
+	var self=this;
+	self.active = false;
+	$(this.optionsContainer).slideUp(function(){
+		self.button.removeClass('active');
+	});
+};
+
+Select.prototype.setSelectedValue = function(value){
+	this.selectedSpan.container.innerHTML = value;
+}
+
+Select.prototype.append = function(value, select){
+	var self = this;
+	var optionContainer = document.createElement('div');
+	optionContainer.className = "select-option";
+	optionContainer.innerHTML = value;
+	$(optionContainer).click(function(){
+		if(self.selectedOptionElement)
+			self.selectedOptionElement.classList.remove('selected');
+		this.classList.add('selected');
+		self.selectedOptionElement = this;
+		self.setSelectedValue(this.innerHTML);
+	});
+	if(select){
+		if(self.selectedOptionElement)
+			self.selectedOptionElement.classList.remove('selected');
+		optionContainer.classList.add('selected');
+		self.selectedOptionElement = optionContainer;
+		self.setSelectedValue(value);
+	}
+	//optionContainer.setAttribute('value',value);
+	this.optionsContainer.appendChild(optionContainer);
+	return this;
+
+};
