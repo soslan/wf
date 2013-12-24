@@ -79,6 +79,12 @@ $(document).ready(function(){
 		end:255,
 	});
 
+	var se = new Select({
+
+	});
+	se.append('One',true)
+		.append('Two');
+
 	var ti = new TextInput({
 		onChange:function(args){
 			log("TextInput onChange value: "+args.value,logC);
@@ -90,6 +96,7 @@ $(document).ready(function(){
 	w
 		.append(ti)
 		.append(b)
+		.append(se)
 		.append(t)
 		.append(s)
 		.appendContainer(testC)

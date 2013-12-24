@@ -7,6 +7,8 @@
 @toggle-width:70px;
 
 .element-container{
+	display:block;
+	float:left;
 	position:relative;
 }
 
@@ -23,7 +25,7 @@
 }
 
 .inline{
-	display:inline-block;
+	//display:inline-block;
 }
 
 .element-container.inline{
@@ -48,6 +50,13 @@
 	background-color:@gray;
 	border:none;
 	cursor:pointer;
+	min-height:26px;
+	min-width:26px;
+}
+
+.button.active{
+	background-color: @main-color;
+	
 }
 
 .button:hover{
@@ -119,4 +128,29 @@
 	line-height: 18px;
 	margin: 0;
 	outline: 0;
+}
+
+//SELECT
+
+.select-options{
+	display:none;
+	position:absolute;
+	z-index:100;
+	top:26px;
+	background-color: @gray;
+	padding-top:5px;
+	//border-top:1px solid @light-gray;
+	color:@white;
+
+}
+
+.select-option{
+	line-height:26px;
+	padding:0 10px;
+	color:@white;
+	cursor:pointer;
+}
+
+.select-option.selected{
+	background-color: @main-color;
 }
