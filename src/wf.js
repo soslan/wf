@@ -403,14 +403,16 @@ function Span(args){
 
 function Select(args){
 	Base.call(this,{
-		className:"inline",
+		className:"select inline",
 	});
 	args = args?args:{};
 	var self = this;
 
 	this.active = false;
+	this.button = document.createElement('span');
+	this.button.className = "select-button";
 
-	this.button = new Button({
+	/*this.button = new Button({
 		onClick:function(){
 			if(self.active){
 				self.fold();
@@ -421,10 +423,21 @@ function Select(args){
 			
 		},
 	});
+	*/
+
+	$(this.button).click(function(){
+			if(self.active){
+				self.fold();
+			}
+			else{
+				self.show();
+			}
+			
+		});
 	this.selectedSpan = new Span({value:""});
 	this.icon = new Icon('angle-down');
-	this.button.append(this.selectedSpan);
-	this.button.append(this.icon);
+	//this.button.append(this.selectedSpan);
+	//this.button.append(this.icon);
 	this.optionsContainer = document.createElement('div');
 
 	this.optionsContainer.className = "select-options";
@@ -433,7 +446,10 @@ function Select(args){
 
 
 
-	this.container.appendChild(this.button.container);
+	
+	this.button.appendChild(this.selectedSpan.container);
+	this.button.appendChild(this.icon.container);
+	this.container.appendChild(this.button);
 	this.container.appendChild(this.optionsContainer);
 
 
@@ -449,7 +465,7 @@ Select.prototype.show = function(){
 	$(this.optionsContainer)
 		.width($(self.container).outerWidth())
 		.slideDown();
-	self.button.addClass('active');
+	self.button.classList.add('active');
 	self.icon.container.classList.remove('fa-angle-down');
 	self.icon.container.classList.add('fa-angle-up');
 };
@@ -458,7 +474,7 @@ Select.prototype.fold = function(){
 	var self=this;
 	self.active = false;
 	$(this.optionsContainer).slideUp();
-	self.button.removeClass('active');
+	self.button.classList.remove('active');
 
 	self.icon.container.classList.remove('fa-angle-up');
 	self.icon.container.classList.add('fa-angle-down');
