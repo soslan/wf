@@ -435,6 +435,7 @@ function Select(args){
 			
 		});
 	this.selectedSpan = new Span({value:""});
+	this.selectedSpan.container.classList.add('select-current');
 	this.icon = new Icon('angle-down');
 	//this.button.append(this.selectedSpan);
 	//this.button.append(this.icon);
@@ -463,8 +464,14 @@ Select.prototype.show = function(){
 	self.active = true;
 
 	$(this.optionsContainer)
-		.width($(self.container).outerWidth())
-		.slideDown();
+		//.width($(self.container).outerWidth())
+		//.slideDown('fast');
+		.css({
+			visibility:'visible'
+		})
+		.animate({
+			opacity:1,
+		},'fast');
 	self.button.classList.add('active');
 	self.icon.container.classList.remove('fa-angle-down');
 	self.icon.container.classList.add('fa-angle-up');
@@ -473,7 +480,15 @@ Select.prototype.show = function(){
 Select.prototype.fold = function(){
 	var self=this;
 	self.active = false;
-	$(this.optionsContainer).slideUp();
+	$(this.optionsContainer)
+		//.slideUp('fast');
+		.animate({
+			opacity:0,
+		},'fast',function(){
+			$(this).css({
+				visibility:'hidden',
+			});
+		});
 	self.button.classList.remove('active');
 
 	self.icon.container.classList.remove('fa-angle-up');

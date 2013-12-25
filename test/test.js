@@ -83,8 +83,8 @@ $(document).ready(function(){
 	var se = new Select({
 
 	});
-	se.append('One',true)
-		.append('Two');
+	se.append('Option',true)
+		.append('Very long option');
 
 	var ti = new TextInput({
 		onChange:function(args){
