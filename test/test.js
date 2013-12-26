@@ -81,7 +81,9 @@ $(document).ready(function(){
 	});
 
 	var se = new Select({
-
+		onChange:function(args){
+			log("Select onChange value: "+args.value,logC);
+		}
 	});
 	se.append('Option',true)
 		.append('Very long option');
