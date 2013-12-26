@@ -412,6 +412,8 @@ function Select(args){
 	this.button = document.createElement('span');
 	this.button.className = "select-button";
 
+	this.container.setAttribute('tabindex','-1');
+
 	/*this.button = new Button({
 		onClick:function(){
 			if(self.active){
@@ -424,6 +426,13 @@ function Select(args){
 		},
 	});
 	*/
+
+	$(this.container).blur(function(){
+		if(self.active){
+			self.fold();
+		}
+		
+	})
 
 	$(this.button).click(function(){
 			if(self.active){
@@ -445,7 +454,11 @@ function Select(args){
 
 	this.selectedOptionElement;
 
-
+	this.onChange = function(args2){
+		if(args.onChange){
+			args.onChange(args2);
+		}
+	}
 
 	
 	this.button.appendChild(this.selectedSpan.container);
@@ -509,7 +522,11 @@ Select.prototype.append = function(value, select){
 			self.selectedOptionElement.classList.remove('selected');
 		this.classList.add('selected');
 		self.selectedOptionElement = this;
+		self.fold();
 		self.setSelectedValue(this.innerHTML);
+		self.onChange({
+			value: this.innerHTML,
+		});
 	});
 	if(select){
 		if(self.selectedOptionElement)
