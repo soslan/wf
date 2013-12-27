@@ -545,3 +545,7 @@ function Icon(domain){
 	this.container = document.createElement('i');
 	this.container.className = "icon inline fa fa-"+domain;
 }
+
+Icon.prototype.change = function(newDomain){
+	this.container.className = "icon inline fa fa-"+newDomain;
+}
