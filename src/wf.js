@@ -218,9 +218,13 @@ function Slider(args){
 	args = args?args:{};
 	var self = this;
 
+	this.sliderContainer = document.createElement('span');
+	this.sliderLine = document.createElement('div');
 	var sliderButton = document.createElement('span');
 	var progress = document.createElement('span');
 
+	this.sliderContainer.className = "slider-container";
+	this.sliderLine.className = "slider-line";
 	sliderButton.className = "slider-button";
 	progress.className = "slider-progress";
 	this.progressValue = 0;
@@ -328,9 +332,10 @@ function Slider(args){
 	});
 
 
-
-	this.container.appendChild(progress);
-	this.container.appendChild(sliderButton);
+	this.container.appendChild(this.sliderContainer);
+	this.sliderContainer.appendChild(this.sliderLine);
+	this.sliderContainer.appendChild(progress);
+	this.sliderContainer.appendChild(sliderButton);
 }
 
 Slider.prototype = Object.create(Base.prototype);
