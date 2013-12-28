@@ -549,3 +549,35 @@ function Icon(domain){
 Icon.prototype.change = function(newDomain){
 	this.container.className = "icon inline fa fa-"+newDomain;
 }
+
+function SegmentedControl(args){
+	Base.call(this,{
+		className:"segmented-control inline",
+	});
+	args = args?args:{};
+	var self = this;
+
+	this.segmentsContainer = document.createElement('span');
+	this.segmentsContainer.className = 'segmented-control-segments';
+
+	
+
+
+}
+
+SegmentedControl.prototype.append = function(args){
+	var button = document.createElement('span');
+	button.className='segmented-control-button';
+
+	if(args.label){
+		button.innerHTML = args.label;
+	}
+	if(args.onClick){
+		$(button).click(function(e){
+			if(e.which == 1){
+				args.onClick();
+			}
+		});
+	}
+}
+
