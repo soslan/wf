@@ -160,6 +160,9 @@ Toggle.prototype = Object.create(Base.prototype);
 Toggle.prototype.on = function(){
 	if(this.value == 0){
 		this.value = 1;
+		$(this.switcher).animate({
+			left:'50%',
+		},'fast')
 		this.addClass("on");
 		this.removeClass("off");
 		this.switcher.innerHTML = "ON";
@@ -170,6 +173,9 @@ Toggle.prototype.on = function(){
 Toggle.prototype.off = function(){
 	if(this.value == 1){
 		this.value = 0;
+		$(this.switcher).animate({
+			left:'0',
+		},'fast')
 		this.addClass("off");
 		this.removeClass("on");
 		this.switcher.innerHTML = "OFF";
