@@ -74,14 +74,16 @@ Container.prototype.append = function(element){
 	return this;
 }
 
-function Content(args){
+function Block(args){
 	var self = this;
 	Base.call(this,{
-		className:"content-container",
+		className:"block-container",
 	});
 	args=args?args:{};
 
 }
+
+Block.prototype = Object.create(Base.prototype);
 
 function Button(args){
 	Base.call(this,{

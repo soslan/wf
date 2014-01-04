@@ -46,9 +46,12 @@ $(document).ready(function(){
 		mode:"full",
 		direction:"h",
 	});
-	var testC = new Content({
+	var testC = new Container({
 		direction:"v",
 		flex:1,
+	});
+
+	var toolbar = new Block({
 	});
 
 	var framesC = new Container({
@@ -116,13 +119,15 @@ $(document).ready(function(){
 		.append(m)
 		.append(framesC)
 		;
-
-	framesC
+	toolbar
 		.append(ti)
 		.append(b)
 		.append(se)
 		.append(t)
 		.append(s)
+
+	framesC
+		.append(toolbar)
 		.append(testC)
 		;
 });
