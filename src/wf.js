@@ -75,11 +75,11 @@ Container.prototype.appendContainer = function(element){
 }
 
 function Button(args){
-	Base.call(this,{
-		tag:"span",
-		className:"button inline",
-	});
 	args=args?args:{};
+	args.tag = "span";
+	args.className = "button inline";
+	Base.call(this,args);
+	var self = this;
 
 	if(args.value){
 		this.container.innerHTML=args.value;
@@ -117,11 +117,11 @@ function Button(args){
 Button.prototype = Object.create(Base.prototype);
 
 function Toggle(args){
-	Base.call(this,{
-		tag:"span",
-		className:"toggle inline",
-	});
-	args = args?args:{};
+	args=args?args:{};
+	args.tag = "span";
+	args.className = "toggle inline";
+	Base.call(this,args);
+
 	var self = this;
 	this.switcher = document.createElement('span');
 	this.value = args.value ? args.value : 0;
@@ -212,10 +212,9 @@ List.prototype.append = function(element){
 }
 
 function Slider(args){
-	Base.call(this,{
-		className:"slider inline",
-	});
-	args = args?args:{};
+	args=args?args:{};
+	args.className = "slider inline";
+	Base.call(this,args);
 	var self = this;
 
 	this.sliderContainer = document.createElement('span');
@@ -376,10 +375,9 @@ function Txt(args){
 
 
 function TextInput(args){
-	Base.call(this,{
-		className:"text-input inline",
-	});
-	args = args?args:{};
+	args=args?args:{};
+	args.className = "text-input inline";
+	Base.call(this,args);
 	var self = this;
 
 	this.inputElement = document.createElement('input');
@@ -399,10 +397,9 @@ function TextInput(args){
 TextInput.prototype = Object.create(Base.prototype);
 
 function Span(args){
-	Base.call(this,{
-		className:"span inline",
-	});
-	args = args?args:{};
+	args=args?args:{};
+	args.className = "span inline";
+	Base.call(this,args);
 	var self = this;
 
 	if(args.value){
@@ -413,10 +410,9 @@ function Span(args){
 }
 
 function Select(args){
-	Base.call(this,{
-		className:"select inline",
-	});
-	args = args?args:{};
+	args=args?args:{};
+	args.className = "select inline";
+	Base.call(this,args);
 	var self = this;
 
 	this.active = false;
@@ -562,10 +558,9 @@ Icon.prototype.change = function(newDomain){
 }
 
 function SegmentedControl(args){
-	Base.call(this,{
-		className:"segmented-control inline",
-	});
-	args = args?args:{};
+	args=args?args:{};
+	args.className = "segmented-control inline";
+	Base.call(this,args);
 	var self = this;
 
 	this.segmentsContainer = document.createElement('span');
