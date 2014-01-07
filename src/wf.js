@@ -49,30 +49,41 @@ function Container(args){
 
 	//this.addClass("container");
 
-	this.contentBlock = document.createElement('div');
+	//this.contentBlock = document.createElement('div');
 
-	this.contentBlock.className = "container-content";
+	//this.contentBlock.className = "container-content";
 
 	if(args.mode == "full"){
 		this.addClass("container-full");
 	}
 
-	this.container.appendChild(this.contentBlock);
+	//this.container.appendChild(this.contentBlock);
 
 
 }
 
 Container.prototype = Object.create(Base.prototype);
 
-Container.prototype.append = function(element){
+/*Container.prototype.append = function(element){
 	this.contentBlock.appendChild(element.container);
 	return this;
-}
+}*/
 
-Container.prototype.appendContainer = function(element){
+Container.prototype.append = function(element){
 	this.container.appendChild(element.container);
 	return this;
 }
+
+function Block(args){
+	var self = this;
+	Base.call(this,{
+		className:"block-container",
+	});
+	args=args?args:{};
+
+}
+
+Block.prototype = Object.create(Base.prototype);
 
 function Button(args){
 	args=args?args:{};
@@ -587,3 +598,29 @@ SegmentedControl.prototype.append = function(args){
 	}
 }
 
+function Menu(args){
+	Base.call(this,{
+		className:"menu",
+	});
+	args = args?args:{};
+	var self = this;
+
+
+}
+
+Menu.prototype = Object.create(Base.prototype);
+
+Menu.prototype.append = function(obj){
+	this.container.appendChild(obj.container);
+}
+
+function Frames(args){
+	Base.call(this,{
+		className:"frames",
+	});
+	args = args?args:{};
+	var self = this;
+
+
+
+}

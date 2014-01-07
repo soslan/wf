@@ -39,20 +39,28 @@ function log(val,logC){
 
 }
 
-////////////////////////////////////////// WF TESTING 
+// WF TESTING 
 $(document).ready(function(){
 	//less.watch();
 	var w = new Container({
 		mode:"full",
-		direction:"v",
+		direction:"h",
 	});
 	var testC = new Container({
 		direction:"v",
 		flex:1,
 	});
 
+	var toolbar = new Block({
+	});
+
+	var framesC = new Container({
+		direction:"v",
+		flex:1,
+	});
+
 	var logC = document.createElement('div');
-	testC.contentBlock.appendChild(logC);
+	testC.container.appendChild(logC);
 
 	var b = new Button({
 		onClick:function(){
@@ -67,6 +75,8 @@ $(document).ready(function(){
 			log("Toggle onToggle value: "+args.value,logC);
 		}
 	});
+
+	var m = new Menu();
 
 	var s = new Slider({
 		onChange:function(args){
@@ -94,15 +104,31 @@ $(document).ready(function(){
 		}
 	});
 
+	var startButton = new Button({
+		onClick:function(){
+			log("Menu item clicked",logC);
+		},
+		value:"Start",
+	});
+
+	m.append(startButton);
+
 	document.body.appendChild(w.container);
 
 	w
+		.append(m)
+		.append(framesC)
+		;
+	toolbar
 		.append(ti)
 		.append(b)
 		.append(se)
 		.append(t)
 		.append(s)
-		.appendContainer(testC)
+
+	framesC
+		.append(toolbar)
+		.append(testC)
 		;
 });
 
