@@ -75,11 +75,10 @@ Container.prototype.append = function(element){
 }
 
 function Block(args){
-	var self = this;
-	Base.call(this,{
-		className:"block-container",
-	});
 	args=args?args:{};
+	args.className = "block-container inline";
+	Base.call(this,args);
+	var self = this;
 
 }
 
@@ -599,10 +598,9 @@ SegmentedControl.prototype.append = function(args){
 }
 
 function Menu(args){
-	Base.call(this,{
-		className:"menu",
-	});
-	args = args?args:{};
+	args=args?args:{};
+	args.className = "menu";
+	Base.call(this,args);
 	var self = this;
 
 
