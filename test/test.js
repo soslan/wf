@@ -113,6 +113,14 @@ $(document).ready(function(){
 
 	m.append(startButton);
 
+	var elem = new Element({
+		onClick:function(){
+			log("Element clicked",logC);
+		}
+	});
+
+	elem.element.innerHTML = "Element";
+
 	document.body.appendChild(w.container);
 
 	w
@@ -125,6 +133,7 @@ $(document).ready(function(){
 		.append(se)
 		.append(t)
 		.append(s)
+		.append(elem)
 
 	framesC
 		.append(toolbar)
