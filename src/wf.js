@@ -1,3 +1,25 @@
+// Core layer
+function Element(args){
+	var self = this;
+	args=args?args:{};
+	args.tag = args.tag ? args.tag : "div";
+	this.tagName = args.tag;
+	this.element = document.createElement(this.tagName);
+	this.element.className = "element";
+
+	this.container = this.element; // Temporary.
+
+	if(args.className){
+		this.element.className += " " + args.className;
+	}
+	if(args.onClick){
+		$(this.element).click(args.onClick);
+	}
+	if(args.onMouseDown){
+		$(this.element).mousedown(args.onMouseDown);
+	}
+}
+
 function Base(args){
 	args=args?args:{};
 	args.tag = args.tag ? args.tag : "div";
