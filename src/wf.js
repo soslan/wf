@@ -178,7 +178,9 @@ function Button(args){
 		return false;
 	});
 
-	this.element.setAttribute('tabindex','1');
+	if(args.tabindex){
+		this.element.setAttribute('tabindex',args.tabindex);
+	}
 
 	this.element.appendChild(this.label.element);
 }
