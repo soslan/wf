@@ -144,7 +144,7 @@ function Button(args){
 	var self = this;
 	args = args?args:{};
 	Element.call(this,{
-		tagName:'button'
+		tagName:'span'
 	});
 	this.addClass('control');
 	this.addClass('button');
@@ -152,6 +152,14 @@ function Button(args){
 	if (args.onClick){
 		$(this.element).click(function(e){
 			if(e.which == 1){
+				self.addClass('clicked');
+				$(self.element).focus();
+				args.onClick();
+				self.removeClass('clicked');
+			}
+		});
+		$(this.element).keydown(function(e){
+			if(e.which == 13){
 				self.addClass('clicked');
 				args.onClick();
 				self.removeClass('clicked');
@@ -165,6 +173,12 @@ function Button(args){
 	if(args.label){
 		this.label.element.innerHTML = args.label;
 	}
+
+	$(this.element).mousedown(function(){
+		return false;
+	});
+
+	this.element.setAttribute('tabindex','1');
 
 	this.element.appendChild(this.label.element);
 }
