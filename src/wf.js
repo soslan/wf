@@ -2,8 +2,8 @@
 function Element(args){
 	var self = this;
 	args=args?args:{};
-	args.tag = args.tag ? args.tag : "div";
-	this.tagName = args.tag;
+	args.tagName = args.tagName ? args.tagName : "div";
+	this.tagName = args.tagName;
 	this.element = document.createElement(this.tagName);
 	this.element.className = "element";
 
@@ -18,6 +18,26 @@ function Element(args){
 	if(args.onMouseDown){
 		$(this.element).mousedown(args.onMouseDown);
 	}
+}
+
+Element.prototype.append = function(element){
+	this.element.appendChild(element.element);
+	return this;
+}
+
+Element.prototype.prepend = function(element){
+	$(this.element).prepend(element.element);
+	return this;
+}
+
+Element.prototype.addClass = function(className){
+	this.element.classList.add(className);
+	return this;
+}
+
+Element.prototype.removeClass = function(className){
+	this.element.classList.remove(className);
+	return this;
 }
 
 function Base(args){
@@ -37,6 +57,20 @@ function Base(args){
 	})*/
 }
 
+// HTML Elements layer
+
+// Controls layer
+
+function Control(args){
+	var self = this;
+	args = args?args:{};
+	Element.call(this,args);
+	this.addClass('control');
+}
+
+Control.prototype = Object.create(Element.prototype);
+
+//
 Base.prototype.append = function(element){
 	this.container.appendChild(element.container);
 	return this;
@@ -107,46 +141,36 @@ function Block(args){
 Block.prototype = Object.create(Base.prototype);
 
 function Button(args){
-	args=args?args:{};
-	args.tag = "span";
-	args.className = "button inline";
-	Base.call(this,args);
 	var self = this;
-
-	if(args.value){
-		this.container.innerHTML=args.value;
-	}
-
-	this.container.classList.add("button");
-	var timer;
-
-	$(this.container).click(function(e){
-		e.stopPropagation();
-		e.preventDefault();
-		if(args.onClick){
-			args.onClick();
-		}
-		return false;
+	args = args?args:{};
+	Element.call(this,{
+		tagName:'button'
 	});
+	this.addClass('control');
+	this.addClass('button');
 
-	this.setTimeOut=function(time){
-
-		timer=setTimeout(function(){
-
-			if(args.callback)
-				args.callback();
-			clearTimeout(timer);
-		},time);
-	};
-
-	this.stopTimeOut=function(){
-		clearTimeout(timer);
+	if (args.onClick){
+		$(this.element).click(function(e){
+			if(e.which == 1){
+				self.addClass('clicked');
+				args.onClick();
+				self.removeClass('clicked');
+			}
+		});
 	}
 
-	//return elem;
+	this.label = new Element({
+		tagName:'span',
+	});
+	if(args.label){
+		this.label.element.innerHTML = args.label;
+	}
+
+	this.element.appendChild(this.label.element);
 }
 
-Button.prototype = Object.create(Base.prototype);
+Button.prototype = Object.create(Element.prototype);
+
 
 function Toggle(args){
 	args=args?args:{};

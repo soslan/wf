@@ -66,7 +66,7 @@ $(document).ready(function(){
 		onClick:function(){
 			log("Button onClick",logC);
 		},
-		value:"Button",
+		label:"Button",
 	});
 
 
@@ -108,7 +108,14 @@ $(document).ready(function(){
 		onClick:function(){
 			log("Menu item clicked",logC);
 		},
-		value:"Start",
+		label:"Start",
+	});
+
+	var b2 = new Button({
+		onClick:function(){
+			log("ButtonTest onClick",logC);
+		},
+		label:"Button",
 	});
 
 	m.append(startButton);
@@ -130,6 +137,7 @@ $(document).ready(function(){
 	toolbar
 		.append(ti)
 		.append(b)
+		.append(b2)
 		.append(se)
 		.append(t)
 		.append(s)
