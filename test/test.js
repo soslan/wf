@@ -143,7 +143,7 @@ $(document).ready(function(){
 		.append(se)
 		.append(t)
 		.append(s)
-		.append(elem)
+		//.append(elem)
 
 	framesC
 		.append(toolbar)
