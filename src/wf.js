@@ -178,8 +178,8 @@ function Button(args){
 		return false;
 	});
 
-	if(args.tabindex){
-		this.element.setAttribute('tabindex',args.tabindex);
+	if(args.tabIndex){
+		this.element.setAttribute('tabindex',args.tabIndex);
 	}
 
 	this.element.appendChild(this.label.element);
@@ -189,31 +189,44 @@ Button.prototype = Object.create(Element.prototype);
 
 
 function Toggle(args){
-	args=args?args:{};
-	args.tag = "span";
-	args.className = "toggle inline";
-	Base.call(this,args);
-
 	var self = this;
-	this.switcher = document.createElement('span');
-	this.value = args.value ? args.value : 0;
+	args=args?args:{};
+	Element.call(this,{
+		tagName:"span",
+	});
+	this.addClass('control');
+	this.addClass('toggle');
 
-	this.switcher.className="toggle-switcher";
+	if(!args.value){
+		this.value = 0;
+	}
+	else{
+		this.value = 1;
+	}
+	this.toggleElement = new Element({
+		className:"toggle-main"
+	});
+	this.switcher = new Element({
+		className:"toggle-switcher"
+	});
+	this.label = new Element({
+		tagName:'span',
+		className:"toggle-label label"
+	});
+	this.switcher.addClass("toggle-switcher");
 
 	if(this.value == 1){
 		this.value = 1;
 		this.addClass("on");
-		this.removeClass("off");
-		this.switcher.innerHTML = "ON";
+		this.switcher.addClass("on");
 	}
 	else{
 		this.value = 0;
 		this.addClass("off");
-		this.removeClass("on");
-		this.switcher.innerHTML = "OFF";
+		this.switcher.addClass("off");
 	}
 
-	$(this.container).click(function(){
+	$(this.toggleElement.element).click(function(){
 		self.toggle();
 		if(args.onToggle){
 			args.onToggle({
@@ -222,22 +235,29 @@ function Toggle(args){
 		}
 	});
 
-	this.container.appendChild(this.switcher);
+	if(args.label){
+		this.label.element.innerHTML = args.label;
+	}
+
+	this.toggleElement.element.appendChild(this.switcher.element);
+	this.element.appendChild(this.label.element);
+	this.element.appendChild(this.toggleElement.element);
 
 	//return elem;
 }
 
-Toggle.prototype = Object.create(Base.prototype);
+Toggle.prototype = Object.create(Element.prototype);
 
 Toggle.prototype.on = function(){
 	if(this.value == 0){
 		this.value = 1;
-		$(this.switcher).animate({
+		$(this.switcher.element)
+		.animate({
 			left:'50%',
 		},'fast')
+		.switchClass("off", "on","fast");
 		this.addClass("on");
 		this.removeClass("off");
-		this.switcher.innerHTML = "ON";
 	}
 	
 }
@@ -245,12 +265,12 @@ Toggle.prototype.on = function(){
 Toggle.prototype.off = function(){
 	if(this.value == 1){
 		this.value = 0;
-		$(this.switcher).animate({
+		$(this.switcher.element).animate({
 			left:'0',
 		},'fast')
+		.switchClass("on", "off","fast");
 		this.addClass("off");
 		this.removeClass("on");
-		this.switcher.innerHTML = "OFF";
 	}
 	
 }

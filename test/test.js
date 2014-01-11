@@ -67,13 +67,15 @@ $(document).ready(function(){
 			log("Button onClick",logC);
 		},
 		label:"Button",
+		tabIndex:1,
 	});
 
 
 	var t = new Toggle({
 		onToggle:function(args){
 			log("Toggle onToggle value: "+args.value,logC);
-		}
+		},
+		label:"Toggle test"
 	});
 
 	var m = new Menu();
