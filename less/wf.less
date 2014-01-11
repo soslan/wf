@@ -60,6 +60,7 @@
 	cursor:pointer;
 	min-height:26px;
 	min-width:26px;
+	vertical-align: middle;
 }
 
 .button.active{
@@ -71,28 +72,43 @@
 	background-color: @main-color;
 }
 
+/* Toggle */
+
 .toggle{
+
+}
+
+.toggle-label:after{
+	content: " ";
+}
+
+.toggle-main{
+	height:26px;
+	display:inline-block;
 	line-height:26px;
 	cursor:pointer;
 	width:@toggle-width;
 	background-color: @light-gray;
 	font-weight:bold;
 	color:@white;
+	position: relative;
+	vertical-align: middle;
 }
 
-.toggle > .toggle-switcher{
+.toggle-main > .toggle-switcher{
 	width:50%;
+	height:100%;
 	display:inline-block;
 	text-align: center;
-	position: relative;
+	position: absolute;
 }
 
-.toggle.on > .toggle-switcher{
+.toggle .toggle-switcher.on{
 	left:50%;
 	background-color: @main-color;
 }
 
-.toggle.off > .toggle-switcher{
+.toggle .toggle-switcher.off{
 	background-color: @gray;
 }
 
