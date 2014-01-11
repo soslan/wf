@@ -3,8 +3,10 @@ function Element(args){
 	var self = this;
 	args=args?args:{};
 	args.tagName = args.tagName ? args.tagName : "div";
+	this.element = document.createElement(args.tagName);
+	this.$element = $(this.element);
 	this.tagName = args.tagName;
-	this.element = document.createElement(this.tagName);
+	
 	this.element.className = "element";
 
 	this.container = this.element; // Temporary.
