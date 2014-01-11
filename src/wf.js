@@ -161,7 +161,7 @@ function Button(args){
 			}
 		});
 		$(this.element).keydown(function(e){
-			if(e.which == 13){
+			if(e.which == 13 || e.which == 32){
 				self.addClass('clicked');
 				args.onClick();
 				self.removeClass('clicked');
