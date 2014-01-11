@@ -183,6 +183,9 @@ function Button(args){
 	if(args.tabIndex){
 		this.element.setAttribute('tabindex',args.tabIndex);
 	}
+	else{
+		this.element.setAttribute('tabindex','-1');
+	}
 
 	this.element.appendChild(this.label.element);
 }
@@ -235,7 +238,7 @@ function Toggle(args){
 		this.onToggle = function(){};
 	}
 
-	this.$element.click(function(){
+	this.toggleElement.$element.click(function(){
 		self.toggle();
 	});
 
@@ -243,6 +246,14 @@ function Toggle(args){
 		if(e.which == 13 || e.which == 32){
 			self.toggle();
 		}
+	});
+
+	this.label.$element.click(function(){
+		self.toggleElement.$element.focus();
+	});
+
+	this.label.$element.mousedown(function(){
+		return false;
 	});
 
 	if(args.label){
