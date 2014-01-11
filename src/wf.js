@@ -246,6 +246,16 @@ function Toggle(args){
 		if(e.which == 13 || e.which == 32){
 			self.toggle();
 		}
+		else if(e.which == 39){
+			if(!self.value){
+				self.toggle();
+			}
+		}
+		else if(e.which == 37){
+			if(self.value){
+				self.toggle();
+			}
+		}
 	});
 
 	this.label.$element.click(function(){
