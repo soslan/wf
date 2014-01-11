@@ -254,9 +254,9 @@ Toggle.prototype.on = function(){
 	if(this.value == 0){
 		this.value = 1;
 		$(this.switcher.element)
-		.animate({
+		/*.animate({
 			left:'50%',
-		},'fast')
+		},'fast')*/
 		.switchClass("off", "on","fast");
 		this.addClass("on");
 		this.removeClass("off");
@@ -267,9 +267,9 @@ Toggle.prototype.on = function(){
 Toggle.prototype.off = function(){
 	if(this.value == 1){
 		this.value = 0;
-		$(this.switcher.element).animate({
+		$(this.switcher.element)/*.animate({
 			left:'0',
-		},'fast')
+		},'fast')*/
 		.switchClass("on", "off","fast");
 		this.addClass("off");
 		this.removeClass("on");
