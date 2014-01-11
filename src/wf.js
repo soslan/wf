@@ -590,56 +590,53 @@ function Span(args){
 }
 
 function Select(args){
-	args=args?args:{};
-	args.className = "select inline";
-	Base.call(this,args);
 	var self = this;
+	args=args?args:{};
+	Element.call(this,{});
+	this.addClass('control');
+	this.addClass('select');
+
+	this.button = new Button({
+		label:""
+	});
+	this.button.addClass('select-button');
+
+	this.selectContainer = new Element({
+		tagName:"div",
+		className:"select-container",
+	});
+
+	this.optionsContainer = new Element({
+		tagName:"div",
+		className:"select-options",
+	});
+	this.selectedSpan = new Element({
+		tagName:"span",
+		className:"select-current",
+	});
+	this.label = new Element({
+		tagName:"span",
+		className:"select-label label",
+	});
 
 	this.active = false;
-	this.button = document.createElement('span');
-	this.button.className = "select-button";
 
-	this.container.setAttribute('tabindex','-1');
-
-	/*this.button = new Button({
-		onClick:function(){
-			if(self.active){
-				self.fold();
-			}
-			else{
-				self.show();
-			}
-			
-		},
-	});
-	*/
-
-	$(this.container).blur(function(){
+	this.button.$element.blur(function(){
 		if(self.active){
 			self.fold();
 		}
 		
 	})
 
-	$(this.button).click(function(){
-			if(self.active){
-				self.fold();
-			}
-			else{
-				self.show();
-			}
+	this.button.$element.click(function(){
+		if(self.active){
+			self.fold();
+		}
+		else{
+			self.show();
+		}
 			
-		});
-	this.selectedSpan = new Span({value:""});
-	this.selectedSpan.container.classList.add('select-current');
-	this.icon = new Icon('angle-down');
-	//this.button.append(this.selectedSpan);
-	//this.button.append(this.icon);
-	this.optionsContainer = document.createElement('div');
-
-	this.optionsContainer.className = "select-options";
-
-	this.selectedOptionElement;
+	})
 
 	this.onChange = function(args2){
 		if(args.onChange){
@@ -647,23 +644,25 @@ function Select(args){
 		}
 	}
 
+	if(args.label){
+		this.label.$element.text(args.label);
+	}
+
 	
-	this.button.appendChild(this.selectedSpan.container);
-	this.button.appendChild(this.icon.container);
-	this.container.appendChild(this.button);
-	this.container.appendChild(this.optionsContainer);
-
-
-
+	this.selectContainer.element.appendChild(this.selectedSpan.element);
+	this.selectContainer.element.appendChild(this.optionsContainer.element);
+	this.element.appendChild(this.label.element);
+	this.element.appendChild(this.selectContainer.element);
+	this.element.appendChild(this.button.element);
 }
 
-Select.prototype = Object.create(Base.prototype);
+Select.prototype = Object.create(Element.prototype);
 
 Select.prototype.show = function(){
 	var self=this;
 	self.active = true;
 
-	$(this.optionsContainer)
+	this.optionsContainer.$element
 		//.width($(self.container).outerWidth())
 		//.slideDown('fast');
 		.css({
@@ -672,15 +671,13 @@ Select.prototype.show = function(){
 		.animate({
 			opacity:1,
 		},'fast');
-	self.button.classList.add('active');
-	self.icon.container.classList.remove('fa-angle-down');
-	self.icon.container.classList.add('fa-angle-up');
+	self.button.addClass('active');
 };
 
 Select.prototype.fold = function(){
 	var self=this;
 	self.active = false;
-	$(this.optionsContainer)
+	this.optionsContainer.$element
 		//.slideUp('fast');
 		.animate({
 			opacity:0,
@@ -689,17 +686,14 @@ Select.prototype.fold = function(){
 				visibility:'hidden',
 			});
 		});
-	self.button.classList.remove('active');
-
-	self.icon.container.classList.remove('fa-angle-up');
-	self.icon.container.classList.add('fa-angle-down');
+	self.button.removeClass('active');
 };
 
 Select.prototype.setSelectedValue = function(value){
 	this.selectedSpan.container.innerHTML = value;
 }
 
-Select.prototype.append = function(value, select){
+Select.prototype.addOption = function(value, select){
 	var self = this;
 	var optionContainer = document.createElement('div');
 	optionContainer.className = "select-option";
@@ -723,7 +717,7 @@ Select.prototype.append = function(value, select){
 		self.setSelectedValue(value);
 	}
 	//optionContainer.setAttribute('value',value);
-	this.optionsContainer.appendChild(optionContainer);
+	this.optionsContainer.element.appendChild(optionContainer);
 	return this;
 
 };
