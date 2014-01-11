@@ -98,10 +98,12 @@ $(document).ready(function(){
 	var se = new Select({
 		onChange:function(args){
 			log("Select onChange value: "+args.value,logC);
-		}
+		},
+		label:"Select",
 	});
-	se.append('Option',true)
-		.append('Very long option');
+	se
+		.addOption('Option',true)
+		.addOption('Very long option');
 
 	var ti = new TextInput({
 		onChange:function(args){
