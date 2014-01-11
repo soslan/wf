@@ -228,17 +228,32 @@ function Toggle(args){
 		this.switcher.addClass("off");
 	}
 
-	$(this.toggleElement.element).click(function(){
+	if(args.onToggle){
+		this.onToggle = args.onToggle;
+	}
+	else{
+		this.onToggle = function(){};
+	}
+
+	this.$element.click(function(){
 		self.toggle();
-		if(args.onToggle){
-			args.onToggle({
-				value:self.value,
-			});
+	});
+
+	this.$element.keydown(function(e){
+		if(e.which == 13 || e.which == 32){
+			self.toggle();
 		}
 	});
 
 	if(args.label){
 		this.label.element.innerHTML = args.label;
+	}
+
+	if(args.tabIndex){
+		this.toggleElement.element.setAttribute('tabindex',args.tabIndex);
+	}
+	else{
+		this.toggleElement.element.setAttribute('tabindex','-1');
 	}
 
 	this.toggleElement.element.appendChild(this.switcher.element);
@@ -284,6 +299,9 @@ Toggle.prototype.toggle = function(){
 	else{
 		this.off();
 	}
+	this.onToggle({
+		value:this.value,
+	});
 	
 }
 
