@@ -106,7 +106,11 @@ $(document).ready(function(){
 	var ti = new TextInput({
 		onChange:function(args){
 			log("TextInput onChange value: "+args.value,logC);
-		}
+		},
+		label:"Text input",
+		onEnter:function(args){
+			log("TextInput onEnter value: "+args.value,logC);
+		},
 	});
 
 	var startButton = new Button({

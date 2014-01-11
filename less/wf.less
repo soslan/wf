@@ -14,7 +14,7 @@
 	position:relative;
 }
 
-*:focus{
+:focus, input:focus {
 	outline:2px auto @main-color-light;
 }
 
@@ -47,7 +47,16 @@
 }
 
 .control{
+	vertical-align: middle;
 	display: inline-block;
+}
+
+.control .label:after{
+	content: " ";
+}
+
+.control .label{
+	cursor:pointer;
 }
 
 /* Button */
@@ -186,16 +195,19 @@
 }
 
 /* Text Input */
+.text-input{
+	vertical-align:middle;
+	margin-right:5px;
+}
 
 .text-input input{
 	font-size: 16px;
-	padding: 3px 5px;
+	padding: 0px 5px;
 	//border: 1px solid #999;
 	border: none;
 	background-color: @light-gray;
-	line-height: 20px;
+	line-height: 26px;
 	margin: 0;
-	outline: 0;
 }
 
 /* Select */
