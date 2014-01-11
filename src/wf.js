@@ -508,26 +508,67 @@ function Txt(args){
 
 
 function TextInput(args){
-	args=args?args:{};
-	args.className = "text-input inline";
-	Base.call(this,args);
 	var self = this;
+	args=args?args:{};
+	Element.call(this,{});
+	this.addClass('control');
+	this.addClass('text-input');
 
-	this.inputElement = document.createElement('input');
-	this.inputElement.setAttribute('type','text');
+	if(!args.value){
+		this.value = '';
+	}
+	else{
+		this.value = args.value;
+	}
 
-	this.container.appendChild(this.inputElement);
+	this.input = new Element({
+		tagName:"input",
+		className:"text-input-input"
+	});
 
+	this.input.element.setAttribute('type','text');
+
+	this.label = new Element({
+		tagName:'span',
+		className:"text-input-label label"
+	});
+
+	if(args.label){
+		this.label.$element.text(args.label);
+	}
+
+	this.label.$element.mousedown(function(){
+		return false;
+	});
+
+	this.label.$element.click(function(){
+		self.input.$element.focus();
+		return false;
+	});
+
+	this.input.$element.keydown(function(e){
+		if(e.which == 13){
+			if(args.onEnter){
+				args.onEnter({
+					value:self.input.$element.val(),
+				});
+			}
+		}
+	});
+	
 	if(args.onChange){
-		$(this.inputElement)[0].oninput = function () {
+		this.input.element.oninput = function () {
 			args.onChange({
-				value:self.inputElement.value,
+				value:self.input.element.value,
 			});
 		};
-	}	
+	}
+
+	this.$element.append(this.label.$element);
+	this.$element.append(this.input.$element);
 }
 
-TextInput.prototype = Object.create(Base.prototype);
+TextInput.prototype = Object.create(Element.prototype);
 
 function Span(args){
 	args=args?args:{};
