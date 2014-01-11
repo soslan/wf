@@ -1,4 +1,9 @@
 function A(){
+	//this.__proto__ = $(document.createElement('div'));
+	
+	$.extend(this,$(document.createElement('div')));
+	//this.element = document.createElement('div');
+	//$.call(this,document.createElement('div'));
 	this.x=10;
 	var a=20;
 	this.g=function(){
@@ -7,9 +12,7 @@ function A(){
 
 }
 
-A.prototype={
-
-}
+//A.prototype=$()
 
 function B(){
 	A.call(this);
