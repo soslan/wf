@@ -111,11 +111,22 @@
 .toggle .toggle-switcher.on{
 	left:50%;
 	background-color: @main-color;
+	content:"I";
 }
 
 .toggle .toggle-switcher.off{
+	left:0%;
 	background-color: @gray;
 }
+
+.toggle .toggle-switcher.off:after{
+	content:"O";
+}
+
+.toggle .toggle-switcher.on:after{
+	content:"I";
+}
+
 
 /* Slider */
 
