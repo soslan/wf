@@ -570,6 +570,12 @@ function TextInput(args){
 
 TextInput.prototype = Object.create(Element.prototype);
 
+TextInput.prototype.addButton = function(args){
+	var button = new Button(args);
+	this.element.appendChild(button.element);
+	return button;
+}
+
 function Span(args){
 	args=args?args:{};
 	args.className = "span inline";

@@ -113,6 +113,13 @@ $(document).ready(function(){
 		},
 	});
 
+	ti.addButton({
+		onClick:function(){
+			log("Text input button clicked",logC);
+		},
+		label:"Search",
+	});
+
 	var startButton = new Button({
 		onClick:function(){
 			log("Menu item clicked",logC);
