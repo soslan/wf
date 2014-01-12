@@ -597,6 +597,7 @@ function Select(args){
 	this.addClass('select');
 
 	this.button = new Button({
+		tabIndex:args.tabIndex?args.tabIndex:'-1',
 		label:""
 	});
 	this.button.addClass('select-button');
@@ -625,8 +626,7 @@ function Select(args){
 		if(self.active){
 			self.fold();
 		}
-		
-	})
+	});
 
 	this.button.$element.click(function(){
 		if(self.active){
@@ -634,8 +634,36 @@ function Select(args){
 		}
 		else{
 			self.show();
+			self.button.$element.focus();
 		}
-			
+		return false;
+	});
+
+	this.label.$element.mousedown(function(){
+		return false;
+	});
+
+	this.label.$element.click(function(){
+		if(self.active){
+			self.fold();
+		}
+		self.button.$element.focus();
+		return false;
+	})
+
+	this.selectedSpan.$element.mousedown(function(){
+		return false;
+	});
+
+	this.selectedSpan.$element.click(function(){
+		if(self.active){
+			self.fold();
+		}
+		else{
+			self.show();
+			self.button.$element.focus();
+		}
+		return false;
 	})
 
 	this.onChange = function(args2){
@@ -698,6 +726,9 @@ Select.prototype.addOption = function(value, select){
 	var optionContainer = document.createElement('div');
 	optionContainer.className = "select-option";
 	optionContainer.innerHTML = value;
+	$(optionContainer).mousedown(function(){
+		return false;
+	});
 	$(optionContainer).click(function(){
 		if(self.selectedOptionElement)
 			self.selectedOptionElement.classList.remove('selected');
