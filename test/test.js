@@ -120,7 +120,8 @@ $(document).ready(function(){
 		onClick:function(){
 			log("Text input button clicked",logC);
 		},
-		label:"Search",
+		//label:"Search",
+		icon:'search',
 	});
 
 	var startButton = new Button({

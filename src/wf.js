@@ -172,8 +172,14 @@ function Button(args){
 	this.label = new Element({
 		tagName:'span',
 	});
+	this.icon = new Icon({
+		tagName:'span',
+	});
 	if(args.label){
 		this.label.element.innerHTML = args.label;
+	}
+	if(args.icon){
+		this.icon.change(args.icon);
 	}
 
 	$(this.element).mousedown(function(){
@@ -186,7 +192,7 @@ function Button(args){
 	else{
 		this.element.setAttribute('tabindex','-1');
 	}
-
+	this.element.appendChild(this.icon.element);
 	this.element.appendChild(this.label.element);
 }
 
@@ -589,6 +595,12 @@ function Span(args){
 
 }
 
+/*
+ Dont like it.
+ Requires optimization.
+ Dropdown list need to be abstracted.
+*/
+
 function Select(args){
 	var self = this;
 	args=args?args:{};
@@ -840,13 +852,25 @@ Select.prototype.addOption = function(value, select){
 
 };
 
-function Icon(domain){
-	this.container = document.createElement('i');
-	this.container.className = "icon inline fa fa-"+domain;
+function Icon(args){
+	var self = this;
+	args = args?args:{};
+	Element.call(this,{
+		tagName:'i'
+	});
+	this.domain = args.domain?args.domain:'';
+	this.addClass('icon');
+	this.addClass('fa');
+	if(args.domain){
+		this.addClass('fa-'+this.domain);
+	}
 }
 
+Icon.prototype = Object.create(Element.prototype);
+
 Icon.prototype.change = function(newDomain){
-	this.container.className = "icon inline fa fa-"+newDomain;
+	this.removeClass('fa-'+this.domain);
+	this.addClass('fa-'+newDomain);
 }
 
 function SegmentedControl(args){
