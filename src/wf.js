@@ -610,7 +610,8 @@ function Select(args){
 
 	this.button = new Button({
 		tabIndex:args.tabIndex?args.tabIndex:'-1',
-		label:""
+		//label:"",
+		icon:"caret-down",
 	});
 	this.button.addClass('select-button');
 
