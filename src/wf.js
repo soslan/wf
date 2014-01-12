@@ -351,24 +351,61 @@ List.prototype.append = function(element){
 }
 
 function Slider(args){
-	args=args?args:{};
-	args.className = "slider inline";
-	Base.call(this,args);
 	var self = this;
-
-	this.sliderContainer = document.createElement('span');
-	this.sliderLine = document.createElement('div');
-	var sliderButton = document.createElement('span');
-	var progress = document.createElement('span');
-
-	this.sliderContainer.className = "slider-container";
-	this.sliderLine.className = "slider-line";
-	sliderButton.className = "slider-button";
-	progress.className = "slider-progress";
-	this.progressValue = 0;
+	args=args?args:{};
+	Element.call(this,{
+		tagName:"span",
+	});
+	this.addClass('control');
+	this.addClass('slider');
 
 	this.start = args.start ? args.start : 0;
 	this.end = args.end ? args.end : 100;
+
+	if(!args.value){
+		this.value = 0;
+	}
+	else{
+		if(args.value>this.end){
+			this.value = this.end;
+		}
+		else if(args.value<this.start){
+			this.value = this.start;
+		}
+		else{
+			this.value = args.value;
+		}
+	}
+	this.sliderContainer = new Element({
+		tagName:"span",
+		className:"slider-container"
+	});
+
+	this.sliderLine = new Element({
+		tagName:"span",
+		className:"slider-line"
+	});
+
+	this.sliderButton = new Element({
+		tagName:"span",
+		className:"slider-button"
+	});
+
+	this.sliderProgress = new Element({
+		tagName:"span",
+		className:"slider-progress"
+	});
+
+	this.label = new Element({
+		tagName:'span',
+		className:"slider-label label"
+	});
+
+	if(args.label){
+		this.label.$element.text(args.label);
+	}
+
+	this.progressValue = 0;
 
 	var pressed = false;
 	var initialMousePosition;
@@ -377,25 +414,18 @@ function Slider(args){
 	var savedMouseUp;
 	var savedMouseMove;
 
-	$(sliderButton).click(function(e){
-		e.stopPropagation();
-		return false;
-	})
-	$(sliderButton).mousedown(function(e){
-		e.stopPropagation();
-		e.preventDefault();
+	this.sliderButton.$element.mousedown(function(e){
 		if(e.which == 1){
-			sliderButton.classList.add('active');
+			self.sliderButton.element.classList.add('active');
 			pressed = true;
 			initialMousePosition = e.pageX;
-			savedPosition = $(sliderButton).position().left;
+			savedPosition = self.sliderButton.$element.position().left;
 
 			$(document).bind('mouseup',function(e){
 				e.stopPropagation();
 				if(e.which == 1){
-					sliderButton.classList.remove('active');
+					self.sliderButton.element.classList.remove('active');
 					pressed = false;
-
 					if(args.onChanged){
 						args.onChanged({
 							progress:self.progressValue,
@@ -405,8 +435,6 @@ function Slider(args){
 					$(document).unbind('mouseup');
 					$(document).unbind('mousemove');
 				}
-
-				
 				return false;
 			});
 
@@ -417,12 +445,12 @@ function Slider(args){
 					if(newPosition < -5){
 						newPosition = -5;
 					}
-					else if(newPosition >= $(self.container).width()-6){
-						newPosition = $(self.container).width() - 6;
+					else if(newPosition >= self.$element.width()-6){
+						newPosition = self.$element.width() - 6;
 					}
-					self.progressValue = 100 * (newPosition +5) / ($(self.container).width() - 1);
-					$(sliderButton).css({left:newPosition + "px"});
-					$(progress).css({width:newPosition+"px"});
+					self.progressValue = 100 * (newPosition +5) / (self.$element.width() - 1);
+					self.sliderButton.$element.css({left:newPosition + "px"});
+					self.sliderProgress.$element.css({width:newPosition + "px"});
 					if(args.onChange){
 						args.onChange({
 							progress:self.progressValue,
@@ -431,27 +459,24 @@ function Slider(args){
 					}
 			
 				}
-
+				return false;
 			});
 
 		}
-		e.stopPropagation();
 		return false;
 	});
 
-	
-
-	$(this.container).click(function(e){
-		var newPosition = e.pageX - $(this).offset().left;
+	this.sliderContainer.$element.click(function(e){
+		var newPosition = e.pageX - self.sliderContainer.$element.offset().left;
 		if(newPosition <0){
 			newPosition = 0;
 		}
-		else if(newPosition >= $(self.container).width()){
-			newPosition = $(self.container).width() - 6;
+		else if(newPosition >= self.sliderContainer.$element.width()){
+			newPosition = self.sliderContainer.$element.width() - 6;
 		}
-		self.progressValue = 100 * (newPosition) / ($(self.container).width() - 1);
-		$(sliderButton).animate({left:newPosition - 5},'fast');
-		$(progress).animate({width:newPosition - 5},'fast');
+		self.progressValue = 100 * (newPosition) / (self.sliderContainer.$element.width() - 1);
+		self.sliderButton.$element.animate({left:newPosition - 5},'fast');
+		self.sliderProgress.$element.animate({width:newPosition - 5},'fast');
 		if(args.onChange){
 			args.onChange({
 				progress:self.progressValue,
@@ -469,11 +494,11 @@ function Slider(args){
 		return false;
 	});
 
-
-	this.container.appendChild(this.sliderContainer);
-	this.sliderContainer.appendChild(this.sliderLine);
-	this.sliderContainer.appendChild(progress);
-	this.sliderContainer.appendChild(sliderButton);
+	this.element.appendChild(this.label.element);
+	this.element.appendChild(this.sliderContainer.element);
+	this.sliderContainer.element.appendChild(this.sliderLine.element);
+	this.sliderContainer.element.appendChild(this.sliderProgress.element);
+	this.sliderContainer.element.appendChild(this.sliderButton.element);
 }
 
 Slider.prototype = Object.create(Base.prototype);

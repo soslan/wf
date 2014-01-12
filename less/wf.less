@@ -47,6 +47,7 @@
 }
 
 .control{
+	line-height:26px;
 	vertical-align: bottom;
 	display: inline-block;
 }
@@ -60,7 +61,6 @@
 }
 
 .control .label{
-	vertical-align: middle;
 	cursor:pointer;
 }
 
@@ -94,7 +94,7 @@
 /* Toggle */
 
 .toggle{
-
+	margin-right: 5px;
 }
 
 .toggle-label{
@@ -115,7 +115,7 @@
 	font-weight:bold;
 	color:@white;
 	position: relative;
-	vertical-align: middle;
+	vertical-align: bottom;
 }
 
 .toggle-main > .toggle-switcher{
@@ -149,20 +149,20 @@
 /* Slider */
 
 .slider{
-	cursor:pointer;
-	margin-right:10px;
-	margin-left:5px;
+	margin-right:5px;
 	height: 26px;
-	width: 100px;
-	//background-color: @light-gray;
 }
 
 .slider-container{
-	width: 100%;
+	cursor:pointer;
+	width: 100px;
 	height: 11px;
-	display: block;
-	position: absolute;
-	top: 7px;
+	display: inline-block;
+	position: relative;
+	margin:0 5px;
+	margin-bottom: 7px;
+	margin-top: 8px;
+	vertical-align: bottom;
 }
 
 .slider-line{
@@ -201,7 +201,6 @@
 
 /* Text Input */
 .text-input{
-	vertical-align:middle;
 	margin-right:5px;
 }
 
@@ -222,7 +221,7 @@
 /* Select */
 
 .select{
-	display:inline;
+	display:inline-block;
 	margin-right:5px;
 	height:26px;
 	outline: none;
