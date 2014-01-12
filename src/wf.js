@@ -445,10 +445,10 @@ function Slider(args){
 					if(newPosition < -5){
 						newPosition = -5;
 					}
-					else if(newPosition >= self.$element.width()-6){
-						newPosition = self.$element.width() - 6;
+					else if(newPosition >= self.sliderContainer.$element.width()-6){
+						newPosition = self.sliderContainer.$element.width() - 6;
 					}
-					self.progressValue = 100 * (newPosition +5) / (self.$element.width() - 1);
+					self.progressValue = 100 * (newPosition +5) / (self.sliderContainer.$element.width() - 1);
 					self.sliderButton.$element.css({left:newPosition + "px"});
 					self.sliderProgress.$element.css({width:newPosition + "px"});
 					if(args.onChange){
