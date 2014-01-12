@@ -90,18 +90,18 @@ Base.prototype.removeClass = function(className){
 
 function Container(args){
 	var self = this;
-	Base.call(this,{
-		className:"container",
+	args = args?args:{};
+	Element.call(this,{
+		className:"container"
 	});
-	args=args?args:{};
 
 	if(args.flex){
-		this.container.style.flex = args.flex;
+		this.element.style.flex = args.flex;
 	}
 
 	if(args.direction){
 		if(args.direction == 'v'){
-			this.container.style.flexDirection = 'column';
+			this.element.style.flexDirection = 'column';
 		}
 	}
 
@@ -120,7 +120,7 @@ function Container(args){
 
 }
 
-Container.prototype = Object.create(Base.prototype);
+Container.prototype = Object.create(Element.prototype);
 
 /*Container.prototype.append = function(element){
 	this.contentBlock.appendChild(element.container);
@@ -128,19 +128,20 @@ Container.prototype = Object.create(Base.prototype);
 }*/
 
 Container.prototype.append = function(element){
-	this.container.appendChild(element.container);
+	this.element.appendChild(element.element);
 	return this;
 }
 
 function Block(args){
-	args=args?args:{};
-	args.className = "block-container inline";
-	Base.call(this,args);
 	var self = this;
+	args = args?args:{};
+	Element.call(this,{
+		className: "block-container"
+	});
 
 }
 
-Block.prototype = Object.create(Base.prototype);
+Block.prototype = Object.create(Element.prototype);
 
 function Button(args){
 	var self = this;
@@ -568,7 +569,6 @@ Slider.prototype.setValueByProgress = function(progress){
 		newValue = this.start;
 	}
 	this.setValue(newValue);
-	this.value = val;
 }
 
 Slider.prototype.getProgress = function(){
@@ -998,18 +998,19 @@ SegmentedControl.prototype.append = function(args){
 }
 
 function Menu(args){
-	args=args?args:{};
-	args.className = "menu";
-	Base.call(this,args);
 	var self = this;
+	args = args?args:{};
+	Element.call(this,{
+		className:'menu'
+	});
 
 
 }
 
-Menu.prototype = Object.create(Base.prototype);
+Menu.prototype = Object.create(Element.prototype);
 
 Menu.prototype.append = function(obj){
-	this.container.appendChild(obj.container);
+	this.element.appendChild(obj.element);
 }
 
 function Frames(args){
