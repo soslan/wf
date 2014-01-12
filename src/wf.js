@@ -396,6 +396,22 @@ function Slider(args){
 		className:"slider-progress"
 	});
 
+	if(args.tabIndex){
+		this.sliderButton.element.setAttribute('tabindex',args.tabIndex);
+	}
+	else{
+		this.sliderButton.element.setAttribute('tabindex','-1');
+	}
+
+	this.sliderButton.$element.keydown(function(e){
+		if(e.which == 39){
+			self.increaseBy((self.end - self.start) / 20);
+		}
+		else if(e.which == 37){
+			self.increaseBy( - (self.end - self.start) / 20);
+		}
+	});
+
 	this.label = new Element({
 		tagName:'span',
 		className:"slider-label label"
@@ -404,6 +420,13 @@ function Slider(args){
 	if(args.label){
 		this.label.$element.text(args.label);
 	}
+
+	this.label.$element.click(function(){
+		self.sliderButton.$element.focus();
+	});
+	this.label.$element.mousedown(function(){
+		return false;
+	});
 
 	this.progressValue = 0;
 
@@ -416,13 +439,13 @@ function Slider(args){
 
 	this.sliderButton.$element.mousedown(function(e){
 		if(e.which == 1){
+			self.sliderButton.$element.focus();
 			self.sliderButton.element.classList.add('active');
 			pressed = true;
 			initialMousePosition = e.pageX;
 			savedPosition = self.sliderButton.$element.position().left;
 
 			$(document).bind('mouseup',function(e){
-				e.stopPropagation();
 				if(e.which == 1){
 					self.sliderButton.element.classList.remove('active');
 					pressed = false;
@@ -466,7 +489,26 @@ function Slider(args){
 		return false;
 	});
 
+	if(args.onChange){
+		this.onChange = args.onChange;
+	}
+	else{
+		this.onChange = function(){};
+	}
+
+	if(args.onChanged){
+		this.onChanged = args.onChanged;
+	}
+	else{
+		this.onChanged = function(){};
+	}
+
+	this.sliderContainer.$element.mousedown(function(){
+		return false;
+	});
+
 	this.sliderContainer.$element.click(function(e){
+		self.sliderButton.$element.focus();
 		var newPosition = e.pageX - self.sliderContainer.$element.offset().left;
 		if(newPosition <0){
 			newPosition = 0;
@@ -475,22 +517,7 @@ function Slider(args){
 			newPosition = self.sliderContainer.$element.width() - 6;
 		}
 		self.progressValue = 100 * (newPosition) / (self.sliderContainer.$element.width() - 1);
-		self.sliderButton.$element.animate({left:newPosition - 5},'fast');
-		self.sliderProgress.$element.animate({width:newPosition - 5},'fast');
-		if(args.onChange){
-			args.onChange({
-				progress:self.progressValue,
-				value:self.getValue(),
-			});
-		}
-
-		if(args.onChanged){
-			args.onChanged({
-				progress:self.progressValue,
-				value:self.getValue(),
-			});
-		}
-		
+		self.setValueByProgress(self.progressValue/100);
 		return false;
 	});
 
@@ -501,7 +528,48 @@ function Slider(args){
 	this.sliderContainer.element.appendChild(this.sliderButton.element);
 }
 
-Slider.prototype = Object.create(Base.prototype);
+Slider.prototype = Object.create(Element.prototype);
+
+Slider.prototype.increaseBy=function(val){
+	var newValue = this.value + val;
+	if(newValue>this.end){
+		newValue = this.end;
+	}
+	else if(newValue<this.start){
+		newValue = this.start;
+	}
+	if(this.value !== newValue){
+		this.setValue(newValue);
+	}
+}
+
+Slider.prototype.setValue = function(val){
+	this.value = val;
+	var newProgress = val / (this.end - this.start);
+	var newPosition = newProgress * (this.sliderContainer.$element.width() - 1);
+	this.sliderButton.$element.stop().animate({left:newPosition - 5},'fast');
+	this.sliderProgress.$element.stop().animate({width:newPosition - 5},'fast');
+	this.onChange({
+		progress:newProgress,
+		value:val,
+	});
+	this.onChanged({
+		progress:newProgress,
+		value:val,
+	});
+}
+
+Slider.prototype.setValueByProgress = function(progress){
+	var newValue = progress * (this.end - this.start);
+	if(newValue>this.end){
+		newValue = this.end;
+	}
+	else if(newValue<this.start){
+		newValue = this.start;
+	}
+	this.setValue(newValue);
+	this.value = val;
+}
 
 Slider.prototype.getProgress = function(){
 	return $(sliderButton).position;
