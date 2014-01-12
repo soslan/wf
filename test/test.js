@@ -100,6 +100,7 @@ $(document).ready(function(){
 			log("Select onChange value: "+args.value,logC);
 		},
 		label:"Select",
+		tabIndex:2,
 	});
 	se
 		.addOption('Option',true)
