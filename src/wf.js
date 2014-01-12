@@ -629,6 +629,10 @@ function Select(args){
 		}
 	});*/
 
+	this.button.$element.mousedown(function(){
+		return false;
+	});
+
 	this.button.$element.click(function(){
 		if(self.active){
 			self.fold();
@@ -721,7 +725,7 @@ Select.prototype = Object.create(Element.prototype);
 Select.prototype.show = function(){
 	var self=this;
 	self.active = true;
-
+	this.optionsContainer.$element.stop();
 	this.optionsContainer.$element
 		//.width($(self.container).outerWidth())
 		//.slideDown('fast');
@@ -737,6 +741,7 @@ Select.prototype.show = function(){
 Select.prototype.fold = function(){
 	var self=this;
 	self.active = false;
+	this.optionsContainer.$element.stop();
 	this.optionsContainer.$element
 		//.slideUp('fast');
 		.animate({
