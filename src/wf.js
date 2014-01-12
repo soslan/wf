@@ -621,23 +621,53 @@ function Select(args){
 	});
 
 	this.active = false;
+	this.flag = 0;
 
-	this.button.$element.blur(function(){
+	/*this.button.$element.blur(function(){
 		if(self.active){
 			self.fold();
 		}
-	});
+	});*/
 
 	this.button.$element.click(function(){
 		if(self.active){
 			self.fold();
+			self.button.$element.focus();
 		}
 		else{
 			self.show();
-			self.button.$element.focus();
+			self.optionsContainer.$element.find('.select-option.focused').focus();
+			self.flag = 3;
 		}
 		return false;
 	});
+
+	this.button.$element.keydown(function(e){
+		if(e.which == 13 || e.which == 32){
+			if(self.active){
+				self.fold();
+			}
+			else{
+				self.show();
+				self.optionsContainer.$element.find('.select-option.focused').focus();
+				self.flag = 3;
+			}
+			return false;
+		}
+		else if(e.which == 38){
+			//self.optionUp();
+		}
+		else if(e.which == 40){
+			self.show();
+			self.optionsContainer.$element.find('.select-option.focused').focus();
+			self.flag = 3;
+			//self.optionDown();
+		}
+	});
+
+	/*this.button.$element.scroll(function(e){
+		
+	});*/
 
 	this.label.$element.mousedown(function(){
 		return false;
@@ -658,10 +688,12 @@ function Select(args){
 	this.selectedSpan.$element.click(function(){
 		if(self.active){
 			self.fold();
+			self.button.$element.focus();
 		}
 		else{
 			self.show();
-			self.button.$element.focus();
+			self.optionsContainer.$element.find('.select-option.focused').focus();
+			self.flag = 3;
 		}
 		return false;
 	})
@@ -725,25 +757,75 @@ Select.prototype.addOption = function(value, select){
 	var self = this;
 	var optionContainer = document.createElement('div');
 	optionContainer.className = "select-option";
+	optionContainer.setAttribute('tabindex','-1');
 	optionContainer.innerHTML = value;
 	$(optionContainer).mousedown(function(){
 		return false;
 	});
 	$(optionContainer).click(function(){
 		if(self.selectedOptionElement)
-			self.selectedOptionElement.classList.remove('selected');
-		this.classList.add('selected');
+			self.selectedOptionElement.classList.remove('focused');
+		this.classList.add('focused');
 		self.selectedOptionElement = this;
-		self.fold();
+		self.button.$element.focus();
 		self.setSelectedValue(this.innerHTML);
 		self.onChange({
 			value: this.innerHTML,
 		});
 	});
+
+	$(optionContainer).blur(function(){
+		if(self.flag==4){
+			return false;
+		}
+		else{
+			self.fold();
+		}
+	});
+	$(optionContainer).keydown(function(e){
+		if(e.which == 40){
+			var next = self.optionsContainer.$element.find('.select-option.focused').next();
+			if(next.length > 0){
+				self.flag = 4;
+				optionContainer.classList.remove('focused');
+				next[0].classList.add('focused');
+				next.focus();
+				self.flag = 3;
+			}
+		}
+		else if(e.which == 38){
+			var prev = self.optionsContainer.$element.find('.select-option.focused').prev();
+			if(prev.length > 0){
+				self.flag = 4;
+				optionContainer.classList.remove('focused');
+				prev[0].classList.add('focused');
+				prev.focus();
+				self.flag = 3;
+			}
+			else{
+				self.button.$element.focus();
+			}
+		}
+		else if(e.which == 27 || e.which == 8){
+			self.button.$element.focus();
+		}
+		else if(e.which == 13){
+			if(self.selectedOptionElement)
+				self.selectedOptionElement.classList.remove('focused');
+			this.classList.add('focused');
+			self.selectedOptionElement = this;
+			self.button.$element.focus();
+			//self.fold();
+			self.setSelectedValue(this.innerHTML);
+			self.onChange({
+				value: this.innerHTML,
+			});
+		}
+	});
 	if(select){
 		if(self.selectedOptionElement)
-			self.selectedOptionElement.classList.remove('selected');
-		optionContainer.classList.add('selected');
+			self.selectedOptionElement.classList.remove('focused');
+		optionContainer.classList.add('focused');
 		self.selectedOptionElement = optionContainer;
 		self.setSelectedValue(value);
 	}
