@@ -93,6 +93,7 @@ $(document).ready(function(){
 		},
 		start:0,
 		end:255,
+		label:"Slider"
 	});
 
 	var se = new Select({
