@@ -831,8 +831,8 @@ Select.prototype = Object.create(Element.prototype);
 Select.prototype.show = function(){
 	var self=this;
 	self.active = true;
-	this.optionsContainer.$element.stop();
-	this.optionsContainer.$element
+	this.button.icon.change('caret-up');
+	this.optionsContainer.$element.stop()
 		//.width($(self.container).outerWidth())
 		//.slideDown('fast');
 		.css({
@@ -847,8 +847,8 @@ Select.prototype.show = function(){
 Select.prototype.fold = function(){
 	var self=this;
 	self.active = false;
-	this.optionsContainer.$element.stop();
-	this.optionsContainer.$element
+	this.button.icon.change('caret-down');
+	this.optionsContainer.$element.stop()
 		//.slideUp('fast');
 		.animate({
 			opacity:0,
@@ -965,6 +965,7 @@ Icon.prototype = Object.create(Element.prototype);
 Icon.prototype.change = function(newDomain){
 	this.removeClass('fa-'+this.domain);
 	this.addClass('fa-'+newDomain);
+	this.domain = newDomain;
 }
 
 function SegmentedControl(args){
