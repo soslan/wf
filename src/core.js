@@ -48,6 +48,11 @@ function TextInputCore(args){
 	var self = this;
 	args = args?args:{};
 	Element.call(this,{
+		tagName:"input",
 		className:"text-input",
 	});
+
+	this.element.setAttribute('type','text');
 }
+
+TextInputCore.prototype = Object.create(Element.prototype);
