@@ -31,7 +31,17 @@ $(document).ready(function(){
 		flex:1,
 	});
 
-	var ti = new TextInputCore({});
+	var ti = new TextInputCore({
+		onFocus:function(args){
+			log("TextInputCore onFocus. Value: " + args.value,logC);
+		},
+		onBlur:function(args){
+			log("TextInputCore onBlur. Value: " + args.value,logC);
+		},
+		onChange:function(args){
+			log("TextInputCore onChange. Value: " + args.value,logC);
+		}
+	});
 
 	var logC = document.createElement('div');
 	testC.container.appendChild(logC);

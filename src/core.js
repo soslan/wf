@@ -52,6 +52,36 @@ function TextInputCore(args){
 		className:"text-input",
 	});
 
+	var onInputHandlers = [];
+
+	this.element.oninput = function(e){
+		for (i in onInputHandlers){
+			onInputHandlers[i]({
+				value:self.$element.val(),
+			});
+		}
+	}
+
+	if(args.onFocus){
+		this.$element.focus(function(){
+			args.onFocus({
+				value:self.$element.val(),
+			});
+		});
+	}
+
+	if(args.onBlur){
+		this.$element.blur(function(){
+			args.onBlur({
+				value:self.$element.val(),
+			});
+		});
+	}
+
+	if(args.onChange){
+		onInputHandlers.push(args.onChange);
+	}
+
 	this.element.setAttribute('type','text');
 }
 
