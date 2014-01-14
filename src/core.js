@@ -11,6 +11,10 @@ function Element(args){
 	this.element.className = "element";
 
 	this.container = this.element; // Temporary.
+
+	if(typeof args.className == "string"){
+		this.addClass(args.className);
+	}
 }
 
 Element.prototype.value = function(value){
@@ -33,12 +37,18 @@ Element.prototype.prepend = function(element){
 }
 
 Element.prototype.addClass = function(className){
-	this.element.classList.add(className);
+	var classList = className.split(' ');
+	for(var i in classList){
+		this.element.classList.add(classList[i]);
+	}
 	return this;
 }
 
 Element.prototype.removeClass = function(className){
-	this.element.classList.remove(className);
+	var classList = className.split(' ');
+	for(var i in classList){
+		this.element.classList.remove(classList[i]);
+	}
 	return this;
 }
 

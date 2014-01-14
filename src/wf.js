@@ -581,7 +581,7 @@ function TextInput(args){
 		className:"text-input-input"
 	});
 
-	this.input.element.setAttribute('type','text');
+	this.input.editable(args);
 
 	this.label = new Element({
 		tagName:'span',
@@ -610,14 +610,6 @@ function TextInput(args){
 			}
 		}
 	});
-	
-	if(args.onChange){
-		this.input.element.oninput = function () {
-			args.onChange({
-				value:self.input.element.value,
-			});
-		};
-	}
 
 	this.$element.append(this.label.$element);
 	this.$element.append(this.input.$element);
