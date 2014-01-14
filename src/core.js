@@ -5,20 +5,20 @@ function Element(args){
 	args.tagName = args.tagName ? args.tagName : "div";
 	this.element = document.createElement(args.tagName);
 	this.$element = $(this.element);
+	this.$ = this.$element;
 	this.tagName = args.tagName;
 	
 	this.element.className = "element";
 
 	this.container = this.element; // Temporary.
+}
 
-	if(args.className){
-		this.element.className += " " + args.className;
+Element.prototype.value = function(value){
+	if(value){
+		this.$.val(value);
 	}
-	if(args.onClick){
-		$(this.element).click(args.onClick);
-	}
-	if(args.onMouseDown){
-		$(this.element).mousedown(args.onMouseDown);
+	else{
+		return this.$.val();
 	}
 }
 
@@ -42,6 +42,63 @@ Element.prototype.removeClass = function(className){
 	return this;
 }
 
+Element.prototype.addEventListener = function(type, handler){
+	if(typeof handler == "function"){
+		this.element.addEventListener(type, handler);
+	}
+}
+
+Element.prototype.on = Element.prototype.addEventListener;
+
+Element.prototype.focusable = function(args){
+	var self = this;
+	this.element.setAttribute('tabindex',args.tabIndex || 1);
+
+	if(args.onFocus){
+		this.addEventListener('focus', function(e){
+			args.onFocus({
+				value:self.$element.val(),
+			});
+		});
+	}
+
+	if(args.onBlur){
+		this.addEventListener('blur', function(e){
+			args.onBlur({
+				value:self.$element.val(),
+			});
+		});
+	}
+}
+
+Element.prototype.tabIndex = function(tabIndex){
+	if(tabIndex){
+		this.element.setAttribute('tabindex',tabIndex);
+	}
+	else {
+		return this.element.getAttribute('tabindex');
+	}
+}
+
+Element.prototype.editable = function(args){
+	var self = this;
+	this.focusable(args);
+	if(this.element.tagName != 'input' && this.element.tagName != 'textarea'){
+		this.element.setAttribute('contenteditable','true');
+	}
+	else if(this.element.tagName == 'input'){
+		this.element.setAttribute('type','text');
+	}
+	if(args.onChange){
+		this.addEventListener('input',function(e){
+			args.onChange({
+				value: self.value()
+			});
+		});
+	}
+	this.isEditable = true;
+}
+
 // Text input
 
 function TextInputCore(args){
@@ -52,37 +109,7 @@ function TextInputCore(args){
 		className:"text-input",
 	});
 
-	var onInputHandlers = [];
-
-	this.element.oninput = function(e){
-		for (i in onInputHandlers){
-			onInputHandlers[i]({
-				value:self.$element.val(),
-			});
-		}
-	}
-
-	if(args.onFocus){
-		this.$element.focus(function(){
-			args.onFocus({
-				value:self.$element.val(),
-			});
-		});
-	}
-
-	if(args.onBlur){
-		this.$element.blur(function(){
-			args.onBlur({
-				value:self.$element.val(),
-			});
-		});
-	}
-
-	if(args.onChange){
-		onInputHandlers.push(args.onChange);
-	}
-
-	this.element.setAttribute('type','text');
+	this.editable(args);
 }
 
 TextInputCore.prototype = Object.create(Element.prototype);
