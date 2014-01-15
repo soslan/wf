@@ -2,7 +2,7 @@
 function Element(args){
 	var self = this;
 	args=args?args:{};
-	args.tagName = args.tagName ? args.tagName : "div";
+	args.tagName = typeof args.tagName == "string" ? args.tagName : "div";
 	this.element = document.createElement(args.tagName);
 	this.$element = $(this.element);
 	this.$ = this.$element;
@@ -63,7 +63,6 @@ Element.prototype.on = Element.prototype.addEventListener;
 Element.prototype.focusable = function(args){
 	var self = this;
 	this.element.setAttribute('tabindex',args.tabIndex || 1);
-
 	if(args.onFocus){
 		this.addEventListener('focus', function(e){
 			args.onFocus({
@@ -79,6 +78,7 @@ Element.prototype.focusable = function(args){
 			});
 		});
 	}
+	this.isFocusable = true;
 }
 
 Element.prototype.tabIndex = function(tabIndex){
@@ -107,6 +107,18 @@ Element.prototype.editable = function(args){
 		});
 	}
 	this.isEditable = true;
+}
+
+Element.prototype.clickable = function(args){
+	var self = this;
+	if(args.onClick){
+		this.addEventListener('click',function(e){
+			args.onClick({
+				value: self.value()
+			});
+		});
+	}
+	this.isClickable = true;
 }
 
 // Text input

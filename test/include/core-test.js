@@ -43,6 +43,15 @@ $(document).ready(function(){
 		}
 	});
 
+	var b = new Element({
+		tagName:"button"
+	});
+	b.clickable({
+		onClick:function(){
+			log("Button onClick.", logC);
+		}
+	});
+
 	var logC = document.createElement('div');
 	testC.container.appendChild(logC);
 
@@ -53,6 +62,7 @@ $(document).ready(function(){
 		;
 	toolbar
 		.append(ti)
+		.append(b)
 		;
 		//.append(elem)
 
