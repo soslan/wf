@@ -55,6 +55,10 @@ $(document).ready(function(){
 			log("Button onClick", logC);
 		}
 	});
+	var l = new Label({
+		text:" Label ",
+		icon:"search"
+	});
 
 	var logC = document.createElement('div');
 	testC.container.appendChild(logC);
@@ -66,6 +70,7 @@ $(document).ready(function(){
 		;
 	toolbar
 		.append(ti)
+		.append(l)
 		.append(b)
 		;
 		//.append(elem)

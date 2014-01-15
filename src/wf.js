@@ -894,28 +894,6 @@ Select.prototype.addOption = function(value, select){
 
 };
 
-function Icon(args){
-	var self = this;
-	args = args?args:{};
-	Element.call(this,{
-		tagName:'i'
-	});
-	this.domain = args.domain?args.domain:'';
-	this.addClass('icon');
-	this.addClass('fa');
-	if(args.domain){
-		this.addClass('fa-'+this.domain);
-	}
-}
-
-Icon.prototype = Object.create(Element.prototype);
-
-Icon.prototype.change = function(newDomain){
-	this.removeClass('fa-'+this.domain);
-	this.addClass('fa-'+newDomain);
-	this.domain = newDomain;
-}
-
 function SegmentedControl(args){
 	args=args?args:{};
 	args.className = "segmented-control inline";
@@ -924,10 +902,6 @@ function SegmentedControl(args){
 
 	this.segmentsContainer = document.createElement('span');
 	this.segmentsContainer.className = 'segmented-control-segments';
-
-	
-
-
 }
 
 SegmentedControl.prototype.append = function(args){
