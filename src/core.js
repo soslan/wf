@@ -161,47 +161,21 @@ function Label(args){
 	args = args?args:{};
 	Element.call(this,{
 		tagName:"span",
-		className:"label",
-	});
-
-	this.icon = new Icon();
-	this.icon.addClass('label-icon');
-	this.text = new Element({
-		tagName:"span",
-		className:"label-text",
+		className:"label fa",
 	});
 
 	if(typeof args.text == "string"){
-		this.text.$.text(args.text);
+		this.$.text(args.text);
 	}
 	if(typeof args.icon == "string"){
-		this.icon.change(args.icon);
+		this.setIcon(args.icon);
 	}
-
-	this.append(this.icon);
-	this.append(this.text);
 }
 
 Label.prototype = Object.create(Element.prototype);
 
-function Icon(args){
-	var self = this;
-	args = args || {};
-	Element.call(this,{
-		tagName:'i'
-	});
-	this.addClass('icon');
-	this.addClass('fa');
-	if(typeof args.domain == "string"){
-		this.domain = args.domain;
-		this.addClass('fa-'+this.domain);
-	}
-}
-
-Icon.prototype = Object.create(Element.prototype);
-
-Icon.prototype.change = function(newDomain){
-	this.removeClass('fa-'+this.domain);
-	this.addClass('fa-'+newDomain);
-	this.domain = newDomain;
+Label.prototype.setIcon = function(iconTag){
+	this.removeClass('fa-'+this.iconTag);
+	this.addClass('fa-'+iconTag);
+	this.iconTag = iconTag;
 }
