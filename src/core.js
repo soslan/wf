@@ -114,9 +114,7 @@ Element.prototype.clickable = function(args){
 	this.focusable(args);
 	if(args.onClick){
 		this.addEventListener('click',function(e){
-			args.onClick({
-				value: self.value()
-			});
+			args.onClick(e);
 		});
 	}
 	this.isClickable = true;

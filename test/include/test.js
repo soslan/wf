@@ -137,7 +137,8 @@ $(document).ready(function(){
 		onClick:function(){
 			log("ButtonTest onClick",logC);
 		},
-		label:"Button",
+		label:" Button",
+		icon:"reply"
 	});
 
 	m.append(startButton);

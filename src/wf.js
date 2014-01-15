@@ -105,52 +105,35 @@ function Button(args){
 	Element.call(this,{
 		tagName:'span'
 	});
-	this.addClass('control');
-	this.addClass('button');
+	this.addClass('control control-button');
 
-	if (args.onClick){
-		$(this.element).click(function(e){
+	this.button = new Clickable({
+		onClick:function(e){
 			if(e.which == 1){
 				self.addClass('clicked');
-				$(self.element).focus();
+				$(self.button).focus();
 				args.onClick();
 				self.removeClass('clicked');
 			}
-		});
-		$(this.element).keydown(function(e){
-			if(e.which == 13 || e.which == 32){
-				self.addClass('clicked');
-				args.onClick();
-				self.removeClass('clicked');
-			}
-		});
-	}
-
-	this.label = new Element({
-		tagName:'span',
+		},
+		tabIndex:args.tabIndex || '-1'
 	});
-	this.icon = new Icon({
-		tagName:'span',
-	});
-	if(args.label){
-		this.label.element.innerHTML = args.label;
-	}
-	if(args.icon){
-		this.icon.change(args.icon);
-	}
-
-	$(this.element).mousedown(function(){
-		return false;
+	this.button.addClass('button');
+	this.button.addEventListener('keydown',function(e){
+		if(e.which == 13 || e.which == 32){
+			self.addClass('clicked');
+			args.onClick();
+			self.removeClass('clicked');
+		}
 	});
 
-	if(args.tabIndex){
-		this.element.setAttribute('tabindex',args.tabIndex);
-	}
-	else{
-		this.element.setAttribute('tabindex','-1');
-	}
-	this.element.appendChild(this.icon.element);
-	this.element.appendChild(this.label.element);
+	this.label = new Label({
+		text:args.text || args.label || '',
+		icon:args.icon || ''
+	});
+
+	this.append(this.button);
+	this.button.append(this.label);
 }
 
 Button.prototype = Object.create(Element.prototype);
@@ -566,7 +549,7 @@ function TextInput(args){
 	var self = this;
 	args=args?args:{};
 	Element.call(this,{});
-	this.addClass('control');
+	this.addClass('control control-text-input');
 	this.addClass('text-input');
 
 	if(!args.value){
@@ -576,7 +559,9 @@ function TextInput(args){
 		this.value = args.value;
 	}
 
-	this.input = new TextInputCore();
+	this.input = new TextInputCore({
+		onChange:args.onChange,
+	});
 
 	this.input.addClass("text-input-input");
 
