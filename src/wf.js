@@ -576,32 +576,24 @@ function TextInput(args){
 		this.value = args.value;
 	}
 
-	this.input = new Element({
-		tagName:"input",
-		className:"text-input-input"
+	this.input = new TextInputCore();
+
+	this.input.addClass("text-input-input");
+
+	this.label = new Label({
+		text:args.label || '',
+		icon:args.icon || '',
 	});
 
-	this.input.editable(args);
+	this.input.addClass("text-input-label");
 
-	this.label = new Element({
-		tagName:'span',
-		className:"text-input-label label"
-	});
-
-	if(args.label){
-		this.label.$element.text(args.label);
-	}
-
-	this.label.$element.mousedown(function(){
-		return false;
-	});
-
-	this.label.$element.click(function(){
+	this.label.addEventListener('mousedown',function(e){
 		self.input.$element.focus();
-		return false;
+		e.stopPropagation();
+		e.preventDefault();
 	});
 
-	this.input.$element.keydown(function(e){
+	this.input.addEventListener('keydown',function(e){
 		if(e.which == 13){
 			if(args.onEnter){
 				args.onEnter({
@@ -611,15 +603,15 @@ function TextInput(args){
 		}
 	});
 
-	this.$element.append(this.label.$element);
-	this.$element.append(this.input.$element);
+	this.append(this.label);
+	this.append(this.input);
 }
 
 TextInput.prototype = Object.create(Element.prototype);
 
 TextInput.prototype.addButton = function(args){
 	var button = new Button(args);
-	this.element.appendChild(button.element);
+	this.append(button);
 	return button;
 }
 
@@ -945,4 +937,27 @@ function Frames(args){
 
 
 
+}
+
+
+function Icon(args){
+	var self = this;
+	args = args || {};
+	Element.call(this,{
+		tagName:'i'
+	});
+	this.addClass('icon');
+	this.addClass('fa');
+	if(typeof args.domain == "string"){
+		this.domain = args.domain;
+		this.addClass('fa-'+this.domain);
+	}
+}
+
+Icon.prototype = Object.create(Element.prototype);
+
+Icon.prototype.change = function(newDomain){
+	this.removeClass('fa-'+this.domain);
+	this.addClass('fa-'+newDomain);
+	this.domain = newDomain;
 }

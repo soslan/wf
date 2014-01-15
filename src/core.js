@@ -129,7 +129,7 @@ Element.prototype.valueCarrier = function(args){
 }
 
 // Text input
-
+// To be renamed to TextInput
 function TextInputCore(args){
 	var self = this;
 	args = args?args:{};
@@ -143,18 +143,17 @@ function TextInputCore(args){
 
 TextInputCore.prototype = Object.create(Element.prototype);
 
-function ButtonCore(args){
+function Clickable(args){
 	var self = this;
 	args = args?args:{};
 	Element.call(this,{
-		tagName:"button",
-		className:"button",
+		tagName:typeof args.tagName == "string"?args.tagName:"button",
+		className:"clickable",
 	});
-
 	this.clickable(args);
 }
 
-ButtonCore.prototype = Object.create(Element.prototype);
+Clickable.prototype = Object.create(Element.prototype);
 
 function Label(args){
 	var self = this;

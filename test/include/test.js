@@ -111,7 +111,8 @@ $(document).ready(function(){
 		onChange:function(args){
 			log("TextInput onChange value: "+args.value,logC);
 		},
-		label:"Text input",
+		label:"Text input ",
+		icon: "user",
 		onEnter:function(args){
 			log("TextInput onEnter value: "+args.value,logC);
 		},

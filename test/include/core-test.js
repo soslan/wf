@@ -43,7 +43,7 @@ $(document).ready(function(){
 		}
 	});
 
-	var b = new ButtonCore({
+	var b = new Clickable({
 		tagName:"button",
 		onFocus:function(){
 			log("Button onFocus.", logC);
@@ -56,8 +56,13 @@ $(document).ready(function(){
 		}
 	});
 	var l = new Label({
-		text:" Label ",
+		text:" Button label ",
 		icon:"search"
+	});
+
+	var l2 = new Label({
+		text:" Label ",
+		icon:"coffee"
 	});
 
 	var logC = document.createElement('div');
@@ -68,9 +73,10 @@ $(document).ready(function(){
 	w
 		.append(framesC)
 		;
+	b.append(l);
 	toolbar
 		.append(ti)
-		.append(l)
+		.append(l2)
 		.append(b)
 		;
 		//.append(elem)
