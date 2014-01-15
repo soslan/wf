@@ -111,6 +111,7 @@ Element.prototype.editable = function(args){
 
 Element.prototype.clickable = function(args){
 	var self = this;
+	this.focusable(args);
 	if(args.onClick){
 		this.addEventListener('click',function(e){
 			args.onClick({
@@ -135,3 +136,16 @@ function TextInputCore(args){
 }
 
 TextInputCore.prototype = Object.create(Element.prototype);
+
+function ButtonCore(args){
+	var self = this;
+	args = args?args:{};
+	Element.call(this,{
+		tagName:"button",
+		className:"button",
+	});
+
+	this.clickable(args);
+}
+
+ButtonCore.prototype = Object.create(Element.prototype);

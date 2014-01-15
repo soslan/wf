@@ -43,12 +43,16 @@ $(document).ready(function(){
 		}
 	});
 
-	var b = new Element({
-		tagName:"button"
-	});
-	b.clickable({
+	var b = new ButtonCore({
+		tagName:"button",
+		onFocus:function(){
+			log("Button onFocus.", logC);
+		},
+		onBlur:function(args){
+			log("TextInputCore onBlur",logC);
+		},
 		onClick:function(){
-			log("Button onClick.", logC);
+			log("Button onClick", logC);
 		}
 	});
 
