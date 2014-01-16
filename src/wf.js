@@ -623,8 +623,18 @@ function Select(args){
 	this.active = false;
 	this.flag = 0;
 
-	this.button.$element.mousedown(function(){
-		return false;
+	this.button.addEventListener('mousedown',function(){
+		//console.log("aaa");
+		//self.flag = 4;
+		//return false;
+	});
+
+	this.button.focus(function(){
+		self.flag = 4;
+	});
+
+	this.button.button.element.addEventListener('beforefocused',function(){
+		self.flag = 4;
 	});
 
 	this.button.$element.click(function(){
@@ -662,10 +672,6 @@ function Select(args){
 			//self.optionDown();
 		}
 	});
-
-	/*this.button.$element.scroll(function(e){
-		
-	});*/
 
 	this.selectedSpan.$element.mousedown(function(){
 		return false;
@@ -749,6 +755,7 @@ Select.prototype.addOption = function(value, select){
 			self.selectedOptionElement.classList.remove('focused');
 		this.classList.add('focused');
 		self.selectedOptionElement = this;
+		self.fold();
 		self.button.focus();
 		self.setSelectedValue(this.innerHTML);
 		self.onChange({
@@ -785,10 +792,12 @@ Select.prototype.addOption = function(value, select){
 				self.flag = 3;
 			}
 			else{
+				self.fold();
 				self.button.focus();
 			}
 		}
 		else if(e.which == 27 || e.which == 8){
+			self.fold();
 			self.button.focus();
 		}
 		else if(e.which == 13){
@@ -796,6 +805,7 @@ Select.prototype.addOption = function(value, select){
 				self.selectedOptionElement.classList.remove('focused');
 			this.classList.add('focused');
 			self.selectedOptionElement = this;
+			self.fold();
 			self.button.focus();
 			//self.fold();
 			self.setSelectedValue(this.innerHTML);

@@ -1,4 +1,6 @@
 // Core layer
+var beforeFocusedEvent = new Event('beforefocused');
+
 function Element(args){
 	var self = this;
 	args=args?args:{};
@@ -94,10 +96,11 @@ Element.prototype.focusable = function(args){
 
 Element.prototype.focus = function(handler){
 	if(typeof handler == "function"){
-		this.addEventListener('focus',handler);
+		this.addEventListener('DOMFocusIn',handler);
 	}
 	else if(this.focusingElement){
 		if(this.focusingElement == this){
+			this.element.dispatchEvent(beforeFocusedEvent);
 			this.$.focus();
 		}
 		else{
