@@ -37,9 +37,11 @@ Element.prototype.prepend = function(element){
 }
 
 Element.prototype.addClass = function(className){
-	var classList = className.split(' ');
-	for(var i in classList){
-		this.element.classList.add(classList[i]);
+	if(typeof className == "string"){
+		var classList = className.split(' ');
+		for(var i in classList){
+			this.element.classList.add(classList[i]);
+		}
 	}
 	return this;
 }
@@ -79,6 +81,15 @@ Element.prototype.focusable = function(args){
 		});
 	}
 	this.isFocusable = true;
+}
+
+Element.prototype.focus = function(handler){
+	if(typeof handler == "function"){
+		this.addEventListener('focus',handler);
+	}
+	else{
+		this.$.focus();
+	}
 }
 
 Element.prototype.tabIndex = function(tabIndex){

@@ -17,17 +17,6 @@ function Base(args){
 
 // HTML Elements layer
 
-// Controls layer
-
-function Control(args){
-	var self = this;
-	args = args?args:{};
-	Element.call(this,args);
-	this.addClass('control');
-}
-
-Control.prototype = Object.create(Element.prototype);
-
 //
 Base.prototype.append = function(element){
 	this.container.appendChild(element.container);
@@ -99,25 +88,51 @@ function Block(args){
 
 Block.prototype = Object.create(Element.prototype);
 
+// Controls layer
+
+function Control(args){
+	var self = this;
+	args = args?args:{};
+	Element.call(this,args);
+	this.addClass('control');
+	this.addClass(args.className);
+	this.focusingElement = this;
+
+	this.label = new Label({
+		text:args.label,
+		icon:args.icon,
+	});
+
+	this.label.addEventListener('mousedown',function(e){
+		self.focusingElement.$.focus();
+		e.preventDefault();
+		e.stopPropagation();
+	});
+
+
+
+	this.append(this.label);
+}
+
+Control.prototype = Object.create(Element.prototype);
+
+Control.prototype.setFocusingElement = function(elem){
+	this.focusingElement = elem.focusingElement || elem;
+}
+
 function Button(args){
 	var self = this;
 	args = args?args:{};
-	Element.call(this,{
+	Control.call(this,{
 		tagName:'span'
 	});
 	this.addClass('control control-button');
 
 	this.button = new Clickable({
-		onClick:function(e){
-			if(e.which == 1){
-				self.addClass('clicked');
-				$(self.button).focus();
-				args.onClick();
-				self.removeClass('clicked');
-			}
-		},
+		onClick:args.onClick,
 		tabIndex:args.tabIndex || '-1'
 	});
+	this.setFocusingElement(this.button);
 	this.button.addClass('button');
 	this.button.addEventListener('keydown',function(e){
 		if(e.which == 13 || e.which == 32){
@@ -136,16 +151,17 @@ function Button(args){
 	this.button.append(this.label);
 }
 
-Button.prototype = Object.create(Element.prototype);
+Button.prototype = Object.create(Control.prototype);
 
 
 function Toggle(args){
 	var self = this;
 	args=args?args:{};
-	Element.call(this,{
+	Control.call(this,{
 		tagName:"span",
+		label:args.label,
+		icon:args.icon
 	});
-	this.addClass('control');
 	this.addClass('toggle');
 
 	if(!args.value){
@@ -159,10 +175,6 @@ function Toggle(args){
 	});
 	this.switcher = new Element({
 		className:"toggle-switcher"
-	});
-	this.label = new Element({
-		tagName:'span',
-		className:"toggle-label label"
 	});
 	this.switcher.addClass("toggle-switcher");
 
@@ -212,10 +224,6 @@ function Toggle(args){
 		return false;
 	});
 
-	if(args.label){
-		this.label.element.innerHTML = args.label;
-	}
-
 	if(args.tabIndex){
 		this.toggleElement.element.setAttribute('tabindex',args.tabIndex);
 	}
@@ -224,7 +232,6 @@ function Toggle(args){
 	}
 
 	this.toggleElement.element.appendChild(this.switcher.element);
-	this.element.appendChild(this.label.element);
 	this.element.appendChild(this.toggleElement.element);
 
 	//return elem;
@@ -293,10 +300,11 @@ List.prototype.append = function(element){
 function Slider(args){
 	var self = this;
 	args=args?args:{};
-	Element.call(this,{
+	Control.call(this,{
 		tagName:"span",
+		label:args.label,
+		icon:args.icon
 	});
-	this.addClass('control');
 	this.addClass('slider');
 
 	this.start = args.start ? args.start : 0;
@@ -351,15 +359,6 @@ function Slider(args){
 			self.increaseBy( - (self.end - self.start) / 20);
 		}
 	});
-
-	this.label = new Element({
-		tagName:'span',
-		className:"slider-label label"
-	});
-
-	if(args.label){
-		this.label.$element.text(args.label);
-	}
 
 	this.label.$element.click(function(){
 		self.sliderButton.$element.focus();
@@ -548,7 +547,10 @@ function Txt(args){
 function TextInput(args){
 	var self = this;
 	args=args?args:{};
-	Element.call(this,{});
+	Control.call(this,{
+		label:args.label,
+		icon:args.icon
+	});
 	this.addClass('control control-text-input');
 	this.addClass('text-input');
 
@@ -562,21 +564,11 @@ function TextInput(args){
 	this.input = new TextInputCore({
 		onChange:args.onChange,
 	});
+	this.setFocusingElement(this.input);
 
 	this.input.addClass("text-input-input");
 
-	this.label = new Label({
-		text:args.label || '',
-		icon:args.icon || '',
-	});
-
-	this.input.addClass("text-input-label");
-
-	this.label.addEventListener('mousedown',function(e){
-		self.input.$element.focus();
-		e.stopPropagation();
-		e.preventDefault();
-	});
+	this.label.addClass("text-input-label");
 
 	this.input.addEventListener('keydown',function(e){
 		if(e.which == 13){
@@ -592,7 +584,7 @@ function TextInput(args){
 	this.append(this.input);
 }
 
-TextInput.prototype = Object.create(Element.prototype);
+TextInput.prototype = Object.create(Control.prototype);
 
 TextInput.prototype.addButton = function(args){
 	var button = new Button(args);
@@ -622,17 +614,20 @@ function Span(args){
 function Select(args){
 	var self = this;
 	args=args?args:{};
-	Element.call(this,{});
-	this.addClass('control');
+	Control.call(this,{
+		label:args.label,
+		icon:args.icon
+	});
+	this.addClass('control control-select');
 	this.addClass('select');
 
 	this.button = new Button({
-		tabIndex:args.tabIndex?args.tabIndex:'-1',
+		tabIndex:args.tabIndex,
 		//label:"",
 		icon:"caret-down",
 	});
 	this.button.addClass('select-button');
-
+	this.focusingElement = this.button.focusingElement;
 	this.selectContainer = new Element({
 		tagName:"div",
 		className:"select-container",
@@ -646,19 +641,9 @@ function Select(args){
 		tagName:"span",
 		className:"select-current",
 	});
-	this.label = new Element({
-		tagName:"span",
-		className:"select-label label",
-	});
 
 	this.active = false;
 	this.flag = 0;
-
-	/*this.button.$element.blur(function(){
-		if(self.active){
-			self.fold();
-		}
-	});*/
 
 	this.button.$element.mousedown(function(){
 		return false;
@@ -704,18 +689,6 @@ function Select(args){
 		
 	});*/
 
-	this.label.$element.mousedown(function(){
-		return false;
-	});
-
-	this.label.$element.click(function(){
-		if(self.active){
-			self.fold();
-		}
-		self.button.$element.focus();
-		return false;
-	})
-
 	this.selectedSpan.$element.mousedown(function(){
 		return false;
 	});
@@ -739,11 +712,6 @@ function Select(args){
 		}
 	}
 
-	if(args.label){
-		this.label.$element.text(args.label);
-	}
-
-	
 	this.selectContainer.element.appendChild(this.selectedSpan.element);
 	this.selectContainer.element.appendChild(this.optionsContainer.element);
 	this.element.appendChild(this.label.element);
@@ -756,7 +724,7 @@ Select.prototype = Object.create(Element.prototype);
 Select.prototype.show = function(){
 	var self=this;
 	self.active = true;
-	this.button.icon.change('caret-up');
+	this.button.label.setIcon('caret-up');
 	this.optionsContainer.$element.stop()
 		//.width($(self.container).outerWidth())
 		//.slideDown('fast');
@@ -772,7 +740,7 @@ Select.prototype.show = function(){
 Select.prototype.fold = function(){
 	var self=this;
 	self.active = false;
-	this.button.icon.change('caret-down');
+	this.button.label.setIcon('caret-down');
 	this.optionsContainer.$element.stop()
 		//.slideUp('fast');
 		.animate({
