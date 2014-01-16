@@ -104,8 +104,6 @@ function Control(args){
 	});
 	this.label.focusingElement = this;
 
-
-
 	this.append(this.label);
 }
 
@@ -153,7 +151,7 @@ function Toggle(args){
 		label:args.label,
 		icon:args.icon
 	});
-	this.addClass('toggle');
+	this.addClass('control-toggle toggle');
 
 	if(!args.value){
 		this.value = 0;
@@ -215,7 +213,7 @@ function Toggle(args){
 	//return elem;
 }
 
-Toggle.prototype = Object.create(Element.prototype);
+Toggle.prototype = Object.create(Control.prototype);
 
 Toggle.prototype.on = function(){
 	if(this.value == 0){
@@ -445,7 +443,7 @@ function Slider(args){
 	this.sliderContainer.element.appendChild(this.sliderButton.element);
 }
 
-Slider.prototype = Object.create(Element.prototype);
+Slider.prototype = Object.create(Control.prototype);
 
 Slider.prototype.increaseBy=function(val){
 	var newValue = this.value + val;
@@ -546,8 +544,6 @@ function TextInput(args){
 
 	this.input.addClass("text-input-input");
 
-	this.label.addClass("text-input-label");
-
 	this.input.addEventListener('keydown',function(e){
 		if(e.which == 13){
 			if(args.onEnter){
@@ -558,7 +554,6 @@ function TextInput(args){
 		}
 	});
 
-	this.append(this.label);
 	this.append(this.input);
 }
 
@@ -703,7 +698,7 @@ function Select(args){
 	this.element.appendChild(this.button.element);
 }
 
-Select.prototype = Object.create(Element.prototype);
+Select.prototype = Object.create(Control.prototype);
 
 Select.prototype.show = function(){
 	var self=this;
