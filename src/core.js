@@ -15,6 +15,14 @@ function Element(args){
 	if(typeof args.className == "string"){
 		this.addClass(args.className);
 	}
+
+	this.element.addEventListener('mousedown',function(e){
+		if(self.focusingElement){
+			self.focusingElement.focus();
+			e.stopPropagation();
+			e.preventDefault();
+		}
+	});
 }
 
 Element.prototype.value = function(value){
@@ -80,6 +88,7 @@ Element.prototype.focusable = function(args){
 			});
 		});
 	}
+	this.focusingElement = this;
 	this.isFocusable = true;
 }
 
@@ -87,9 +96,18 @@ Element.prototype.focus = function(handler){
 	if(typeof handler == "function"){
 		this.addEventListener('focus',handler);
 	}
-	else{
-		this.$.focus();
+	else if(this.focusingElement){
+		if(this.focusingElement == this){
+			this.$.focus();
+		}
+		else{
+			this.focusingElement.focus();
+		}
 	}
+}
+
+Element.prototype.setFocusingElement = function(elem){
+	this.focusingElement = elem.focusingElement || elem;
 }
 
 Element.prototype.tabIndex = function(tabIndex){

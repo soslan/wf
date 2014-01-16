@@ -102,12 +102,7 @@ function Control(args){
 		text:args.label,
 		icon:args.icon,
 	});
-
-	this.label.addEventListener('mousedown',function(e){
-		self.focusingElement.$.focus();
-		e.preventDefault();
-		e.stopPropagation();
-	});
+	this.label.focusingElement = this;
 
 
 
@@ -115,14 +110,6 @@ function Control(args){
 }
 
 Control.prototype = Object.create(Element.prototype);
-
-Control.prototype.setFocusingElement = function(elem){
-	this.focusingElement = elem.focusingElement || elem;
-}
-
-Control.prototype.focus = function(){
-	this.focusingElement.$.focus();
-}
 
 function Button(args){
 	var self = this;
