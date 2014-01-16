@@ -167,6 +167,8 @@ function Toggle(args){
 	this.switcher = new Element({
 		className:"toggle-switcher"
 	});
+	this.switcher.focusable(args);
+	this.setFocusingElement(this.switcher);
 	this.switcher.addClass("toggle-switcher");
 
 	if(this.value == 1){
@@ -206,21 +208,6 @@ function Toggle(args){
 			}
 		}
 	});
-
-	this.label.$element.click(function(){
-		self.toggleElement.$element.focus();
-	});
-
-	this.label.$element.mousedown(function(){
-		return false;
-	});
-
-	if(args.tabIndex){
-		this.toggleElement.element.setAttribute('tabindex',args.tabIndex);
-	}
-	else{
-		this.toggleElement.element.setAttribute('tabindex','-1');
-	}
 
 	this.toggleElement.element.appendChild(this.switcher.element);
 	this.element.appendChild(this.toggleElement.element);
