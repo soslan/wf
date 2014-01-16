@@ -880,26 +880,3 @@ function Frames(args){
 
 
 }
-
-
-function Icon(args){
-	var self = this;
-	args = args || {};
-	Element.call(this,{
-		tagName:'i'
-	});
-	this.addClass('icon');
-	this.addClass('fa');
-	if(typeof args.domain == "string"){
-		this.domain = args.domain;
-		this.addClass('fa-'+this.domain);
-	}
-}
-
-Icon.prototype = Object.create(Element.prototype);
-
-Icon.prototype.change = function(newDomain){
-	this.removeClass('fa-'+this.domain);
-	this.addClass('fa-'+newDomain);
-	this.domain = newDomain;
-}
