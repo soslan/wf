@@ -619,16 +619,6 @@ function Select(args){
 	this.flag = 0;
 
 	this.button.addEventListener('mousedown',function(){
-		//console.log("aaa");
-		//self.flag = 4;
-		//return false;
-	});
-
-	this.button.focus(function(){
-		self.flag = 4;
-	});
-
-	this.button.button.element.addEventListener('beforefocus',function(){
 		self.flag = 4;
 	});
 

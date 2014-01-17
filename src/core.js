@@ -1,5 +1,6 @@
 // Core layer
 var beforeFocusEvent = new Event('beforefocus');
+var beforeFocusByMouseEvent = new Event('beforefocusbymouse');
 
 function Element(args){
 	var self = this;
@@ -83,7 +84,6 @@ Element.prototype.focusable = function(args){
 			});
 		});
 	}
-	this.focusing(this);
 	this.isFocusable = true;
 }
 
@@ -92,24 +92,43 @@ Element.prototype.focusing = function(focusingElement){
 	this.focusingElement = focusingElement;
 
 	this.element.addEventListener('mousedown',function(e){
-		if(self.focusingElement.focus() == false){
-			e.stopPropagation();
-			e.preventDefault();
-		}
+		self.focusingElement.focus(e);
+		e.stopPropagation();
+		e.preventDefault();
 	});
 }
 
 Element.prototype.focus = function(handler){
 	if(typeof handler == "function"){
-		this.addEventListener('DOMFocusIn',handler);
+		if(this.focusingElement && this.focusingElement != this){
+			this.focusingElement.focus(handler);
+		}
+		else{
+			this.addEventListener('DOMFocusIn',handler);
+		}
+	}
+	else if(this.focusingElement && this.focusingElement != this){
+		this.focusingElement.focus();
+		return false;
+	}
+	else {
+		this.element.dispatchEvent(beforeFocusEvent);
+		this.$.focus();
+	}
+}
+
+// Experimental
+Element.prototype.blur = function(handler){
+	if(typeof handler == "function"){
+		this.addEventListener('DOMFocusOut',handler);
 	}
 	else if(this.focusingElement){
 		if(this.focusingElement == this){
-			this.element.dispatchEvent(beforeFocusEvent);
-			this.$.focus();
+			this.element.dispatchEvent(beforeBlurEvent);
+			this.$.blur();
 		}
 		else{
-			this.focusingElement.focus();
+			this.focusingElement.blur();
 			return false;
 		}
 	}
@@ -165,10 +184,8 @@ Element.prototype.editable = function(args){
 Element.prototype.clickable = function(args){
 	var self = this;
 	this.focusable(args);
-	if(args.onClick){
-		this.addEventListener('click',function(e){
-			args.onClick(e);
-		});
+	if(typeof args.onClick == "function"){
+		this.addEventListener('click',args.onClick);
 	}
 	this.isClickable = true;
 }
