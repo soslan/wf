@@ -102,7 +102,7 @@ function Control(args){
 		text:args.label,
 		icon:args.icon,
 	});
-	this.label.focusingElement = this;
+	this.label.focusing(this);
 
 	this.append(this.label);
 }
@@ -628,7 +628,7 @@ function Select(args){
 		self.flag = 4;
 	});
 
-	this.button.button.element.addEventListener('beforefocused',function(){
+	this.button.button.element.addEventListener('beforefocus',function(){
 		self.flag = 4;
 	});
 

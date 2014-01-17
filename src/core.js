@@ -1,5 +1,5 @@
 // Core layer
-var beforeFocusedEvent = new Event('beforefocused');
+var beforeFocusEvent = new Event('beforefocus');
 
 function Element(args){
 	var self = this;
@@ -18,13 +18,6 @@ function Element(args){
 		this.addClass(args.className);
 	}
 
-	this.element.addEventListener('mousedown',function(e){
-		if(self.focusingElement){
-			self.focusingElement.focus();
-			e.stopPropagation();
-			e.preventDefault();
-		}
-	});
 }
 
 Element.prototype.value = function(value){
@@ -90,8 +83,20 @@ Element.prototype.focusable = function(args){
 			});
 		});
 	}
-	this.focusingElement = this;
+	this.focusing(this);
 	this.isFocusable = true;
+}
+
+Element.prototype.focusing = function(focusingElement){
+	var self = this;
+	this.focusingElement = focusingElement;
+
+	this.element.addEventListener('mousedown',function(e){
+		if(self.focusingElement.focus() == false){
+			e.stopPropagation();
+			e.preventDefault();
+		}
+	});
 }
 
 Element.prototype.focus = function(handler){
@@ -100,8 +105,23 @@ Element.prototype.focus = function(handler){
 	}
 	else if(this.focusingElement){
 		if(this.focusingElement == this){
-			this.element.dispatchEvent(beforeFocusedEvent);
+			this.element.dispatchEvent(beforeFocusEvent);
 			this.$.focus();
+		}
+		else{
+			this.focusingElement.focus();
+			return false;
+		}
+	}
+}
+
+Element.prototype.beforeFocus = function(handler){
+	if(typeof handler == "function"){
+		this.addEventListener('beforefocus',handler);
+	}
+	else if(this.focusingElement){
+		if(this.focusingElement == this){
+			this.element.dispatchEvent(beforeFocusEvent);
 		}
 		else{
 			this.focusingElement.focus();
@@ -141,6 +161,7 @@ Element.prototype.editable = function(args){
 	this.isEditable = true;
 }
 
+// Clickable
 Element.prototype.clickable = function(args){
 	var self = this;
 	this.focusable(args);
@@ -150,6 +171,12 @@ Element.prototype.clickable = function(args){
 		});
 	}
 	this.isClickable = true;
+}
+
+Element.prototype.click = function(handler){
+	if(typeof handler == "function"){
+		this.addEventListener('click',handler);
+	}
 }
 
 // Prototype
