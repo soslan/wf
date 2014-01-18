@@ -1,6 +1,9 @@
 // Core layer
 var beforeFocusEvent = new Event('beforefocus');
-var beforeFocusByMouseEvent = new Event('beforefocusbymouse');
+var dragEvent = new Event('drag');
+var afterDragEvent = new Event('afterdrag');
+var afterDragNoMoveEvent = new Event('afterdragnomove');
+var beforeDragEvent = new Event('beforedrag');
 
 function Element(args){
 	var self = this;
@@ -58,9 +61,10 @@ Element.prototype.removeClass = function(className){
 	return this;
 }
 
-Element.prototype.addEventListener = function(type, handler){
+Element.prototype.addEventListener = function(type, handler, useCapture){
+	var useCapture = useCapture || false;
 	if(typeof handler == "function"){
-		this.element.addEventListener(type, handler);
+		this.element.addEventListener(type, handler, useCapture);
 	}
 }
 
@@ -194,6 +198,115 @@ Element.prototype.click = function(handler){
 	if(typeof handler == "function"){
 		this.addEventListener('click',handler);
 	}
+}
+
+Element.prototype.draggable = function(args){
+	var self = this;
+	var args = args || {};
+	var dragged = false;
+	var minX, maxX, minY, maxY;
+	this.draggingMode = args.mode || 'hv';
+	if(this.draggingMode == 'h'){
+		this.vDraggable = false;
+		this.hDraggable = true;
+	}
+	else if(this.draggingMode == 'v'){
+		this.vDraggable = true;
+		this.hDraggable = false;
+	}
+	else{
+		this.vDraggable = true;
+		this.hDraggable = true;
+	}
+	this.documentOnMove = function(e){
+		var shift = [0,0];
+		dragged = true;
+		if(self.vDraggable){
+			shift[1] = e.pageY - self.latestMouseDownPosition[1];
+		}
+		if(self.hDraggable){
+			shift[0] = e.pageX - self.latestMouseDownPosition[0];
+		}
+		var newPositionX = self.latestElementPositionOnMD.left + shift[0];
+		var newPositionY = self.latestElementPositionOnMD.top + shift[1];
+		if(newPositionX<minX){
+			newPositionX = minX;
+		}
+		else if(newPositionX>maxX){
+			newPositionX = maxX;
+		}
+		if(newPositionY<minY){
+			newPositionY = minY;
+		}
+		else if(newPositionY>maxY){
+			newPositionY = maxY;
+		}
+
+		self.$.css({
+			left:newPositionX,
+			top:newPositionY,
+		});
+		e.stopPropagation();
+		e.preventDefault();
+	}
+
+	this.documentOnMouseUp = function(e){
+		document.removeEventListener('mousemove', self.documentOnMove);
+		document.removeEventListener('mouseup', self.documentOnMouseUp);
+		if(dragged){
+			self.element.dispatchEvent(afterDragEvent);
+		}
+		else{
+			self.element.dispatchEvent(afterDragNoMoveEvent);
+		}
+		dragged = false;
+	}
+	if(typeof args.afterDrag == "function"){
+		this.addEventListener('afterdrag',args.afterDrag);
+	}
+
+
+	if(typeof args.afterNoMove == "function"){
+		this.addEventListener('afterdragnomove',args.afterNoMove);
+	}
+	
+
+	this.addEventListener('mousedown',function(e){
+		dragged = false;
+		if(typeof args.minX == "function"){
+			minX = args.minX();
+		}
+		else{
+			minX = args.minX;
+		}
+		if(typeof args.maxX == "function"){
+			maxX = args.maxX();
+		}
+		else{
+			maxX = args.maxX;
+		}
+		if(typeof args.minY == "function"){
+			minY = args.minY();
+		}
+		else{
+			minY = args.minY;
+		}
+		if(typeof args.maxY == "function"){
+			maxY = args.maxY();
+		}
+		else{
+			maxY = args.maxY;
+		}
+		self.latestMouseDownPosition = [e.pageX, e.pageY];
+		self.latestElementPositionOnMD = self.$.position();
+		document.addEventListener('mousemove',self.documentOnMove);
+		document.addEventListener('mouseup',self.documentOnMouseUp);
+	});
+
+	this.addEventListener('click',function(e){
+		e.stopPropagation();
+		e.preventDefault();
+	});
 }
 
 // Prototype

@@ -165,7 +165,43 @@ function Toggle(args){
 	this.switcher = new Element({
 		className:"toggle-switcher"
 	});
+	
+	this.toggleElement.focusing(this.switcher);
 	this.switcher.focusable(args);
+	this.switcher.draggable({
+		mode:'h',
+		minX:0,
+		maxX:function(){
+			return self.toggleElement.$.width() / 2;
+		},
+		afterNoMove:function(e){
+			self.toggle();
+		},
+		afterDrag:function(e){
+			var pos = self.switcher.$.position().left;
+			var limit = self.toggleElement.$.width() / 4;
+			if(self.value == 0){
+				if(pos > limit){
+					self.toggle();
+				}
+				else{
+					self.switcher.$.animate({
+						left:0,
+					});
+				}
+			}
+			else if(self.value == 1){
+				if(pos < limit){
+					self.toggle();
+				}
+				else{
+					self.switcher.$.animate({
+						left:'50%',
+					});
+				}
+			}
+		},
+	});
 	this.setFocusingElement(this.switcher);
 	this.switcher.addClass("toggle-switcher");
 
@@ -219,10 +255,10 @@ Toggle.prototype.on = function(){
 	if(this.value == 0){
 		this.value = 1;
 		$(this.switcher.element)
-		/*.animate({
-			left:'50%',
-		},'fast')*/
-		.switchClass("off", "on","fast");
+			.animate({
+				left:'50%',
+			},'fast')
+			.switchClass("off", "on","fast");
 		this.addClass("on");
 		this.removeClass("off");
 	}
@@ -232,10 +268,11 @@ Toggle.prototype.on = function(){
 Toggle.prototype.off = function(){
 	if(this.value == 1){
 		this.value = 0;
-		$(this.switcher.element)/*.animate({
-			left:'0',
-		},'fast')*/
-		.switchClass("on", "off","fast");
+		$(this.switcher.element)
+			.animate({
+				left:'0',
+			},'fast')
+			.switchClass("on", "off","fast");
 		this.addClass("off");
 		this.removeClass("on");
 	}
