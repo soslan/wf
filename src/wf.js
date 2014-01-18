@@ -165,7 +165,7 @@ function Toggle(args){
 	this.switcher = new Element({
 		className:"toggle-switcher"
 	});
-	
+
 	this.toggleElement.focusing(this.switcher);
 	this.switcher.focusable(args);
 	this.switcher.draggable({
@@ -255,6 +255,7 @@ Toggle.prototype.on = function(){
 	if(this.value == 0){
 		this.value = 1;
 		$(this.switcher.element)
+			.stop()
 			.animate({
 				left:'50%',
 			},'fast')
@@ -269,6 +270,7 @@ Toggle.prototype.off = function(){
 	if(this.value == 1){
 		this.value = 0;
 		$(this.switcher.element)
+			.stop()
 			.animate({
 				left:'0',
 			},'fast')
