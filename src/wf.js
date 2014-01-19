@@ -254,12 +254,14 @@ Toggle.prototype = Object.create(Control.prototype);
 Toggle.prototype.on = function(){
 	if(this.value == 0){
 		this.value = 1;
-		$(this.switcher.element)
+		this.switcher.$
 			.stop()
 			.animate({
 				left:'50%',
 			},'fast')
-			.switchClass("off", "on","fast");
+			.addClass("on")
+			.removeClass("off");
+
 		this.addClass("on");
 		this.removeClass("off");
 	}
@@ -269,12 +271,13 @@ Toggle.prototype.on = function(){
 Toggle.prototype.off = function(){
 	if(this.value == 1){
 		this.value = 0;
-		$(this.switcher.element)
+		this.switcher.$
 			.stop()
 			.animate({
 				left:'0',
 			},'fast')
-			.switchClass("on", "off","fast");
+			.addClass("off")
+			.removeClass("on");
 		this.addClass("off");
 		this.removeClass("on");
 	}
