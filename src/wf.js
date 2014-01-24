@@ -572,16 +572,18 @@ function TextInput(args){
 	this.addClass('control control-text-input');
 	this.addClass('text-input');
 
-	if(!args.value){
+	/*if(!args.value){
 		this.value = '';
 	}
 	else{
 		this.value = args.value;
-	}
+	}*/
 
 	this.input = new TextInputCore({
+		value:args.value,
 		onChange:args.onChange,
 	});
+	this.value = this.input.value;
 	this.setFocusingElement(this.input);
 
 	this.input.addClass("text-input-input");

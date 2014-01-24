@@ -118,6 +118,10 @@ $(document).ready(function(){
 		},
 	});
 
+	var ti2 = new TextInput({
+		label:"Mirror",
+		//value:ti.value,
+	});
 	ti.addButton({
 		onClick:function(){
 			log("Text input button clicked",logC);
@@ -160,10 +164,11 @@ $(document).ready(function(){
 	toolbar
 		.append(ti)
 		.append(b)
-		.append(b2)
+		//.append(b2)
 		.append(se)
 		.append(t)
 		.append(s)
+		//.append(ti2)
 		//.append(elem)
 
 	framesC

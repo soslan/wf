@@ -167,6 +167,25 @@ Element.prototype.tabIndex = function(tabIndex){
 
 Element.prototype.editable = function(args){
 	var self = this;
+	if(args.value){
+		this.value = args.value;
+	}
+	else{
+		this.value = new Value({
+			value:"",
+		});
+	}
+	this.value.addEventListener('change',function(e){
+		if(e.selectionEnd >0 ){
+			//self.element.selectionStart = e.selectionStart;
+			//self.element.selectionEnd = e.selectionEnd;
+			self.element.setRangeText(e.delta, e.selectionStart, e.selectionEnd);
+			self.element.selectionStart = e.selectionStart + e.delta.length;
+		}
+		else{
+			self.$.val(e.value);
+		}
+	});
 	this.focusable(args);
 	if(this.element.tagName != 'input' && this.element.tagName != 'textarea'){
 		this.element.setAttribute('contenteditable','true');
@@ -174,13 +193,33 @@ Element.prototype.editable = function(args){
 	else if(this.element.tagName == 'input'){
 		this.element.setAttribute('type','text');
 	}
-	if(args.onChange){
+	this.addEventListener('keypress',function(e){
+		if(e.which == 65){
+
+		}
+
+		self.value.insert(String.fromCharCode(e.which),self.element.selectionStart);
+		e.preventDefault();
+	});
+
+	this.addEventListener('keydown',function(e){
+		if(e.which == 8){
+			if(e.selectionStart == e.selectionEnd){
+				self.value.insert('', self.element.selectionStart - 1, self.element.selectionEnd);
+			}
+			else{
+				self.value.insert('', self.element.selectionStart, self.element.selectionEnd);
+			}
+		}
+	});
+
+	/*if(args.onChange){
 		this.addEventListener('input',function(e){
 			args.onChange({
-				value: self.value()
+				//value: self.value()
 			});
 		});
-	}
+	}*/
 	this.isEditable = true;
 }
 
@@ -364,4 +403,81 @@ Label.prototype.setIcon = function(iconTag){
 	this.removeClass('fa-'+this.iconTag);
 	this.addClass('fa-'+iconTag);
 	this.iconTag = iconTag;
+}
+
+function Value(args){
+	this.value = args.valeu || '';
+	this.eventListeners = {};
+}
+
+Value.prototype.addEventListener = function(event, handler){
+	if(typeof this.eventListeners[event] == "undefined"){
+		this.eventListeners[event] = [];
+	}
+	this.eventListeners[event].push(handler);
+	return this;
+}
+
+Value.prototype.addEventListener = function(event, handler){
+	if(typeof this.eventListeners[event] == "undefined"){
+		this.eventListeners[event] = [];
+	}
+	this.eventListeners[event].push(handler);
+	return this;
+}
+
+Value.prototype.dispatchEvent = function(event,e){
+	var self = this;
+	e = e || {};
+	if(typeof event == "string"){
+		for (i in this.eventListeners[event]){
+			setTimeout(function(){
+				self.eventListeners[event][i](e);
+			},1);
+		}
+	}
+	return this;
+}
+
+Value.prototype.set = function(newValue){
+	this.value = newValue;
+	var e = {
+		selectionStart:0,
+		selectionEnd:-1,
+		delta:this.value,
+		value:this.value,
+	}
+	this.dispatchEvent('change',e);
+}
+
+Value.prototype.get = function(newValue){
+	return this.value;
+}
+
+Value.prototype.insert = function(value, selectionStart, selectionEnd){
+	selectionEnd = selectionEnd || selectionStart;
+	var firstPart = this.value.slice(0,selectionStart);
+	var lastPart = this.value.slice(selectionEnd,this.value.length);
+	this.value = firstPart + value + lastPart;
+	var e = {
+		selectionStart:selectionStart,
+		selectionEnd:selectionEnd,
+		delta:value,
+		value:this.value,
+	}
+	this.dispatchEvent('change',e);
+}
+
+Value.prototype.deleteAt = function(value, selectionStart, selectionEnd){
+	selectionEnd = selectionEnd || selectionStart;
+	var firstPart = this.value.slice(0,selectionStart);
+	var lastPart = this.value.slice(selectionStart,this.value.length);
+	this.value = firstPart + value + lastPart;
+	var e = {
+		selectionStart:selectionStart,
+		selectionEnd:selectionEnd,
+		delta:value,
+		value:this.value,
+	}
+	this.dispatchEvent('change',e);
 }
