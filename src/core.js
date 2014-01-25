@@ -176,8 +176,12 @@ Element.prototype.editable = function(args){
 		});
 	}
 	
-	//this.value.addEventListener('change',this.onChange);
-	this.value.addBroadcaster(this);
+	this.value.addEventListener('change',function(e){
+		self.element.value = e.value;
+		if(document.activeElement == self.element)
+			self.element.setSelectionRange(e.selectionStart + e.delta.length, e.selectionStart + e.delta.length);
+	});
+	//this.value.addBroadcaster(this);
 	this.focusable(args);
 	if(this.element.tagName != 'input' && this.element.tagName != 'textarea'){
 		this.element.setAttribute('contenteditable','true');
@@ -465,13 +469,16 @@ Value.prototype.broadcast = function(changes){
 
 Value.prototype.dispatchEvent = function(event,e){
 	var self = this;
-	e = e || {};
 	if(typeof event == "string"){
-		for (i in this.eventListeners[event]){
+		var bootstrap = function(handlerIndex, max){
 			setTimeout(function(){
-				self.eventListeners[event][i](e);
-			},1);
+				self.eventListeners[event][handlerIndex](e);
+			},0);
+			if(max>handlerIndex){
+				bootstrap(handlerIndex * 1 + 1, max);
+			}
 		}
+		bootstrap(0, this.eventListeners[event].length - 1);
 	}
 	return this;
 }
@@ -502,7 +509,7 @@ Value.prototype.insert = function(value, selectionStart, selectionEnd){
 		delta:value,
 		value:this.value,
 	}
-	this.broadcast(e);
+	//this.broadcast(e);
 	this.dispatchEvent('change',e);
 }
 
