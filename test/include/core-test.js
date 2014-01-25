@@ -31,16 +31,21 @@ $(document).ready(function(){
 		flex:1,
 	});
 
-	var ti = new TextInputCore({
-		onFocus:function(args){
-			log("TextInputCore onFocus. Value: " + args.value,logC);
-		},
-		onBlur:function(args){
-			log("TextInputCore onBlur. Value: " + args.value,logC);
-		},
-		onChange:function(args){
-			log("TextInputCore onChange. Value: " + args.value,logC);
-		}
+	var ti = new Element({
+		tagName:"input",
+		className:"text-input",
+	});
+
+	ti.editable({
+	});
+
+	var ti2 = new Element({
+		tagName:"input",
+		className:"text-input",
+	});
+
+	ti2.editable({
+		value:ti.value,
 	});
 
 	var b = new Clickable({
@@ -78,6 +83,7 @@ $(document).ready(function(){
 		.append(ti)
 		.append(l2)
 		.append(b)
+		.append(ti2)
 		;
 		//.append(elem)
 

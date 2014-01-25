@@ -120,7 +120,11 @@ $(document).ready(function(){
 
 	var ti2 = new TextInput({
 		label:"Mirror",
-		//value:ti.value,
+		value:ti.value,
+	});
+	var ti3 = new TextInput({
+		label:"Mirror2",
+		value:ti.value,
 	});
 	ti.addButton({
 		onClick:function(){
@@ -165,10 +169,11 @@ $(document).ready(function(){
 		.append(ti)
 		.append(b)
 		//.append(b2)
-		.append(se)
+		//.append(se)
 		.append(t)
-		.append(s)
-		//.append(ti2)
+		//.append(s)
+		.append(ti2)
+		.append(ti3)
 		//.append(elem)
 
 	framesC

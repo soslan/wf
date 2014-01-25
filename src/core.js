@@ -175,17 +175,9 @@ Element.prototype.editable = function(args){
 			value:"",
 		});
 	}
-	this.value.addEventListener('change',function(e){
-		if(e.selectionEnd >0 ){
-			//self.element.selectionStart = e.selectionStart;
-			//self.element.selectionEnd = e.selectionEnd;
-			self.element.setRangeText(e.delta, e.selectionStart, e.selectionEnd);
-			self.element.selectionStart = e.selectionStart + e.delta.length;
-		}
-		else{
-			self.$.val(e.value);
-		}
-	});
+	
+	//this.value.addEventListener('change',this.onChange);
+	this.value.addBroadcaster(this);
 	this.focusable(args);
 	if(this.element.tagName != 'input' && this.element.tagName != 'textarea'){
 		this.element.setAttribute('contenteditable','true');
@@ -221,6 +213,24 @@ Element.prototype.editable = function(args){
 		});
 	}*/
 	this.isEditable = true;
+}
+
+Element.prototype.edit = function(changes){
+	if(this.isEditable){
+		if(changes.selectionEnd >= 0 ){
+			this.element.value = changes.value;
+			//this.element.selectionStart = changes.selectionStart + changes.delta.length;
+			//this.element.selectionEnd = changes.selectionStart + changes.delta.length;
+			if(document.activeElement == this.element)
+				this.element.setSelectionRange(changes.selectionStart + changes.delta.length, changes.selectionStart + changes.delta.length);
+			//this.element.setRangeText(changes.delta);
+			//this.element.selectionStart = changes.selectionStart + changes.delta.length;
+		}
+		else{
+			//this.$.val(changes.value);
+		}
+		
+	}
 }
 
 // Clickable
@@ -408,6 +418,7 @@ Label.prototype.setIcon = function(iconTag){
 function Value(args){
 	this.value = args.valeu || '';
 	this.eventListeners = {};
+	this.broadcasters = [];
 }
 
 Value.prototype.addEventListener = function(event, handler){
@@ -418,12 +429,38 @@ Value.prototype.addEventListener = function(event, handler){
 	return this;
 }
 
-Value.prototype.addEventListener = function(event, handler){
-	if(typeof this.eventListeners[event] == "undefined"){
-		this.eventListeners[event] = [];
+Value.prototype.removeEventListener = function(event, handler){
+	var i = this.eventListeners[event].indexOf(handler);
+	if(i > -1){
+		this.eventListeners[event].splice(i, 1);
 	}
-	this.eventListeners[event].push(handler);
 	return this;
+}
+
+Value.prototype.addBroadcaster = function(element){
+	this.broadcasters.push(element);
+	return this;
+}
+
+Value.prototype.removeBroadcaster = function(element){
+	var i = this.broadcasters.indexOf(element);
+	if (i > -1) {
+    	this.broadcasters.splice(i, 1);
+	}
+	return this;
+}
+
+Value.prototype.broadcast = function(changes){
+	var self = this;
+	var bootstrap = function(broadcasterIndex, max){
+		setTimeout(function(){
+			self.broadcasters[broadcasterIndex].edit(changes);
+		},0);
+		if(max>broadcasterIndex){
+			bootstrap(broadcasterIndex * 1 + 1, max);
+		}
+	}
+	bootstrap(0, this.broadcasters.length - 1);
 }
 
 Value.prototype.dispatchEvent = function(event,e){
@@ -465,6 +502,7 @@ Value.prototype.insert = function(value, selectionStart, selectionEnd){
 		delta:value,
 		value:this.value,
 	}
+	this.broadcast(e);
 	this.dispatchEvent('change',e);
 }
 
