@@ -194,7 +194,10 @@ Element.prototype.editable = function(args){
 
 		}
 
-		self.value.insert(String.fromCharCode(e.which),self.element.selectionStart);
+		self.value.set({
+			value:String.fromCharCode(e.which),
+			insertAt:[self.element.selectionStart, self.element.selectionEnd],
+		});
 		e.preventDefault();
 	});
 
@@ -420,9 +423,19 @@ Label.prototype.setIcon = function(iconTag){
 }
 
 function Value(args){
-	this.value = args.valeu || '';
 	this.eventListeners = {};
 	this.broadcasters = [];
+	this.type = args.type || "text";
+	this.set({
+		value:args.value,
+	});
+
+}
+
+Value.applyTypeFilter = function(newValue){
+	if(this.type == "number"){
+
+	}
 }
 
 Value.prototype.addEventListener = function(event, handler){
@@ -478,19 +491,78 @@ Value.prototype.dispatchEvent = function(event,e){
 				bootstrap(handlerIndex * 1 + 1, max);
 			}
 		}
-		bootstrap(0, this.eventListeners[event].length - 1);
+		if(typeof this.eventListeners[event] !== "undefined")
+			bootstrap(0, this.eventListeners[event].length - 1);
 	}
 	return this;
 }
 
-Value.prototype.set = function(newValue){
-	this.value = newValue;
+Value.prototype.set = function(args){
+	var args = args || {};
+	var candidate = "";
+	if(typeof args.value !== "undefined"){
+		if(typeof args.value === "string"){
+			var tempValue;
+			if(typeof this.value !== "undefined")
+				tempValue = this.value.toString();
+			else
+				tempValue = '';
+			if(args.insertAt instanceof Array){
+				var selectionStart = Number(args.insertAt[0]);
+				var selectionEnd = Number(args.insertAt[1]);
+				if(selectionStart === NaN){
+					selectionStart = 0;
+					selectionEnd = 0;
+				}
+				else if(selectionEnd === NaN){
+					selectionEnd = selectionStart;
+				}
+				if(selectionStart > selectionEnd){
+					var temp = selectionEnd;
+					selectionEnd = selectionStart;
+					selectionStart = selectionEnd;
+				}
+
+				if(selectionStart < 0){
+					selectionStart = 0;
+				}
+				else if(selectionStart > tempValue.length){
+					selectionStart = tempValue.length;
+				}
+				if(selectionEnd < 0){
+					selectionEnd = 0;
+				}
+				else if(selectionEnd > tempValue.length){
+					selectionEnd = tempValue.length;
+				}
+
+				var firstPart = tempValue.slice(0,selectionStart);
+				var lastPart = tempValue.slice(selectionEnd,tempValue.length);
+				candidate = firstPart + args.value + lastPart;
+			}
+		}
+		
+	}
+	if(this.type == "number"){
+		if(!isNaN(parseFloat(candidate)) && isFinite(candidate)){
+
+		}
+		else{
+			this.dispatchEvent('wrongvalue');
+			return this;
+		}
+	}
+	else if(this.type == "uppercase"){
+		candidate = candidate.toUpperCase();
+	}
+	this.value = candidate;
 	var e = {
-		selectionStart:0,
-		selectionEnd:-1,
-		delta:this.value,
+		selectionStart:selectionStart,
+		selectionEnd:selectionEnd,
+		delta:args.value,
 		value:this.value,
 	}
+	//this.broadcast(e);
 	this.dispatchEvent('change',e);
 }
 

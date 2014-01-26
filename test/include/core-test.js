@@ -31,12 +31,18 @@ $(document).ready(function(){
 		flex:1,
 	});
 
+	var v = new Value({
+		type:'uppercase',
+		value:0,
+	});
+
 	var ti = new Element({
 		tagName:"input",
 		className:"text-input",
 	});
 
 	ti.editable({
+		value:v
 	});
 
 	var ti2 = new Element({
