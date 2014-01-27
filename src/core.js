@@ -204,11 +204,18 @@ Element.prototype.editable = function(args){
 	this.addEventListener('keydown',function(e){
 		if(e.which == 8){
 			if(e.selectionStart == e.selectionEnd){
-				self.value.insert('', self.element.selectionStart - 1, self.element.selectionEnd);
+				self.value.set({
+					value:'',
+					insertAt:[self.element.selectionStart - 1, self.element.selectionEnd],
+				});
 			}
 			else{
-				self.value.insert('', self.element.selectionStart, self.element.selectionEnd);
+				self.value.set({
+					value:'',
+					insertAt:[self.element.selectionStart, self.element.selectionEnd],
+				});
 			}
+			e.preventDefault();
 		}
 	});
 
@@ -425,17 +432,14 @@ Label.prototype.setIcon = function(iconTag){
 function Value(args){
 	this.eventListeners = {};
 	this.broadcasters = [];
-	this.type = args.type || "text";
+	this.patterns = [];
+	this.eventLocked = {};
+	this.pendingHandler ={};
+	this.type = args.type || "default";
 	this.set({
 		value:args.value,
 	});
 
-}
-
-Value.applyTypeFilter = function(newValue){
-	if(this.type == "number"){
-
-	}
 }
 
 Value.prototype.addEventListener = function(event, handler){
@@ -482,17 +486,12 @@ Value.prototype.broadcast = function(changes){
 
 Value.prototype.dispatchEvent = function(event,e){
 	var self = this;
+	var stopped = false;
+	var finishedJobs = 0;
 	if(typeof event == "string"){
-		var bootstrap = function(handlerIndex, max){
-			setTimeout(function(){
-				self.eventListeners[event][handlerIndex](e);
-			},0);
-			if(max>handlerIndex){
-				bootstrap(handlerIndex * 1 + 1, max);
-			}
+		for (i in this.eventListeners[event]){
+			this.eventListeners[event][i](e);
 		}
-		if(typeof this.eventListeners[event] !== "undefined")
-			bootstrap(0, this.eventListeners[event].length - 1);
 	}
 	return this;
 }
@@ -517,11 +516,11 @@ Value.prototype.set = function(args){
 				else if(selectionEnd === NaN){
 					selectionEnd = selectionStart;
 				}
-				if(selectionStart > selectionEnd){
+				/*if(selectionStart > selectionEnd){
 					var temp = selectionEnd;
 					selectionEnd = selectionStart;
 					selectionStart = selectionEnd;
-				}
+				}*/
 
 				if(selectionStart < 0){
 					selectionStart = 0;
@@ -540,11 +539,17 @@ Value.prototype.set = function(args){
 				var lastPart = tempValue.slice(selectionEnd,tempValue.length);
 				candidate = firstPart + args.value + lastPart;
 			}
+			else{
+				candidate = args.value;
+			}
 		}
 		
 	}
 	if(this.type == "number"){
 		if(!isNaN(parseFloat(candidate)) && isFinite(candidate)){
+			candidate = Number(candidate);
+		}
+		else if(Number(candidate) === 0){
 
 		}
 		else{
@@ -555,10 +560,13 @@ Value.prototype.set = function(args){
 	else if(this.type == "uppercase"){
 		candidate = candidate.toUpperCase();
 	}
+	else{
+		//candidate = 
+	}
 	this.value = candidate;
 	var e = {
-		selectionStart:selectionStart,
-		selectionEnd:selectionEnd,
+		selectionStart:selectionStart + args.value.length,
+		selectionEnd:selectionStart + args.value.length,
 		delta:args.value,
 		value:this.value,
 	}

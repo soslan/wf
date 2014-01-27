@@ -32,7 +32,7 @@ $(document).ready(function(){
 	});
 
 	var v = new Value({
-		type:'uppercase',
+		type:'number',
 		value:0,
 	});
 
