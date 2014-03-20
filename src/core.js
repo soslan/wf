@@ -175,11 +175,12 @@ Element.prototype.editable = function(args){
 			value:"",
 		});
 	}
+	this.element.value = this.value.get();
 	
 	this.value.addEventListener('change',function(e){
 		self.element.value = e.value;
 		if(document.activeElement == self.element)
-			self.element.setSelectionRange(e.selectionStart + e.delta.length, e.selectionStart + e.delta.length);
+			self.element.setSelectionRange(e.firstPart.length, e.firstPart.length + e.selection.length);
 	});
 	//this.value.addBroadcaster(this);
 	this.focusable(args);
@@ -190,31 +191,52 @@ Element.prototype.editable = function(args){
 		this.element.setAttribute('type','text');
 	}
 	this.addEventListener('keypress',function(e){
-		if(e.which == 65){
-
+		if(typeof self.value.insert == "function"){
+			self.value.insert({
+				value: String.fromCharCode(e.which),
+				selectionStart: self.element.selectionStart,
+				selectionEnd: self.element.selectionEnd,
+				replacement:String.fromCharCode(e.which),
+				firstPart:self.element.value.substr(0,self.element.selectionStart),
+				secondPart:self.element.value.substr(self.element.selectionEnd,self.element.value.length - self.element.selectionEnd),
+			});
+		}
+		else{
+			var val = self.element.value;
+			var firstPart = val.slice(0,self.element.selectionStart);
+			var secondPart = val.slice(self.element.selectionEnd, val.length);
+			self.value.set({
+				value: firstPart + String.fromCharCode(e.which) + secondPart,
+			});
 		}
 
-		self.value.set({
-			value:String.fromCharCode(e.which),
-			insertAt:[self.element.selectionStart, self.element.selectionEnd],
-		});
+		
 		e.preventDefault();
 	});
 
 	this.addEventListener('keydown',function(e){
-		if(e.which == 8){
-			if(e.selectionStart == e.selectionEnd){
-				self.value.set({
-					value:'',
-					insertAt:[self.element.selectionStart - 1, self.element.selectionEnd],
-				});
+		var firstPart, secondPart, selection;
+		if(typeof self.value.insert == "function" && e.which == 8){
+			if(self.element.selectionStart === self.element.selectionEnd){
+				firstPart = self.element.value.substr(0,self.element.selectionStart - 1);
+				selection = self.element.value.substr(self.element.selectionStart - 1, 1);
+				secondPart = self.element.value.substr(self.element.selectionEnd,self.element.value.length - self.element.selectionEnd)
 			}
 			else{
-				self.value.set({
-					value:'',
-					insertAt:[self.element.selectionStart, self.element.selectionEnd],
-				});
+				firstPart = self.element.value.substr(0,self.element.selectionStart);
+				selection = self.element.value.substr(self.element.selectionStart, self.element.selectionEnd - self.element.selectionStart);
+				secondPart = self.element.value.substr(self.element.selectionEnd,self.element.value.length - self.element.selectionEnd)
+			
 			}
+			self.value.insert({
+				value: String.fromCharCode(e.which),
+				selectionStart: self.element.selectionStart,
+				selectionEnd: self.element.selectionEnd,
+				replacement:'',
+				firstPart:firstPart,
+				secondPart:secondPart,
+				selection:selection,
+			});
 			e.preventDefault();
 		}
 	});
@@ -429,180 +451,3 @@ Label.prototype.setIcon = function(iconTag){
 	this.iconTag = iconTag;
 }
 
-function Value(args){
-	this.eventListeners = {};
-	this.broadcasters = [];
-	this.patterns = [];
-	this.eventLocked = {};
-	this.pendingHandler ={};
-	this.type = args.type || "default";
-	this.set({
-		value:args.value,
-	});
-
-}
-
-Value.prototype.addEventListener = function(event, handler){
-	if(typeof this.eventListeners[event] == "undefined"){
-		this.eventListeners[event] = [];
-	}
-	this.eventListeners[event].push(handler);
-	return this;
-}
-
-Value.prototype.removeEventListener = function(event, handler){
-	var i = this.eventListeners[event].indexOf(handler);
-	if(i > -1){
-		this.eventListeners[event].splice(i, 1);
-	}
-	return this;
-}
-
-Value.prototype.addBroadcaster = function(element){
-	this.broadcasters.push(element);
-	return this;
-}
-
-Value.prototype.removeBroadcaster = function(element){
-	var i = this.broadcasters.indexOf(element);
-	if (i > -1) {
-    	this.broadcasters.splice(i, 1);
-	}
-	return this;
-}
-
-Value.prototype.broadcast = function(changes){
-	var self = this;
-	var bootstrap = function(broadcasterIndex, max){
-		setTimeout(function(){
-			self.broadcasters[broadcasterIndex].edit(changes);
-		},0);
-		if(max>broadcasterIndex){
-			bootstrap(broadcasterIndex * 1 + 1, max);
-		}
-	}
-	bootstrap(0, this.broadcasters.length - 1);
-}
-
-Value.prototype.dispatchEvent = function(event,e){
-	var self = this;
-	var stopped = false;
-	var finishedJobs = 0;
-	if(typeof event == "string"){
-		for (i in this.eventListeners[event]){
-			this.eventListeners[event][i](e);
-		}
-	}
-	return this;
-}
-
-Value.prototype.set = function(args){
-	var args = args || {};
-	var candidate = "";
-	if(typeof args.value !== "undefined"){
-		if(typeof args.value === "string"){
-			var tempValue;
-			if(typeof this.value !== "undefined")
-				tempValue = this.value.toString();
-			else
-				tempValue = '';
-			if(args.insertAt instanceof Array){
-				var selectionStart = Number(args.insertAt[0]);
-				var selectionEnd = Number(args.insertAt[1]);
-				if(selectionStart === NaN){
-					selectionStart = 0;
-					selectionEnd = 0;
-				}
-				else if(selectionEnd === NaN){
-					selectionEnd = selectionStart;
-				}
-				/*if(selectionStart > selectionEnd){
-					var temp = selectionEnd;
-					selectionEnd = selectionStart;
-					selectionStart = selectionEnd;
-				}*/
-
-				if(selectionStart < 0){
-					selectionStart = 0;
-				}
-				else if(selectionStart > tempValue.length){
-					selectionStart = tempValue.length;
-				}
-				if(selectionEnd < 0){
-					selectionEnd = 0;
-				}
-				else if(selectionEnd > tempValue.length){
-					selectionEnd = tempValue.length;
-				}
-
-				var firstPart = tempValue.slice(0,selectionStart);
-				var lastPart = tempValue.slice(selectionEnd,tempValue.length);
-				candidate = firstPart + args.value + lastPart;
-			}
-			else{
-				candidate = args.value;
-			}
-		}
-		
-	}
-	if(this.type == "number"){
-		if(!isNaN(parseFloat(candidate)) && isFinite(candidate)){
-			candidate = Number(candidate);
-		}
-		else if(Number(candidate) === 0){
-
-		}
-		else{
-			this.dispatchEvent('wrongvalue');
-			return this;
-		}
-	}
-	else if(this.type == "uppercase"){
-		candidate = candidate.toUpperCase();
-	}
-	else{
-		//candidate = 
-	}
-	this.value = candidate;
-	var e = {
-		selectionStart:selectionStart + args.value.length,
-		selectionEnd:selectionStart + args.value.length,
-		delta:args.value,
-		value:this.value,
-	}
-	//this.broadcast(e);
-	this.dispatchEvent('change',e);
-}
-
-Value.prototype.get = function(newValue){
-	return this.value;
-}
-
-Value.prototype.insert = function(value, selectionStart, selectionEnd){
-	selectionEnd = selectionEnd || selectionStart;
-	var firstPart = this.value.slice(0,selectionStart);
-	var lastPart = this.value.slice(selectionEnd,this.value.length);
-	this.value = firstPart + value + lastPart;
-	var e = {
-		selectionStart:selectionStart,
-		selectionEnd:selectionEnd,
-		delta:value,
-		value:this.value,
-	}
-	//this.broadcast(e);
-	this.dispatchEvent('change',e);
-}
-
-Value.prototype.deleteAt = function(value, selectionStart, selectionEnd){
-	selectionEnd = selectionEnd || selectionStart;
-	var firstPart = this.value.slice(0,selectionStart);
-	var lastPart = this.value.slice(selectionStart,this.value.length);
-	this.value = firstPart + value + lastPart;
-	var e = {
-		selectionStart:selectionStart,
-		selectionEnd:selectionEnd,
-		delta:value,
-		value:this.value,
-	}
-	this.dispatchEvent('change',e);
-}
