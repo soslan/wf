@@ -182,7 +182,6 @@ Element.prototype.editable = function(args){
 		if(document.activeElement == self.element)
 			self.element.setSelectionRange(e.firstPart.length, e.firstPart.length + e.selection.length);
 	});
-	//this.value.addBroadcaster(this);
 	this.focusable(args);
 	if(this.element.tagName != 'input' && this.element.tagName != 'textarea'){
 		this.element.setAttribute('contenteditable','true');
@@ -191,32 +190,21 @@ Element.prototype.editable = function(args){
 		this.element.setAttribute('type','text');
 	}
 	this.addEventListener('keypress',function(e){
-		if(typeof self.value.insert == "function"){
-			self.value.insert({
-				value: String.fromCharCode(e.which),
-				selectionStart: self.element.selectionStart,
-				selectionEnd: self.element.selectionEnd,
-				replacement:String.fromCharCode(e.which),
-				firstPart:self.element.value.substr(0,self.element.selectionStart),
-				secondPart:self.element.value.substr(self.element.selectionEnd,self.element.value.length - self.element.selectionEnd),
-			});
-		}
-		else{
-			var val = self.element.value;
-			var firstPart = val.slice(0,self.element.selectionStart);
-			var secondPart = val.slice(self.element.selectionEnd, val.length);
-			self.value.set({
-				value: firstPart + String.fromCharCode(e.which) + secondPart,
-			});
-		}
-
-		
+		self.value.insert({
+			value: self.element.value,
+			selectionStart: self.element.selectionStart,
+			selectionEnd: self.element.selectionEnd,
+			replacement:String.fromCharCode(e.which),
+			firstPart:self.element.value.substr(0,self.element.selectionStart),
+			secondPart:self.element.value.substr(self.element.selectionEnd,self.element.value.length - self.element.selectionEnd),
+			selection:self.element.value.substring(self.element.selectionEnd, self.element.selectionStart),
+		});		
 		e.preventDefault();
 	});
 
 	this.addEventListener('keydown',function(e){
 		var firstPart, secondPart, selection;
-		if(typeof self.value.insert == "function" && e.which == 8){
+		if(e.which == 8){
 			if(self.element.selectionStart === self.element.selectionEnd){
 				firstPart = self.element.value.substr(0,self.element.selectionStart - 1);
 				selection = self.element.value.substr(self.element.selectionStart - 1, 1);
@@ -240,14 +228,6 @@ Element.prototype.editable = function(args){
 			e.preventDefault();
 		}
 	});
-
-	/*if(args.onChange){
-		this.addEventListener('input',function(e){
-			args.onChange({
-				//value: self.value()
-			});
-		});
-	}*/
 	this.isEditable = true;
 }
 

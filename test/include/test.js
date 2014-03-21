@@ -126,6 +126,10 @@ $(document).ready(function(){
 		label:"Mirror2",
 		value:ti.value,
 	});
+	ti.value.addFilter('set',function(data){
+		data.value = data.value.toUpperCase();
+		return data;
+	});
 	ti.addButton({
 		onClick:function(){
 			log("Text input button clicked",logC);

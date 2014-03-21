@@ -67,10 +67,26 @@ Value.prototype.dispatchEvent = function(event, e){
 	return this;
 }
 
+Value.prototype.addFilter = function(filter, handler){
+	if(typeof this.filters[filter] == "undefined"){
+		this.filters[filter] = [];
+	}
+	this.filters[filter].push(handler);
+	return this;
+}
+
+Value.prototype.removeFilter = function(filter, handler){
+	var i = this.filters[filter].indexOf(handler);
+	if(i > -1){
+		this.filters[filter].splice(i, 1);
+	}
+	return this;
+}
+
 Value.prototype.applyFilter = function(filter, data){
 	var self = this;
 	if(typeof filter == "string"){
-		for (i in this.eventListeners[filter]){
+		for (i in this.filters[filter]){
 			data = this.filters[filter][i](data);
 		}
 	}
@@ -81,9 +97,10 @@ Value.prototype.applyFilter = function(filter, data){
 Value.prototype.set = function(args){
 	var args = args || {};
 	if(typeof args.value === "undefined"){
+
 		return this;
 	}
-	args = this.applyFilter('new-value', args);
+	args = this.applyFilter('set', args);
 	/*if(this.type == "number"){
 		if(!isNaN(parseFloat(candidate)) && isFinite(candidate)){
 			candidate = Number(candidate);
@@ -120,49 +137,12 @@ Value.prototype.insert = function(insertedData){
 		this.dispatchEvent('change-canceled');
 		return this;
 	}
-	if(typeof this.value !== "undefined")
-		tempValue = this.value.toString();
-	else
-		tempValue = '';
 
 	var setData = insertedData;
 
 	setData.value = setData.firstPart + setData.replacement + setData.secondPart;
 	setData.firstPart = setData.firstPart + setData.replacement;
 	setData.selection = '';
-
-	/*if(typeof insertedData.selectionStart !== "undefined"){ // TODO. isNumber function
-		if(insertedData.selectionStart > this.value.length){
-			insertedData.selectionStart = this.value.length;
-		}
-		else if(insertedData.selectionStart <0){
-			insertedData.selectionStart = 0;
-		}
-	}
-	else{
-		insertedData.selectionStart = this.value.length;
-	}
-	if(typeof insertedData.selectionEnd === "undefined"){
-		if(insertedData.selectionEnd > this.value.length){
-			insertedData.selectionEnd = this.value.length;
-		}
-		else if(insertedData.selectionEnd <0){
-			insertedData.selectionEnd = 0;
-		}
-	}
-	else{
-		insertedData.selectionEnd = this.value.length;
-	}
-	if(typeof insertedData.value !== "undefined"){
-		if(typeof insertedData.value === "string"){
-			var firstPart = tempValue.slice(0,insertedData.selectionStart);
-			var lastPart = tempValue.slice(insertedData.selectionEnd,tempValue.length);
-			candidateValue = firstPart + insertedData.value + lastPart;
-			
-		}
-		
-	}
-	insertedData.value = candidateValue;*/
 	this.set(setData);
 }
 
