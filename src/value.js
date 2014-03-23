@@ -46,15 +46,7 @@ Value.prototype.removeBroadcaster = function(element){
 
 Value.prototype.broadcast = function(changes){
 	var self = this;
-	var bootstrap = function(broadcasterIndex, max){
-		setTimeout(function(){
-			self.broadcasters[broadcasterIndex].edit(changes);
-		},0);
-		if(max>broadcasterIndex){
-			bootstrap(broadcasterIndex * 1 + 1, max);
-		}
-	}
-	bootstrap(0, this.broadcasters.length - 1);
+	
 }
 */
 Value.prototype.dispatchEvent = function(event, e){
@@ -117,8 +109,12 @@ Value.prototype.set = function(args){
 	this.dispatchEvent('change',args);
 }
 
-Value.prototype.get = function(newValue){
-	return this.value;
+Value.prototype.get = function(args){
+	args = args || {};
+	args.value = this.value;
+	args.originalValue = this.value;
+	args = this.applyFilter('get',args);
+	return args.value;
 }
 
 Value.prototype.insert = function(insertedData){
@@ -158,10 +154,4 @@ Value.prototype.deleteAt = function(value, selectionStart, selectionEnd){
 		value:this.value,
 	}
 	this.dispatchEvent('change',e);
-}
-
-function NumberValue(args){
-	var self = this;
-	args = args || {};
-	Value.call(this,{});
 }

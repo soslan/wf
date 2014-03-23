@@ -175,9 +175,9 @@ $(document).ready(function(){
 		//.append(b2)
 		//.append(se)
 		.append(t)
-		//.append(s)
-		.append(ti2)
-		.append(ti3)
+		.append(s)
+		//.append(ti2)
+		//.append(ti3)
 		//.append(elem)
 
 	framesC
