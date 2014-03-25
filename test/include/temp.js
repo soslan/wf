@@ -5,9 +5,14 @@ $(document).ready(function(){
 	});
 
 	var t = new TabView();
-	t.addTab({
+	var tab1 = t.addTab({
 		label:"Tab",
 	});
+	var tab2 = t.addTab({
+		label:"Tab2",
+	});
+
+	tab1.documentElement.append(new Button({label:'Button'}));
 	document.body.appendChild(w.container);
 
 	w

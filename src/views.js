@@ -26,6 +26,10 @@ function TabView(args){
 		tab.tabElement.addClass('tab-view-tab');
 		tab.documentElement.addClass('tab-view-document');
 
+		tab.tabElement.addEventListener('click',function(){
+			tab.activate();
+		});
+
 		tab.label.addEventListener('change',function(data){
 			tab.tabElement.element.innerHTML = data.value;
 		});
@@ -38,9 +42,9 @@ function TabView(args){
 		self.documentsContainer.append(tab.documentElement);
 
 		tab.activate = function(){
-			this.activeTab.tabElement.element.classList.remove('active');
-			this.activeTab.documentElement.$.hide();
-			this.activeTab = tab;
+			self.activeTab.tabElement.element.classList.remove('active');
+			self.activeTab.documentElement.$.hide();
+			self.activeTab = tab;
 			tab.tabElement.element.classList.add('active');
 			tab.documentElement.$.show();
 		}
@@ -51,6 +55,12 @@ function TabView(args){
 
 		if(typeof newTabArgs.ready == "function"){
 			newTabArgs.ready(tab);
+		}
+
+		if(this.activeTab == undefined){
+			this.activeTab = tab;
+			tab.tabElement.element.classList.add('active');
+			tab.documentElement.$.show();
 		}
 
 		return tab;
