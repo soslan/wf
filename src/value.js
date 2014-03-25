@@ -1,5 +1,7 @@
 
 function Value(args){
+	var self = this;
+	args = args || {};
 	this.eventListeners = {};
 	this.broadcasters = [];
 	this.patterns = [];
