@@ -49,6 +49,27 @@ function TabView(args){
 			tab.documentElement.$.show();
 		}
 
+		tab.close = function(){
+			var currentIndex = self.tabs.indexOf(tab);
+			self.tabsContainer.element.removeChild(tab.tabElement.element);
+			self.documentsContainer.element.removeChild(tab.documentElement.element);
+			if(tab == self.activeTab){
+				if(currentIndex + 1 == self.tabs.length){
+					if(self.tabs.length == 1){
+						self.activeTab = null;
+					}
+					else{
+						self.tabs[currentIndex - 1].activate();
+					}
+				}
+				else{
+						self.tabs[currentIndex + 1].activate();
+				}
+			}
+			self.tabs.splice(currentIndex, 1);
+			delete tab;
+		}
+
 		if(newTabArgs.activate == true){
 			tab.activate();
 		}
@@ -61,6 +82,20 @@ function TabView(args){
 			this.activeTab = tab;
 			tab.tabElement.element.classList.add('active');
 			tab.documentElement.$.show();
+		}
+
+		if(newTabArgs.closeable == true){
+			var closeElement = new Label({
+				icon:'times',
+			});
+			tab.tabElement.append(closeElement);
+			closeElement.clickable({
+				onClick:function(e){
+					tab.close();
+					e.stopPropagation();
+					e.preventDefault();
+				}
+			});
 		}
 
 		return tab;

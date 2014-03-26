@@ -45,9 +45,8 @@ function log(val,logC){
 // WF TESTING 
 $(document).ready(function(){
 	//less.watch();
-	var w = new Container({
-		mode:"full",
-		direction:"h",
+	var w = new Element({
+		className:"root",
 	});
 	var testC = new Container({
 		direction:"v",
@@ -163,10 +162,19 @@ $(document).ready(function(){
 
 	elem.element.innerHTML = "Element";
 
-	document.body.appendChild(w.container);
+	var tabs = new TabView();
+	var tab1 = tabs.addTab({
+		label:"Tab",
+	});
+	var tab2 = tabs.addTab({
+		label:"Tab2",
+		closeable:true,
+	});
 
-	w
-		.append(m)
+	document.body.appendChild(w.container);
+	w.append(tabs);
+	tab1.documentElement
+		//.append(m)
 		.append(framesC)
 		;
 	toolbar
