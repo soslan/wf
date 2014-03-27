@@ -1,11 +1,19 @@
 function TabView(args){
 	var self = this;
 	args=args?args:{};
-	Element.call(this);
+	Container.call(this,{
+		contentDirection:args.direction,
+		contentType:'blocks',
+	});
 	this.addClass('tab-view');
 
-	this.tabsContainer = new Element();
-	this.documentsContainer = new Element();
+	this.tabsContainer = new Container({
+		contentDirection:"horizontal",
+	});
+	this.documentsContainer = new Container({
+		share:1,
+		contentType:"blocks",
+	});
 	this.tabs = [];
 	this.activeTab;
 

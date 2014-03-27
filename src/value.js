@@ -81,7 +81,7 @@ Value.prototype.applyFilter = function(filter, data){
 	var self = this;
 	if(typeof filter == "string"){
 		for (i in this.filters[filter]){
-			data = this.filters[filter][i](data);
+			data = this.filters[filter][i](data) || data;
 		}
 	}
 	return data;
@@ -89,11 +89,18 @@ Value.prototype.applyFilter = function(filter, data){
 
 
 Value.prototype.set = function(args){
-	var args = args || {};
-	if(typeof args.value === "undefined"){
+	if(typeof args === "string"){
+		args = {
+			value:args,
+		}
+	}
+	else if(typeof args === "undefined"){
+		args = {};
+	}
+	/*if(typeof args.value === "undefined"){
 
 		return this;
-	}
+	}*/
 	args = this.applyFilter('set', args);
 	/*if(this.type == "number"){
 		if(!isNaN(parseFloat(candidate)) && isFinite(candidate)){

@@ -81,6 +81,14 @@
 	display:flex;
 }
 
+.content-direction-vertical{
+	flex-direction:column;
+}
+
+.content-direction-horizontal{
+	flex-direction:row;
+}
+
 /* Label */
 
 .label{
@@ -328,7 +336,6 @@
 .tab-view{
 	flex:1;
 	display: flex;
-	flex-direction:column;
 }
 
 .tab-view-documents{
@@ -336,14 +343,18 @@
 	flex:1;
 }
 
+.tab-view.content-direction-horizontal .tab-view-tabs{
+	flex-direction:column;
+}
+
 .tab-view-tabs{
-	padding-top: 5px;
+	//padding-top: 5px;
 
 }
 
 .tab-view-tab{
 	cursor:pointer;
-	margin:0 0 0 5px;
+	margin:5px 0 0 5px;
 	float:left;
 	padding:5px 10px;
 	background-color: @gray;

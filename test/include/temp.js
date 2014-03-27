@@ -12,7 +12,17 @@ $(document).ready(function(){
 		label:"Tab2",
 		closeable:true,
 	});
-	tab1.documentElement.append(new Button({label:"button"}));
+	tab1.documentElement.append(new Button({
+		label:"To horizontal layout",
+		onClick:function(){
+			tabs.contentDirection.set('horizontal')
+		},
+	})).append(new Button({
+		label:"To vertical layout",
+		onClick:function(){
+			tabs.contentDirection.set('vertical')
+		},
+	}));
 
 	var side = new Container({
 		contentType:'blocks',
