@@ -32,7 +32,7 @@
 	padding:0;
 	display:flex;
 	font-family:Arial;
-	background-color: @white;
+	//background-color: @white;
 	color: @black;
 }
 
@@ -74,6 +74,11 @@
 .control .label{
 	line-height: 26px;
 	cursor:pointer;
+}
+
+/* Core */
+.content-blocks{
+	display:flex;
 }
 
 /* Label */
@@ -321,8 +326,6 @@
 
 /* TabView */
 .tab-view{
-	width:100%;
-	height:100%;
 	flex:1;
 	display: flex;
 	flex-direction:column;
@@ -352,7 +355,7 @@
 }
 
 .tab-view-document{
-	//padding:5px;
+	padding:5px;
 	display:none;
 	//position:absolute;
 	background-color: @white;

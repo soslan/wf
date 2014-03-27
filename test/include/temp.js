@@ -14,17 +14,21 @@ $(document).ready(function(){
 	});
 	tab1.documentElement.append(new Button({label:"button"}));
 
-	var side = new LayoutElement({
+	var side = new Container({
+		contentType:'blocks',
 		share:1,
 	});
-	var right = new LayoutElement({
+	var right = new Container({
+		contentType:'blocks',
 		direction:'v',
 		share:2,
 	});
-	var u = new LayoutElement({
+	var u = new Container({
+		contentType:'blocks',
 		share:3,
 	});
-	var d = new LayoutElement({
+	var d = new Container({
+		contentType:'blocks',
 		share:4,
 	});
 	u.append(tabs);

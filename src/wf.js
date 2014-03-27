@@ -33,50 +33,6 @@ Base.prototype.removeClass = function(className){
 	return this;
 }
 
-function Container(args){
-	var self = this;
-	args = args?args:{};
-	Element.call(this,{
-		className:"container"
-	});
-
-	if(args.flex){
-		this.element.style.flex = args.flex;
-	}
-
-	if(args.direction){
-		if(args.direction == 'v'){
-			this.element.style.flexDirection = 'column';
-		}
-	}
-
-	//this.addClass("container");
-
-	//this.contentBlock = document.createElement('div');
-
-	//this.contentBlock.className = "container-content";
-
-	if(args.mode == "full"){
-		this.addClass("container-full");
-	}
-
-	//this.container.appendChild(this.contentBlock);
-
-
-}
-
-Container.prototype = Object.create(Element.prototype);
-
-/*Container.prototype.append = function(element){
-	this.contentBlock.appendChild(element.container);
-	return this;
-}*/
-
-Container.prototype.append = function(element){
-	this.element.appendChild(element.element);
-	return this;
-}
-
 function Block(args){
 	var self = this;
 	args = args?args:{};
