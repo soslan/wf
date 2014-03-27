@@ -110,4 +110,86 @@ function TabView(args){
 	};
 }
 
-TabView.prototype = Object.create(Element.prototype);
+TabView.prototype = Object.create(Container.prototype);
+
+
+function AccordionView(args){
+	var self = this;
+	args=args?args:{};
+	Container.call(this,{
+		contentDirection:args.direction,
+		contentType:'blocks',
+		share:args.share,
+	});
+	this.addClass('accordion-view');
+
+	this.items = [];
+	this.activeItem;
+
+	this.addItem = function(newTabArgs){
+		newTabArgs = newTabArgs || {};
+		var item = {};
+		this.items.push(item);
+		item.tabElement = new Container();
+		item.documentElement = new Container({
+			share:1,
+		});
+		item.label = new Value();
+
+		item.tabElement.addClass('accordion-view-tab');
+		item.documentElement.addClass('accordion-view-document');
+
+		item.tabElement.addEventListener('click',function(){
+			item.toggle();
+		});
+
+		item.label.addEventListener('change',function(data){
+			item.tabElement.element.innerHTML = data.value;
+		});
+
+		item.label.set({
+			value:newTabArgs.label || '',
+		})
+
+		self.append(item.tabElement);
+		self.append(item.documentElement);
+
+		item.toggle = function(){
+			if(self.activeItem == item){
+				item.hide();
+			}
+			else{
+				item.show();
+			}
+		}
+
+		item.hide = function(){
+			self.activeItem = undefined;
+			item.tabElement.element.classList.remove('active');
+			item.documentElement.$.hide();
+		}
+
+		item.show = function(){
+			if(self.activeItem !== undefined){
+				self.activeItem.hide();
+			}
+			self.activeItem = item;
+			item.tabElement.element.classList.add('active');
+			item.documentElement.$.show();
+		}
+
+		if(newTabArgs.activate == true){
+			item.show();
+		}
+
+		if(typeof newTabArgs.ready == "function"){
+			newTabArgs.ready(item);
+		}
+
+		return item;
+	};
+}
+
+AccordionView.prototype = Object.create(Container.prototype);
+
+

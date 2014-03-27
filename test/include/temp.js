@@ -24,6 +24,21 @@ $(document).ready(function(){
 		},
 	}));
 
+	var acc = new AccordionView({
+		share:1,
+	});
+	var tab3 = acc.addItem({
+		label:"Tab",
+	});
+	var tab4 = acc.addItem({
+		label:"Tab2",
+	});
+	tab3.documentElement.append(new Button({
+		label:"To horizontal layout",
+	})).append(new Button({
+		label:"To vertical layout",
+	}));
+
 	var side = new Container({
 		contentType:'blocks',
 		share:1,
@@ -43,6 +58,7 @@ $(document).ready(function(){
 	});
 	u.append(tabs);
 	d.append(new Element());
+	side.append(acc);
 	right.append(u)
 		.append(d);
 	w
