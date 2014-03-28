@@ -378,13 +378,28 @@
 /* AccordionView */
 
 .accordion-view{
-	padding:5px;
 	margin:5px;
-	background-color: @white;
 }
 
 .accordion-view-document{
 	display: none;
+	background-color: @white;
+	padding:5px;
+}
+
+.accordion-view-tab{
+	padding:5px 10px;
+	margin:5px 0 0 0;
+	background-color: @gray;
+}
+
+.accordion-view-tab:first-child{
+	margin:0;
+}
+
+.accordion-view-tab.active{
+	background-color: @main-color;
+	color:@white;
 }
 
 /* Layout */
