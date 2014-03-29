@@ -39,6 +39,18 @@ $(document).ready(function(){
 		label:"To vertical layout",
 	}));
 
+	var wind = new Window({
+		share:1,
+		title:"Window example"
+	});
+
+
+	var ti = new TextInput({
+		label:"Text input ",
+		icon: "user",
+	});
+
+	wind.append(ti);
 	var side = new Container({
 		contentType:'blocks',
 		share:1,
@@ -57,7 +69,7 @@ $(document).ready(function(){
 		share:4,
 	});
 	u.append(tabs);
-	d.append(new Element());
+	d.append(wind);
 	side.append(acc);
 	right.append(u)
 		.append(d);

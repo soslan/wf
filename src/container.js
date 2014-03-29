@@ -2,8 +2,9 @@ function Container(args){
 	var self = this;
 	args = args?args:{};
 	Element.call(this,{
-		className:"container"
+		className:args.className,
 	});
+	this.addClass("container");
 	this.contentType = new Value({
 		value: "lines",
 	});
@@ -113,3 +114,43 @@ function Container(args){
 }
 
 Container.prototype = Object.create(Element.prototype);
+
+function Window(args){
+	var self = this;
+	args = args?args:{};
+	Container.call(this,{
+		className:args.className,
+		share:args.share,
+	});
+
+	this.addClass('window');
+
+	this.content = new Container({
+		className:"window-content",
+		share:1,
+	});
+	this.titleBar = new Container({
+		className:"window-titlebar",
+		contentDirection:"horizontal",
+	});
+
+	this.titleValue = new Value({
+		value:args.title,
+	});
+
+	this.title = new Label({
+		text:self.titleValue.get(),
+	})
+
+	this.titleBar.append(self.title);
+
+	this.element.appendChild(this.titleBar.element);
+	this.element.appendChild(this.content.element);
+}
+
+Window.prototype = Object.create(Container.prototype);
+
+Window.prototype.append = function(element){
+	this.content.append(element);
+	return this;
+}
