@@ -25,6 +25,7 @@ $(document).ready(function(){
 	}));
 
 	var acc = new AccordionView({
+		maximized:true,
 		share:1,
 	});
 	var tab3 = acc.addItem({
@@ -40,8 +41,10 @@ $(document).ready(function(){
 	}));
 
 	var wind = new Window({
+		maximized:true,
 		share:1,
-		title:"Window example"
+		title:"Window example",
+		icon:"camera",
 	});
 
 
@@ -52,21 +55,25 @@ $(document).ready(function(){
 
 	wind.append(ti);
 	var side = new Container({
+		maximized:true,
 		contentType:'blocks',
 		share:1,
 	});
 	var right = new Container({
 		contentType:'blocks',
 		direction:'v',
+		maximized:true,
 		share:2,
 	});
 	var u = new Container({
 		contentType:'blocks',
 		share:3,
+		maximized:true,
 	});
 	var d = new Container({
 		contentType:'blocks',
 		share:4,
+		maximized:true,
 	});
 	u.append(tabs);
 	d.append(wind);

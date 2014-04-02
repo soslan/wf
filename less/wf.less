@@ -95,6 +95,18 @@
 	display:inline;
 }
 
+.label{
+	//padding-right:5px;
+}
+
+.label-icon{
+	//padding-right: 5px;
+}
+
+.label-icon:empty{
+	padding:0;
+}
+
 /* Button */
 
 .button{
@@ -435,7 +447,12 @@
 }
 
 .window-titlebar{
-	padding:5px 10px;
-	margin:5px 0 0 0;
+	flex-shrink:0;
+	//padding:5px 10px;
 	background-color: @gray;
+}
+
+.window-body{
+	overflow:hidden;
+	background-color: @white;
 }

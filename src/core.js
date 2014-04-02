@@ -412,22 +412,33 @@ function Label(args){
 	args = args?args:{};
 	Element.call(this,{
 		tagName:"span",
-		className:"label fa",
+		className:"label",
+	});
+	this.icon = new Element({
+		tagName:"span",
+		className:"fa label-icon",
+	});
+	this.text = new Element({
+		tagName:"span",
+		className:"label-text",
 	});
 
 	if(typeof args.text == "string"){
-		this.$.text(args.text);
+		this.text.$.text(args.text);
 	}
 	if(typeof args.icon == "string"){
 		this.setIcon(args.icon);
 	}
+
+	this.append(this.icon)
+		.append(this.text);
 }
 
 Label.prototype = Object.create(Element.prototype);
 
 Label.prototype.setIcon = function(iconTag){
-	this.removeClass('fa-'+this.iconTag);
-	this.addClass('fa-'+iconTag);
+	this.icon.removeClass('fa-'+this.iconTag);
+	this.icon.addClass('fa-'+iconTag);
 	this.iconTag = iconTag;
 }
 

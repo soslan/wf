@@ -192,4 +192,8 @@ function AccordionView(args){
 
 AccordionView.prototype = Object.create(Container.prototype);
 
+/*AccordionView.prototype.append = function(newWindow){
+	this.windows.push(newWindow);
+}*/
+
 

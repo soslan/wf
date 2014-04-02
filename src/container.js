@@ -13,7 +13,21 @@ function Container(args){
 		value: "new-line",
 	});
 
+	this.maximized = new Value();
+	this.share = new Value({
+		value:args.share || 1,
+	});
+
 	this.contentDirection = new Value();
+
+	this.maximized.addEventListener('change',function(d){
+		if(d.value){
+			self.element.style.flex = self.share.get();
+		}
+		else{
+			self.element.style.flex = '';
+		}
+	});
 
 	this.contentDirection.addFilter('set', function(d){
 		if(d.value == "horizontal" || d.value == "h"){
@@ -80,6 +94,9 @@ function Container(args){
 	};
 
 	onContentTypeOrPositionChange();
+	self.maximized.set({
+		value:args.maximized,
+	});
 	
 	/*if(typeof args.direction === "string"){
 		if(args.direction === "v"){
@@ -100,9 +117,9 @@ function Container(args){
 
 	
 
-	if(typeof args.share !== "undefined"){
+	/*if(typeof args.share !== "undefined"){
 		this.element.style.flex = args.share;
-	}
+	}*/
 
 	if(args.mode == "full"){
 		this.addClass("container-full");
@@ -121,7 +138,10 @@ function Window(args){
 	Container.call(this,{
 		className:args.className,
 		share:args.share,
+		maximized:args.maximized,
 	});
+
+	this.rolledUp = new Value();
 
 	this.addClass('window');
 
@@ -129,6 +149,14 @@ function Window(args){
 		className:"window-content",
 		share:1,
 	});
+	this.body = new Container({
+		className:"window-body",
+		share:1,
+		contentDirection:"horizontal",
+		maximized:true,
+	});
+	//this.verticalScrollContainer = new Container();
+	//this.horizontalScrollContainer = new Container();
 	this.titleBar = new Container({
 		className:"window-titlebar",
 		contentDirection:"horizontal",
@@ -138,14 +166,69 @@ function Window(args){
 		value:args.title,
 	});
 
+	this.closeButton = new Button({
+		icon:'times',
+		onClick:function(){
+			self.element.parentNode.removeChild(self.element);
+		}
+	});
+
+	this.hideShowButton = new Button({
+		//icon:'minus',
+		onClick:function(){
+			self.rolledUp.set({
+				value:!self.rolledUp.get(),
+			});
+		},
+	});
+
+	this.rolledUp.addEventListener('set',function(d){
+		if(d.value){
+			d.value = true;
+		}
+		else{
+			d.value = false;
+		}
+	});
+
+	this.rolledUp.addEventListener('change',function(d){
+		if(d.value){
+			self.maximized.savedValue = self.maximized.get();
+			self.maximized.set({
+				value:false,
+			})
+			self.body.$.hide();
+			self.hideShowButton.label.setIcon("chevron-down");
+		}
+		else{
+			self.maximized.set({
+				value:self.maximized.savedValue == undefined?args.maximized:self.maximized.savedValue,
+				//value:args
+			});
+			self.body.$.show();
+			self.hideShowButton.label.setIcon("chevron-up");
+		}
+	});
+
+	this.rolledUp.set({
+		value:args.rolledUp,
+	});
+
 	this.title = new Label({
 		text:self.titleValue.get(),
-	})
+		icon:args.icon,
+	});
 
 	this.titleBar.append(self.title);
+	this.titleBar.append(self.hideShowButton);
+	this.titleBar.append(self.closeButton);
+
+	this.body.append(this.content)
+		//.append(this.verticalScrollContainer);
 
 	this.element.appendChild(this.titleBar.element);
-	this.element.appendChild(this.content.element);
+	this.element.appendChild(this.body.element);
+	//this.element.appendChild(this.horizontalScrollContainer.element);
 }
 
 Window.prototype = Object.create(Container.prototype);
