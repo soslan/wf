@@ -132,6 +132,46 @@ function Container(args){
 
 Container.prototype = Object.create(Element.prototype);
 
+function Toolbar(args){
+	var self = this;
+	args = args?args:{};
+	Container.call(this,{
+		className:args.className,
+		contentDirection:args.contentDirection,
+	});
+
+	this.addClass("toolbar");
+
+	this.left = new Container({
+		contentDirection:args.contentDirection,
+	});
+	this.center = new Container({
+		contentDirection:args.contentDirection,
+	});
+	this.right = new Container({
+		contentDirection:args.contentDirection,
+	});
+
+	this.element.appendChild(this.left.element);
+	this.element.appendChild(this.center.element);
+	this.element.appendChild(this.right.element);
+}
+
+Toolbar.prototype = Object.create(Container.prototype);
+
+Toolbar.prototype.append = function(element,align){
+	if(align === "right"){
+		this.right.append(element);
+	}
+	else if(align === "center"){
+		this.center.append(element);
+	}
+	else{
+		this.left.append(element);
+	}
+	return this;
+}
+
 function Window(args){
 	var self = this;
 	args = args?args:{};
@@ -157,7 +197,7 @@ function Window(args){
 	});
 	//this.verticalScrollContainer = new Container();
 	//this.horizontalScrollContainer = new Container();
-	this.titleBar = new Container({
+	this.titleBar = new Toolbar({
 		className:"window-titlebar",
 		contentDirection:"horizontal",
 	});
@@ -220,8 +260,8 @@ function Window(args){
 	});
 
 	this.titleBar.append(self.title);
-	this.titleBar.append(self.hideShowButton);
-	this.titleBar.append(self.closeButton);
+	this.titleBar.append(self.hideShowButton,"right");
+	this.titleBar.append(self.closeButton,"right");
 
 	this.body.append(this.content)
 		//.append(this.verticalScrollContainer);
