@@ -88,9 +88,13 @@ function Button(args){
 		}
 	});
 
+	/*if(typeof args.caption == "string" || typeof args.text == "string" || typeof args.label == "string"){
+		this.setCaption(args.caption || args.text || args.label);
+	}*/
+
 	this.label = new Label({
-		text:args.text || args.label || '',
-		icon:args.icon || ''
+		text:args.text || args.label,
+		icon:args.icon
 	});
 
 	this.append(this.button);

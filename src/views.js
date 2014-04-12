@@ -27,7 +27,8 @@ function TabView(args){
 		newTabArgs = newTabArgs || {};
 		var tab = {};
 		this.tabs.push(tab);
-		tab.tabElement = new Element();
+		tab.tabElement = new Toolbar();
+		tab.tabTitle = new Label();
 		tab.documentElement = new Container({
 			share:1,
 		});
@@ -41,12 +42,14 @@ function TabView(args){
 		});
 
 		tab.label.addEventListener('change',function(data){
-			tab.tabElement.element.innerHTML = data.value;
+			tab.tabTitle.setText(data.value);
 		});
 
 		tab.label.set({
 			value:newTabArgs.label || '',
-		})
+		});
+
+		tab.tabElement.append(tab.tabTitle);
 
 		self.tabsContainer.append(tab.tabElement);
 		self.documentsContainer.append(tab.documentElement);
@@ -84,10 +87,6 @@ function TabView(args){
 			tab.activate();
 		}
 
-		if(typeof newTabArgs.ready == "function"){
-			newTabArgs.ready(tab);
-		}
-
 		if(this.activeTab == undefined){
 			this.activeTab = tab;
 			tab.tabElement.element.classList.add('active');
@@ -95,8 +94,9 @@ function TabView(args){
 		}
 
 		if(newTabArgs.closeable == true){
-			var closeElement = new Label({
+			var closeElement = new Button({
 				icon:'times',
+				className:"quiet red",
 			});
 			tab.tabElement.append(closeElement);
 			closeElement.clickable({
@@ -106,6 +106,10 @@ function TabView(args){
 					e.preventDefault();
 				}
 			});
+		}
+
+		if(typeof newTabArgs.ready == "function"){
+			newTabArgs.ready(tab);
 		}
 
 		return tab;

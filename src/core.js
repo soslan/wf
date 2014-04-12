@@ -14,7 +14,7 @@ function Element(args){
 	this.$ = this.$element;
 	this.tagName = args.tagName;
 	
-	this.element.className = "element";
+	//this.element.className = "element";
 
 	this.container = this.element; // Temporary.
 
@@ -380,6 +380,21 @@ Element.prototype.valueCarrier = function(args){
 	this.valueCarrier = true;
 }
 
+function TextElement(args){
+	var text = "";
+	if(typeof args == "string"){
+		text = args;
+		args = {};
+	}
+	else if(typeof args == "object"){
+		text = args.text || args.value || "";
+	}
+	else{
+		args = {};
+	}
+	this.element = document.createTextNode();
+}
+
 // Text input
 // To be renamed to TextInput
 function TextInputCore(args){
@@ -428,9 +443,19 @@ function Label(args){
 	if(typeof args.text == "string"){
 		this.text.$.text(args.text);
 	}
+	else{
+		this.addClass("notext");
+		//this.text.addClass('hidden');
+	}
 	if(typeof args.icon == "string"){
 		this.setIcon(args.icon);
 	}
+	else{
+		this.addClass("noicon");
+		//this.icon.addClass("hidden");
+	}
+
+	//if(typeof args.text)
 
 	this.append(this.icon)
 		.append(this.text);
@@ -439,8 +464,22 @@ function Label(args){
 Label.prototype = Object.create(Element.prototype);
 
 Label.prototype.setIcon = function(iconTag){
+	this.removeClass("noicon");
 	this.icon.removeClass('fa-'+this.iconTag);
 	this.icon.addClass('fa-'+iconTag);
 	this.iconTag = iconTag;
+}
+
+Label.prototype.setText = function(text){
+	this.removeClass("notext");
+	this.text.element.innerHTML = text;
+}
+
+Label.prototype.removeIcon = function(){
+	this.addClass("noicon");
+}
+
+Label.prototype.removeText = function(){
+	this.addClass("notext");
 }
 

@@ -13,6 +13,9 @@
 @red-shadowed: #a33;
 @green-lit: #5b5;
 @red-lit: #c55;
+@blue:#46a;
+@blue-shadowed:#359;
+@blue-lit:#57b;
 
 
 
@@ -121,6 +124,14 @@
 	padding:0;
 }
 
+.label.noicon .label-icon{
+	display:none;
+}
+
+.label.notext .label-text{
+	display:none;
+}
+
 /* Button */
 
 .button{
@@ -129,8 +140,8 @@
 	padding: 0 10px;
 	font-weight:bold;
 	margin:0;
-	color: white;
-	background-color:@gray;
+	//color: white;
+	//background-color:@blue;
 	border:none;
 	cursor:pointer;
 	min-height:26px;
@@ -138,28 +149,46 @@
 	vertical-align: bottom;
 }
 
-.button.active{
-	background-color: @main-color;
+.button:active{
+	-webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+	box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+}
+
+.button.blue{
+	color:@white;
+	background-color:@blue;
+}
+
+.button.blue:active{
+	background-color: @blue-shadowed;
 	
 }
 
-.button:hover{
-	background-color: @main-color;
+.button.blue:hover,
+.button.quiet.blue:hover{
+	color:@white;
+	background-color: @blue-lit;
 }
 
 .button.green{
+	color:@white;
 	background-color: @green;
 }
 
 .button.red{
+	color:@white;
 	background-color: @red;
 }
 
-.button.green:hover{
+.button.green:hover,
+.button.quiet.green:hover{
+	color:@white;
 	background-color: @green-lit;
 }
 
-.button.red:hover{
+.button.red:hover,
+.button.quiet.red:hover{
+	color:@white;
 	background-color: @red-lit;
 }
 
@@ -169,6 +198,11 @@
 
 .button.red:active{
 	background-color: @red-shadowed;
+}
+
+.button.quiet{
+	color:inherit;
+	background-color: transparent;
 }
 
 /* Toggle */
@@ -408,7 +442,7 @@
 }
 
 .tab-view-tab .label{
-	padding-left:5px;
+	//padding-left:5px;
 }
 
 .tab-view-tabs{
@@ -420,13 +454,16 @@
 	cursor:pointer;
 	//margin:5px 0 0 5px;
 	float:left;
-	padding:5px 10px;
-	background-color: @gray;
+	padding-left:10px;
+	padding-right:5px;
+	background-color: @white;
 	color: @black;
+	opacity:0.5;
 }
 
 .tab-view-tab.active{
-	background-color: @white;
+	opacity:1;
+	//background-color: @white;
 }
 
 .tab-view-document{
@@ -499,6 +536,10 @@
 .toolbar{
 	justify-content:space-between;
 	line-height:26px;
+}
+
+.toolbar > div > *{
+	margin-right:5px;
 }
 
 /* Panel */
