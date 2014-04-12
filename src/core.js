@@ -400,8 +400,10 @@ function Clickable(args){
 	args = args?args:{};
 	Element.call(this,{
 		tagName:typeof args.tagName == "string"?args.tagName:"button",
-		className:"clickable",
+		className:args.className,
 	});
+
+	this.addClass("clickable");
 	this.clickable(args);
 }
 

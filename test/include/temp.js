@@ -40,13 +40,16 @@ $(document).ready(function(){
 		label:"To vertical layout",
 	}));
 
-	var wind = new Window({
+	var wind = new Panel({
+		share:1,
+	});
+
+	var wind2 = new Window({
 		maximized:true,
 		share:1,
 		title:"Window example",
 		icon:"camera",
 	});
-
 
 	var ti = new TextInput({
 		label:"Text input ",
@@ -77,6 +80,7 @@ $(document).ready(function(){
 	});
 	u.append(tabs);
 	d.append(wind);
+	d.append(wind2);
 	side.append(acc);
 	right.append(u)
 		.append(d);

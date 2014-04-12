@@ -7,6 +7,14 @@
 @light-light-gray: #ddd;
 @padd: 5px;
 @toggle-width:70px;
+@green: #5a5;
+@red: #b44;
+@green-shadowed: #494;
+@red-shadowed: #a33;
+@green-lit: #5b5;
+@red-lit: #c55;
+
+
 
 .element-container{
 	display:block;
@@ -76,6 +84,12 @@
 	cursor:pointer;
 }
 
+.hidden{
+	display:none !important;
+}
+
+/* Colors */
+
 /* Core */
 .content-blocks{
 	display:flex;
@@ -131,6 +145,30 @@
 
 .button:hover{
 	background-color: @main-color;
+}
+
+.button.green{
+	background-color: @green;
+}
+
+.button.red{
+	background-color: @red;
+}
+
+.button.green:hover{
+	background-color: @green-lit;
+}
+
+.button.red:hover{
+	background-color: @red-lit;
+}
+
+.button.green:active{
+	background-color: @green-shadowed;
+}
+
+.button.red:active{
+	background-color: @red-shadowed;
 }
 
 /* Toggle */
@@ -393,7 +431,7 @@
 
 .tab-view-document{
 	padding:5px;
-	display:none;
+	//display:none;
 	//position:absolute;
 	background-color: @white;
 	flex:1;
@@ -457,8 +495,17 @@
 	background-color: @white;
 }
 
-
 /* Toolbar */
 .toolbar{
 	justify-content:space-between;
+	line-height:26px;
+}
+
+/* Panel */
+
+.panel{
+	padding:5px;
+	margin:5px;
+	background-color: @white;
+	color:@black;
 }

@@ -75,7 +75,8 @@ function Button(args){
 
 	this.button = new Clickable({
 		onClick:args.onClick,
-		tabIndex:args.tabIndex || '-1'
+		tabIndex:args.tabIndex || '-1',
+		className:args.className,
 	});
 	this.setFocusingElement(this.button);
 	this.button.addClass('button');

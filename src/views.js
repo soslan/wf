@@ -28,11 +28,13 @@ function TabView(args){
 		var tab = {};
 		this.tabs.push(tab);
 		tab.tabElement = new Element();
-		tab.documentElement = new Element();
+		tab.documentElement = new Container({
+			share:1,
+		});
 		tab.label = new Value();
 
 		tab.tabElement.addClass('tab-view-tab');
-		tab.documentElement.addClass('tab-view-document');
+		tab.documentElement.addClass('tab-view-document hidden');
 
 		tab.tabElement.addEventListener('click',function(){
 			tab.activate();
@@ -51,10 +53,10 @@ function TabView(args){
 
 		tab.activate = function(){
 			self.activeTab.tabElement.element.classList.remove('active');
-			self.activeTab.documentElement.$.hide();
+			self.activeTab.documentElement.addClass('hidden');
 			self.activeTab = tab;
 			tab.tabElement.element.classList.add('active');
-			tab.documentElement.$.show();
+			tab.documentElement.removeClass('hidden');
 		}
 
 		tab.close = function(){
@@ -89,7 +91,7 @@ function TabView(args){
 		if(this.activeTab == undefined){
 			this.activeTab = tab;
 			tab.tabElement.element.classList.add('active');
-			tab.documentElement.$.show();
+			tab.documentElement.removeClass('hidden');
 		}
 
 		if(newTabArgs.closeable == true){

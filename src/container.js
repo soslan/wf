@@ -6,7 +6,7 @@ function Container(args){
 	});
 	this.addClass("container");
 	this.contentType = new Value({
-		value: "lines",
+		value: "blocks",
 	});
 
 	this.position = new Value({
@@ -14,9 +14,7 @@ function Container(args){
 	});
 
 	this.maximized = new Value();
-	this.share = new Value({
-		value:args.share || 1,
-	});
+	this.share = new Value();
 
 	this.contentDirection = new Value();
 
@@ -77,26 +75,23 @@ function Container(args){
 	this.position.addEventListener('change',onContentTypeOrPositionChange);
 
 	var onContentTypeOrPositionChange = function(){
-		var c = self.contentType;
-		var p = self.position;
+		var c = self.contentType.get();
+		var p = self.position.get();
 		if(c === "blocks" && p === "inline"){
-			self.element.style.display = inlineFlex;
+			self.element.style.display = 'inline-flex';
 		}
 		else if(c === "blocks" && p === "new-line"){
-			self.element.style.display = flex;
+			self.element.style.display = 'flex';
 		}
 		else if(c === "lines" && p === "inline"){
-			self.element.style.display = inlineBlock;
+			self.element.style.display = 'inline-block';
 		}
 		else if(c === "lines" && p === "new-line"){
-			self.element.style.display = inlineFlex;
+			self.element.style.display = 'block';
 		}
 	};
 
 	onContentTypeOrPositionChange();
-	self.maximized.set({
-		value:args.maximized,
-	});
 	
 	/*if(typeof args.direction === "string"){
 		if(args.direction === "v"){
@@ -115,7 +110,26 @@ function Container(args){
 		value:args.contentDirection,
 	});
 
-	
+	if(typeof args.share === "number"){
+		this.share.set({
+			value:args.share,
+		});
+		if(args.maximized == undefined){
+			this.maximized.set({
+				value:true,
+			});
+		}
+		else{
+			this.maximized.set({
+				value:args.maximized,
+			});
+		}
+	}
+	else{
+		this.maximized.set({
+			value:args.maximized,
+		});
+	}
 
 	/*if(typeof args.share !== "undefined"){
 		this.element.style.flex = args.share;
@@ -135,9 +149,10 @@ Container.prototype = Object.create(Element.prototype);
 function Toolbar(args){
 	var self = this;
 	args = args?args:{};
+	args.contentDirection = args.contentDirection || "horizontal";
 	Container.call(this,{
 		className:args.className,
-		contentDirection:args.contentDirection,
+		contentDirection:args.contentDirection || "horizontal",
 	});
 
 	this.addClass("toolbar");
@@ -171,6 +186,20 @@ Toolbar.prototype.append = function(element,align){
 	}
 	return this;
 }
+
+function Panel(args){
+	var self = this;
+	args = args?args:{};
+	Container.call(this,{
+		className:args.className,
+		share:args.share,
+		maximized:args.maximized,
+	});
+
+	this.addClass('panel');
+}
+
+Panel.prototype = Object.create(Container.prototype);
 
 function Window(args){
 	var self = this;
@@ -206,13 +235,6 @@ function Window(args){
 		value:args.title,
 	});
 
-	this.closeButton = new Button({
-		icon:'times',
-		onClick:function(){
-			self.element.parentNode.removeChild(self.element);
-		}
-	});
-
 	this.hideShowButton = new Button({
 		//icon:'minus',
 		onClick:function(){
@@ -238,15 +260,15 @@ function Window(args){
 				value:false,
 			})
 			self.body.$.hide();
-			self.hideShowButton.label.setIcon("chevron-down");
+			self.hideShowButton.label.setIcon("plus");
 		}
 		else{
 			self.maximized.set({
-				value:self.maximized.savedValue == undefined?args.maximized:self.maximized.savedValue,
+				value:self.maximized.savedValue == undefined?self.maximized.get():self.maximized.savedValue,
 				//value:args
 			});
 			self.body.$.show();
-			self.hideShowButton.label.setIcon("chevron-up");
+			self.hideShowButton.label.setIcon("minus");
 		}
 	});
 
@@ -261,7 +283,11 @@ function Window(args){
 
 	this.titleBar.append(self.title);
 	this.titleBar.append(self.hideShowButton,"right");
-	this.titleBar.append(self.closeButton,"right");
+
+	if(args.closeable){
+		this.closeable();
+	}
+
 
 	this.body.append(this.content)
 		//.append(this.verticalScrollContainer);
@@ -276,4 +302,15 @@ Window.prototype = Object.create(Container.prototype);
 Window.prototype.append = function(element){
 	this.content.append(element);
 	return this;
+}
+
+Window.prototype.closeable = function(){
+	var self = this;
+	this.closeButton = new Button({
+		icon:'times',
+		onClick:function(){
+			self.element.parentNode.removeChild(self.element);
+		}
+	});
+	this.titleBar.append(this.closeButton,"right");
 }
