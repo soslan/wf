@@ -39,13 +39,6 @@
 	outline:5px auto @main-color-light;
 }
 
-.container{
-	padding:0;
-	display:flex;
-	font-family:Arial;
-	//background-color: @white;
-	color: @black;
-}
 
 .container-content{
 	padding: @padd;
@@ -68,6 +61,7 @@
 }
 
 .control{
+	position:relative;
 	height:26px;
 	line-height:26px;
 	vertical-align: bottom;
@@ -89,6 +83,36 @@
 
 .hidden{
 	display:none !important;
+}
+
+/* Container */
+
+.container{
+	padding:0;
+	display:flex;
+	font-family:Arial;
+	//background-color: @white;
+	color: @black;
+}
+
+.container.display-type-new-line.content-type-blocks{
+	display:flex;
+}
+
+.container.display-type-inline.content-type-blocks{
+	display:inline-flex;
+}
+
+.container.display-type-new-line.content-type-lines{
+	display:block;
+}
+
+.container.display-type-inline.content-type-lines{
+	display:inline-block;
+}
+
+.container.display-type-none{
+	display:none;
 }
 
 /* Colors */
@@ -117,6 +141,7 @@
 }
 
 .label-icon{
+	display:inline;
 	//padding-right: 5px;
 }
 
@@ -137,7 +162,7 @@
 .button{
 	line-height: 26px;
 	display:inline-block;
-	padding: 0 10px;
+	padding: 0;
 	font-weight:bold;
 	margin:0;
 	//color: white;
@@ -145,8 +170,26 @@
 	border:none;
 	cursor:pointer;
 	min-height:26px;
-	min-width:6px;
+	min-width:26px;
 	vertical-align: bottom;
+}
+
+.button > .label{
+	display:inline-block;
+	padding:0 10px;
+}
+
+.button > .label > .label-icon{
+	margin-right:5px;
+}
+
+.button > .label.notext{
+	padding:0;
+	width:26px;
+}
+
+.button > .label.notext > .label-icon{
+	margin-right:0;
 }
 
 .button:active{
@@ -203,6 +246,18 @@
 .button.quiet{
 	color:inherit;
 	background-color: transparent;
+}
+
+/* Dropdown */
+
+.dropdown{
+	display:none;
+	left: 0;
+	top: 100%;
+	position: absolute;
+	padding:10px 0;
+	background-color: @light-gray;
+	z-index:101;
 }
 
 /* Toggle */
@@ -461,7 +516,12 @@
 	opacity:0.5;
 }
 
-.tab-view-tab.active{
+.tab-view-tab:hover{
+	opacity:0.6;
+}
+
+.tab-view-tab.active,
+.tab-view-tab.active:hover{
 	opacity:1;
 	//background-color: @white;
 }

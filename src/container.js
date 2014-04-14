@@ -9,9 +9,11 @@ function Container(args){
 		value: "blocks",
 	});
 
-	this.position = new Value({
+	this.displayType = new Value({
 		value: "new-line",
 	});
+
+	this.position = this.displayType;
 
 	this.maximized = new Value();
 	this.share = new Value();
@@ -37,6 +39,29 @@ function Container(args){
 		return d;
 	});
 
+	this.displayType.addFilter('set', function(d){
+		if(d.value == "inline"){
+			d.value = "inline";
+		}
+		else if(d.value == "none"){
+			d.value = "none";
+		}
+		else{
+			d.value = "new-line";
+		}
+		return d;
+	});
+
+	this.contentType.addFilter('set', function(d){
+		if(d.value == "lines"){
+			d.value = "lines";
+		}
+		else{
+			d.value = "blocks";
+		}
+		return d;
+	});
+
 	this.contentDirection.addEventListener('change',function(){
 		var direction = self.contentDirection.get();
 		if(direction == "vertical"){
@@ -53,7 +78,8 @@ function Container(args){
 		this.element.style.flex = args.flex;
 	}
 
-	if(typeof args.contentType == "string"){
+	//args.displayType = args.displayType || args.position;
+	/*if(typeof args.contentType == "string"){
 		if(args.contentType === "blocks"){
 			this.contentType.set("blocks");
 		}
@@ -61,22 +87,39 @@ function Container(args){
 			this.contentType.set("lines");
 		}
 	}
-
-	if(typeof args.position == "string"){
-		if(args.position === "inline"){
-			this.position.set("inline");
+	if(typeof args.displayType == "string"){
+		if(args.displayType === "inline"){
+			this.displayType.set("inline");
 		}
-		else if(args.position === "new-line"){
-			this.position.set("new-line");
+		else if(args.displayType === "new-line"){
+			this.displayType.set("new-line");
 		}
-	}
+		else if(args.displayType === "none"){
+			this.displayType.set("none");
+		}
+	}*/
 
-	this.contentType.addEventListener('change',onContentTypeOrPositionChange);
-	this.position.addEventListener('change',onContentTypeOrPositionChange);
+	//this.contentType.addEventListener('change',onContentTypeOrPositionChange);
+	//this.displayType.addEventListener('change',onContentTypeOrPositionChange);
 
-	var onContentTypeOrPositionChange = function(){
+	this.contentType.addEventListener('change',function(d){
+		if(d.oldValue !== undefined){
+			self.removeClass('content-type-' + d.oldValue);
+		}
+		self.addClass('content-type-'+d.value);
+	});
+
+	this.displayType.addEventListener('change',function(d){
+		if(d.oldValue !== undefined){
+			self.removeClass('display-type-' + d.oldValue);
+		}
+		self.addClass('display-type-'+d.value);
+	});
+	//this.displayType.addEventListener('change',onContentTypeOrPositionChange);
+
+	/*var onContentTypeOrPositionChange = function(){
 		var c = self.contentType.get();
-		var p = self.position.get();
+		var p = self.displayType.get();
 		if(c === "blocks" && p === "inline"){
 			self.element.style.display = 'inline-flex';
 		}
@@ -91,7 +134,7 @@ function Container(args){
 		}
 	};
 
-	onContentTypeOrPositionChange();
+	onContentTypeOrPositionChange();*/
 	
 	/*if(typeof args.direction === "string"){
 		if(args.direction === "v"){
@@ -106,6 +149,15 @@ function Container(args){
 		}
 	}
 	*/
+
+	this.displayType.set({
+		value:args.displayType || args.position,
+	});
+
+	this.contentType.set({
+		value:args.contentType,
+	});
+	
 	this.contentDirection.set({
 		value:args.contentDirection,
 	});
@@ -167,6 +219,35 @@ function Toolbar(args){
 		contentDirection:args.contentDirection,
 	});
 
+	this.moreButton = new Button({
+		icon:"ellipsis-v",
+		className:"toolbar-more",
+		onClick:function(){
+			var temp = self.moreContainer.displayType.get();
+			if(temp == "none"){
+				self.moreContainer.displayType.set({
+					value:"new-line",
+				});
+			}
+			else{
+				self.moreContainer.displayType.set({
+					value:"none",
+				});
+			}
+		},
+	});
+	this.moreButton.addClass("hidden");
+
+	this.moreContainer = new Container({
+		className:"dropdown toolbar-more-container",
+		contentDirection:"vertical",
+		displayType:"none",
+	});
+
+	this.moreButton.append(this.moreContainer);
+
+	this.right.append(this.moreButton);
+
 	this.element.appendChild(this.left.element);
 	this.element.appendChild(this.center.element);
 	this.element.appendChild(this.right.element);
@@ -185,6 +266,11 @@ Toolbar.prototype.append = function(element,align){
 		this.left.append(element);
 	}
 	return this;
+}
+
+Toolbar.prototype.addToMore = function(element){
+	this.moreContainer.append(element);
+	this.moreButton.removeClass("hidden");
 }
 
 function Panel(args){

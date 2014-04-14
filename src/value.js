@@ -114,6 +114,7 @@ Value.prototype.set = function(args){
 			return this;
 		}
 	}*/
+	args.oldValue = this.value;
 	this.value = args.value;
 	this.dispatchEvent('change',args);
 }
