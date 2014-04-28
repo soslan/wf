@@ -37,7 +37,12 @@ Element.prototype.value = function(value){
 }
 
 Element.prototype.append = function(element){
-	this.element.appendChild(element.element);
+	if(element instanceof Node ){
+		this.element.appendChild(element);
+	}
+	else{
+		this.element.appendChild(element.element);
+	}
 	return this;
 }
 
@@ -474,8 +479,17 @@ Label.prototype.setIcon = function(iconTag){
 }
 
 Label.prototype.setText = function(text){
-	this.removeClass("notext");
-	this.text.element.innerHTML = text;
+	if(text instanceof String){
+		this.removeClass("notext");
+		this.text.element.innerHTML = text;
+	}
+	else if(text instanceof Text){
+		this.removeClass("notext");
+		this.text.element.innerHTML = '';
+		this.text.element.appendChild(text);
+
+	}
+	return this;
 }
 
 Label.prototype.removeIcon = function(){

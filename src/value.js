@@ -6,8 +6,8 @@ function Value(args){
 	this.broadcasters = [];
 	this.patterns = [];
 	this.filters = {};
-	this.eventLocked = {};
-	this.pendingHandler ={};
+	//this.eventLocked = {};
+	//this.pendingHandler ={};
 	if(typeof args.value === "undefined"){
 		args.value = "";
 	}
@@ -33,16 +33,20 @@ Value.prototype.removeEventListener = function(event, handler){
 	return this;
 }
 
+Value.prototype.onChange = function(handler){
+	return this.addEventListener('change', handler);
+}
+
 Value.prototype.setValue = function(value, args){
 	var args = args || {};
 	args.value = value;
 	this.set(args);
 }
 
-/*
-Value.prototype.addBroadcaster = function(element){
-	this.broadcasters.push(element);
-	return this;
+Value.prototype.addBroadcaster = function(args){
+	var broadcaster = document.createTextNode(this.value.toString());
+	this.broadcasters.push(broadcaster);
+	return broadcaster;
 }
 
 Value.prototype.removeBroadcaster = function(element){
@@ -55,9 +59,11 @@ Value.prototype.removeBroadcaster = function(element){
 
 Value.prototype.broadcast = function(changes){
 	var self = this;
-	
+	for (var i in this.broadcasters){
+		this.broadcasters[i].nodeValue = changes.value.toString();
+	}
 }
-*/
+
 Value.prototype.dispatchEvent = function(event, e){
 	var self = this;
 	if(typeof event == "string"){
@@ -124,6 +130,7 @@ Value.prototype.set = function(args){
 	args.oldValue = this.value;
 	this.value = args.value;
 	this.dispatchEvent('change',args);
+	this.broadcast(args);
 }
 
 Value.prototype.get = function(args){

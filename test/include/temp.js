@@ -56,6 +56,8 @@ $(document).ready(function(){
 		icon: "user",
 	});
 
+	tab1.tabTitle.setText(ti.value.addBroadcaster());
+
 	wind.append(ti);
 	var side = new Container({
 		maximized:true,
