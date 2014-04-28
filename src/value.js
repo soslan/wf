@@ -32,6 +32,13 @@ Value.prototype.removeEventListener = function(event, handler){
 	}
 	return this;
 }
+
+Value.prototype.setValue = function(value, args){
+	var args = args || {};
+	args.value = value;
+	this.set(args);
+}
+
 /*
 Value.prototype.addBroadcaster = function(element){
 	this.broadcasters.push(element);

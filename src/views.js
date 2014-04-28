@@ -34,6 +34,9 @@ function TabView(args){
 		});
 		tab.label = new Value();
 
+		tab.onActivate = newTabArgs.onActivate;
+		tab.onDeactivate = newTabArgs.onDeactivate;
+
 		tab.tabElement.addClass('tab-view-tab');
 		tab.documentElement.addClass('tab-view-document hidden');
 
@@ -55,11 +58,19 @@ function TabView(args){
 		self.documentsContainer.append(tab.documentElement);
 
 		tab.activate = function(){
-			self.activeTab.tabElement.element.classList.remove('active');
-			self.activeTab.documentElement.addClass('hidden');
+			if(typeof self.activeTab !== "undefined"){
+				self.activeTab.tabElement.element.classList.remove('active');
+				self.activeTab.documentElement.addClass('hidden');
+				if(typeof self.activeTab.onDeactivate == "function"){
+					self.activeTab.onDeactivate();
+				}
+			}
 			self.activeTab = tab;
 			tab.tabElement.element.classList.add('active');
 			tab.documentElement.removeClass('hidden');
+			if(typeof tab.onActivate == "function"){
+				tab.onActivate();
+			}
 		}
 
 		tab.close = function(){
@@ -83,16 +94,6 @@ function TabView(args){
 			delete tab;
 		}
 
-		if(newTabArgs.activate == true){
-			tab.activate();
-		}
-
-		if(this.activeTab == undefined){
-			this.activeTab = tab;
-			tab.tabElement.element.classList.add('active');
-			tab.documentElement.removeClass('hidden');
-		}
-
 		if(newTabArgs.closeable == true){
 			var closeElement = new Button({
 				icon:'times',
@@ -108,9 +109,32 @@ function TabView(args){
 			});
 		}
 
-		if(typeof newTabArgs.ready == "function"){
-			newTabArgs.ready(tab);
+		if(newTabArgs.activate == true || this.activeTab == undefined){
+			if(typeof self.activeTab !== "undefined"){
+				self.activeTab.tabElement.element.classList.remove('active');
+				self.activeTab.documentElement.addClass('hidden');
+				if(typeof self.activeTab.onDeactivate == "function"){
+					self.activeTab.onDeactivate();
+				}
+			}
+			self.activeTab = tab;
+			tab.tabElement.element.classList.add('active');
+			tab.documentElement.removeClass('hidden');
+			if(typeof newTabArgs.ready == "function"){
+				newTabArgs.ready(tab);
+			}
+			/*if(typeof tab.onActivate == "function"){
+				tab.onActivate();
+			}*/
+
 		}
+		else{
+			if(typeof newTabArgs.ready == "function"){
+				newTabArgs.ready(tab);
+			}
+		}
+
+		
 
 		return tab;
 	};

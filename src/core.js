@@ -21,6 +21,9 @@ function Element(args){
 	if(typeof args.className == "string"){
 		this.addClass(args.className);
 	}
+	if(typeof args.appendTo !== "undefined"){
+		args.appendTo.append(self);
+	}
 
 }
 

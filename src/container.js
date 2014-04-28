@@ -2,6 +2,7 @@ function Container(args){
 	var self = this;
 	args = args?args:{};
 	Element.call(this,{
+		appendTo:args.appendTo,
 		className:args.className,
 	});
 	this.addClass("container");
