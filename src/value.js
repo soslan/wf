@@ -110,24 +110,9 @@ Value.prototype.set = function(args){
 	else if(typeof args === "undefined"){
 		args = {};
 	}
-	/*if(typeof args.value === "undefined"){
-
-		return this;
-	}*/
-	args = this.applyFilter('set', args);
-	/*if(this.type == "number"){
-		if(!isNaN(parseFloat(candidate)) && isFinite(candidate)){
-			candidate = Number(candidate);
-		}
-		else if(Number(candidate) === 0){
-			candidate = Number(candidate);
-		}
-		else{
-			this.dispatchEvent('wrongvalue');
-			return this;
-		}
-	}*/
 	args.oldValue = this.value;
+	args = this.applyFilter('set', args);
+	
 	this.value = args.value;
 	this.dispatchEvent('change',args);
 	this.broadcast(args);

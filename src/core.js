@@ -479,7 +479,7 @@ Label.prototype.setIcon = function(iconTag){
 }
 
 Label.prototype.setText = function(text){
-	if(text instanceof String){
+	if(typeof text == "string"){
 		this.removeClass("notext");
 		this.text.element.innerHTML = text;
 	}
