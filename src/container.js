@@ -14,6 +14,10 @@ function Container(args){
 		value: "new-line",
 	});
 
+	this.hidden = new BooleanModel({
+		value:false,
+	})
+
 	this.position = this.displayType;
 
 	this.maximized = new Value();
@@ -28,6 +32,14 @@ function Container(args){
 		else{
 			self.element.style.flex = '';
 		}
+	});
+
+	this.hidden.onTrue(function(){
+		self.addClass('hidden');
+	});
+
+	this.hidden.onFalse(function(){
+		self.removeClass('hidden');
 	});
 
 	this.contentDirection.addFilter('set', function(d){
@@ -77,6 +89,10 @@ function Container(args){
 
 	if(args.flex){
 		this.element.style.flex = args.flex;
+	}
+
+	if(args.hidden){
+		this.hidden.true();
 	}
 
 	//args.displayType = args.displayType || args.position;
@@ -199,6 +215,31 @@ function Container(args){
 
 Container.prototype = Object.create(Element.prototype);
 
+Container.prototype.hide = function(){
+	this.hidden.true();
+};
+
+Container.prototype.show = function(){
+	this.hidden.false();
+};
+
+function ContainersStack(args){
+	var self = this;
+	args = args?args:{};
+	Container.call(this,{
+		className:args.className,
+		contentDirection:args.contentDirection || "horizontal",
+	});
+
+	this.containers = {};
+}
+
+ContainersStack.prototype = Object.create(Container.prototype);
+
+ContainersStack.prototype.add = function(container, key){
+	this.containers[key] = container;
+};
+
 function Toolbar(args){
 	var self = this;
 	args = args?args:{};
@@ -295,6 +336,7 @@ function Window(args){
 		className:args.className,
 		share:args.share,
 		maximized:args.maximized,
+		hidden:args.hidden,
 	});
 
 	this.rolledUp = new Value();

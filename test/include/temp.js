@@ -35,9 +35,15 @@ $(document).ready(function(){
 		label:"Tab2",
 	});
 	tab3.documentElement.append(new Button({
-		label:"To horizontal layout",
+		onClick:function(){
+			wind2.hide();
+		},
+		label:"Hide Window example",
 	})).append(new Button({
-		label:"To vertical layout",
+		onClick:function(){
+			wind2.show();
+		},
+		label:"Show Window example",
 	}));
 
 	var wind = new Panel({
@@ -47,6 +53,7 @@ $(document).ready(function(){
 	var wind2 = new Window({
 		maximized:true,
 		share:1,
+		hidden:true,
 		title:"Window example",
 		icon:"camera",
 	});

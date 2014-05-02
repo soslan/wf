@@ -68,19 +68,15 @@ Control.prototype = Object.create(Element.prototype);
 function Button(args){
 	var self = this;
 	args = args?args:{};
-	Control.call(this,{
-		tagName:'span'
-	});
-	this.addClass('control control-button');
-
-	this.button = new Clickable({
+	Clickable.call(this,{
 		onClick:args.onClick,
 		tabIndex:args.tabIndex || '-1',
-		className:args.className,
+		className:'control button',
 	});
-	this.setFocusingElement(this.button);
-	this.button.addClass('button');
-	this.button.addEventListener('keydown',function(e){
+	this.addClass(args.className);
+	//this.addClass('control control-button');
+
+	this.addEventListener('keydown',function(e){
 		if(e.which == 13 || e.which == 32){
 			self.addClass('clicked');
 			args.onClick();
@@ -97,12 +93,42 @@ function Button(args){
 		icon:args.icon
 	});
 
-	this.append(this.button);
-	this.button.append(this.label);
+	this.append(this.label);
 }
 
-Button.prototype = Object.create(Control.prototype);
+Button.prototype = Object.create(Clickable.prototype);
 
+function ToggleButton(args){
+	var self = this;
+	args = args?args:{};
+	Button.call(this,args);
+
+	this.value = new BooleanModel({
+		value:args.defaultValue == undefined ? args.defaultValue : false,
+	});
+
+	this.value.addEventListener('on', function(){
+		self.removeClass('inactive');
+		self.addClass('active');
+		if(args.onIcon != undefined){
+			self.label.setIcon(args.onIcon);
+		}
+	});
+
+	this.value.addEventListener('off', function(){
+		self.removeClass('active');
+		self.addClass('inactive');
+		if(args.offIcon != undefined){
+			self.label.setIcon(args.offIcon);
+		}
+	});
+
+	this.addEventListener('click',function(){
+		self.value.flip();
+	});
+}
+
+ToggleButton.prototype = Object.create(Button.prototype);
 
 function Toggle(args){
 	var self = this;
