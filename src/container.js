@@ -226,19 +226,66 @@ Container.prototype.show = function(){
 function ContainersStack(args){
 	var self = this;
 	args = args?args:{};
-	Container.call(this,{
-		className:args.className,
-		contentDirection:args.contentDirection || "horizontal",
-	});
+	Container.call(this,args);
 
-	this.containers = {};
+	this.containers = [];
+	this.activeContainer;
 }
 
 ContainersStack.prototype = Object.create(Container.prototype);
 
-ContainersStack.prototype.add = function(container, key){
-	this.containers[key] = container;
+ContainersStack.prototype.append = function(container){
+	this.containers.push(container);
+	if(this.containers.length == 1){
+		this.show(container);
+	}
+	else{
+		container.hide();
+	}
+	Container.prototype.append.call(this, container);
 };
+
+ContainersStack.prototype.addAndShow = function(container){
+	this.containers.push(container);
+	this.show(container);
+};
+
+ContainersStack.prototype.show = function(container){
+	var i = this.containers.indexOf(container);
+	if(i != -1){
+		if(this.activeContainer != undefined){
+			this.activeContainer.hide();
+		}
+		container.show();
+		this.activeContainer = container;
+	}
+}
+
+ContainersStack.prototype.next = function(){
+	if(this.containers.length > 1){
+		var i = this.containers.indexOf(this.activeContainer);
+		if(i+1 == this.containers.length){
+			this.show(this.containers[0]);
+		}
+		else{
+			this.show(this.containers[i+1]);
+		}
+	}
+	
+}
+
+ContainersStack.prototype.prev = function(){
+	if(this.containers.length > 1){
+		var i = this.containers.indexOf(this.activeContainer);
+		if(i == 0){
+			this.show(this.containers[this.containers.length - 1]);
+		}
+		else{
+			this.show(this.containers[i-1]);
+		}
+	}
+	
+}
 
 function Toolbar(args){
 	var self = this;

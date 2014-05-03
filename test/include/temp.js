@@ -12,6 +12,38 @@ $(document).ready(function(){
 		label:"Tab2",
 		closeable:true,
 	});
+
+	var testCont1 = new Container({
+		share:1,
+	});
+	var testCont2 = new Container({
+		share:1,
+	});
+
+	var testCont3 = new Container({
+		share:1,
+	});
+	testCont1.append(new Label({text:'Container 1'}));
+	testCont2.append(new Label({text:'Container 2'}));
+
+	testCont3.append(new Label({text:'Container 3'}));
+	var testButton1 = new Button({
+		icon:'arrow-left',
+		onClick:function(){ stack.prev(); },
+	});
+
+	var testButton2 = new Button({
+		icon:'arrow-right',
+		onClick:function(){ stack.next(); },
+	});
+	var stack = new ContainersStack({
+		share:1,
+	});
+
+	stack.append(testCont1);
+	stack.append(testCont2);
+	stack.append(testCont3);
+
 	tab1.documentElement.append(new Button({
 		label:"To horizontal layout",
 		onClick:function(){
@@ -58,14 +90,21 @@ $(document).ready(function(){
 		icon:"camera",
 	});
 
+	var toolbar2 = new Toolbar();
+
 	var ti = new TextInput({
 		label:"Text input ",
 		icon: "user",
 	});
 
+	toolbar2.append(ti);
+	toolbar2.append(testButton1);
+	toolbar2.append(testButton2);
+
 	tab1.tabTitle.setText(ti.value.addBroadcaster());
 
-	wind.append(ti);
+	wind.append(toolbar2);
+	wind.append(stack);
 	var side = new Container({
 		maximized:true,
 		contentType:'blocks',
