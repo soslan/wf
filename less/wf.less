@@ -147,6 +147,15 @@
 	//padding-right:5px;
 }
 
+.label-icon:after{
+	content:" ",
+}
+
+.label:after{
+	display: inline-block;
+	content:" ",
+}
+
 .label-icon{
 	display:inline;
 	//padding-right: 5px;
@@ -162,6 +171,15 @@
 
 .label.notext .label-text{
 	display:none;
+}
+
+.label.notext .label-icon:after{
+	display:none;
+}
+
+.label.notext .label-text:after{
+	display:none;
+	content:'';
 }
 
 /* Button */
@@ -277,6 +295,7 @@
 }
 
 .button.quiet{
+	border:none;
 	color:inherit;
 	background-color: transparent;
 }
