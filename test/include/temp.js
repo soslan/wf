@@ -23,6 +23,8 @@ $(document).ready(function(){
 	var testCont3 = new Container({
 		share:1,
 	});
+	testCont1.element.style.backgroundColor = 'red';
+	testCont2.element.style.backgroundColor = 'blue';
 	testCont1.append(new Label({text:'Container 1'}));
 	testCont2.append(new Label({text:'Container 2'}));
 
@@ -34,7 +36,7 @@ $(document).ready(function(){
 
 	var testButton2 = new Button({
 		icon:'arrow-right',
-		onClick:function(){ stack.next(); },
+		onClick:function(){ stack.slide(stack.getNext()); },
 	});
 	var stack = new ContainersStack({
 		share:1,

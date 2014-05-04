@@ -227,6 +227,7 @@ function ContainersStack(args){
 	var self = this;
 	args = args?args:{};
 	Container.call(this,args);
+	this.addClass('containers-stack');
 
 	this.containers = [];
 	this.activeContainer;
@@ -258,6 +259,75 @@ ContainersStack.prototype.show = function(container){
 		}
 		container.show();
 		this.activeContainer = container;
+	}
+}
+
+ContainersStack.prototype.slide = function(container, replacedContainer){
+	if(this.containers.indexOf(container) == -1){
+		return;
+	}
+	if(replacedContainer == undefined){
+		replacedContainer = this.activeContainer;
+	}
+	this.activeContainer = container;
+	if(this.sliding){
+		return;
+	}
+	else{
+		this.sliding = true;
+	}
+	var self = this;
+
+	replacedContainer.$.css({
+		height:replacedContainer.$.height(),
+		width:replacedContainer.$.width(),
+		position:'absolute',
+	});
+	container.$.css({
+		left:'100%',
+	});
+	container.show();
+
+	replacedContainer.$.animate({
+		right:'100%',
+	}, 'fast',function(){
+		replacedContainer.$.css({
+			height:'',
+			right:'',
+			width:'',
+			position:'',
+		});
+		replacedContainer.hide();
+	});
+	container.$.animate({
+		left:0,
+	}, 'fast',function(){
+		container.$.css({
+			left:'',
+		});
+
+		self.sliding = false;
+		container.show();
+		if(self.activeContainer != container){
+			self.slide(self.activeContainer, container);
+		}
+	});
+
+
+}
+
+ContainersStack.prototype.getNext = function(){
+	if(this.containers.length > 1){
+		var i = this.containers.indexOf(this.activeContainer);
+		if(i+1 == this.containers.length){
+			return this.containers[0];
+		}
+		else{
+			return this.containers[i+1];
+		}
+	}
+	else{
+		return undefined;
 	}
 }
 
