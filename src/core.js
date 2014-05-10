@@ -10,19 +10,21 @@ function Element(args){
 	args=args?args:{};
 	args.tagName = typeof args.tagName == "string" ? args.tagName : "div";
 	this.element = document.createElement(args.tagName);
+	this.e = this.element;
 	this.$element = $(this.element);
 	this.$ = this.$element;
-	this.tagName = args.tagName;
-	
-	//this.element.className = "element";
 
 	this.container = this.element; // Temporary.
 
 	if(typeof args.className == "string"){
 		this.addClass(args.className);
 	}
-	if(typeof args.appendTo !== "undefined"){
+	if(args.appendTo instanceof Element){
 		args.appendTo.append(self);
+		this.parent = args.appendTo;
+	}
+	else if(args.appendTo instanceof Node){
+		args.appendTo.appendChild(this.element);
 	}
 
 }
@@ -42,10 +44,12 @@ Element.prototype.append = function(element){
 	}
 	else{
 		this.element.appendChild(element.element);
+		element.parent = this;
 	}
 	return this;
 }
 
+// To be improved
 Element.prototype.prepend = function(element){
 	$(this.element).prepend(element.element);
 	return this;
