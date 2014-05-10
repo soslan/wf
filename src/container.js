@@ -244,11 +244,18 @@ ContainersStack.prototype.append = function(container){
 		container.hide();
 	}
 	Container.prototype.append.call(this, container);
+	this.dispatchEvent('container-added', {
+		container:container,
+	});
 };
 
-ContainersStack.prototype.addAndShow = function(container){
+ContainersStack.prototype.appendAndShow = function(container){
 	this.containers.push(container);
 	this.show(container);
+	Container.prototype.append.call(this, container);
+	this.dispatchEvent('container-added', {
+		container:container,
+	});
 };
 
 ContainersStack.prototype.show = function(container){
@@ -375,6 +382,10 @@ function Tabs(args){
 		});
 	}
 	this.containers.addClass('tabs-containers');
+
+	this.containers.on('container-added', function(e){
+		self.addContainerTab(e.detail);
+	});
 
 	for (var i in this.containers.containers){
 		var cont = this.containers.containers[i];

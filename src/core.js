@@ -11,10 +11,13 @@ function Element(args){
 	args.tagName = typeof args.tagName == "string" ? args.tagName : "div";
 	this.element = document.createElement(args.tagName);
 	this.e = this.element;
+	this.element.wfElement = this;
 	this.$element = $(this.element);
 	this.$ = this.$element;
 
 	this.container = this.element; // Temporary.
+	this.eventListeners;
+
 
 	if(typeof args.className == "string"){
 		this.addClass(args.className);
@@ -78,6 +81,15 @@ Element.prototype.addEventListener = function(type, handler, useCapture){
 	if(typeof handler == "function"){
 		this.element.addEventListener(type, handler, useCapture);
 	}
+}
+
+Element.prototype.dispatchEvent = function(eventKey, e){
+	var self = this;
+	var event = new CustomEvent(eventKey, {
+		detail:e.container,
+	});
+	this.element.dispatchEvent(event);
+	return this;
 }
 
 Element.prototype.on = Element.prototype.addEventListener;
