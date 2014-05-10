@@ -357,6 +357,80 @@ ContainersStack.prototype.prev = function(){
 	
 }
 
+function Tabs(args){
+	var self = this;
+	args=args?args:{};
+	Container.call(this,{
+		contentDirection:args.direction,
+		contentType:'lines',
+	});
+	this.addClass('tabs');
+
+	if(args.containers instanceof ContainersStack){
+		this.containers = args.containers;
+	}
+	else{
+		this.containers = new ContainersStack({
+			share:1,
+		});
+	}
+	this.containers.addClass('tabs-containers');
+
+	for (var i in this.containers.containers){
+		var cont = this.containers.containers[i];
+		this.addContainerTab(cont);
+
+	}
+
+}
+
+Tabs.prototype = Object.create(Container.prototype);
+
+Tabs.prototype.addContainerTab = function(container){
+	var self = this;
+	var tab = new Container({
+		contentDirection:'horizontal',
+		displayType:'inline',
+		className:'tab',
+	});
+	if(container.hidden.get()){
+		tab.addClass('inactive');
+	}
+	else{
+		tab.addClass('active');
+	}
+	container.hidden.onTrue(function(){
+		tab.addClass('inactive');
+		tab.removeClass('active');
+	});
+	container.hidden.onFalse(function(){
+		tab.addClass('active');
+		tab.removeClass('inactive')
+	});
+	if(container.title == undefined){
+		container.title = new Value({
+			value:'Tab',
+		});
+	}
+	tab.append(new Label({
+		text:container.title,
+	}));
+	tab.addEventListener('click',function(){
+		self.containers.show(container);
+	});
+	this.append(tab);
+}
+
+/*Tabs.prototype.append = function(container, args){
+	var args = args || {};
+
+	this.tabs.push(container);
+
+	container.tab = new Toolbar();
+}*/
+
+
+
 function Toolbar(args){
 	var self = this;
 	args = args?args:{};

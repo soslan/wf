@@ -10,6 +10,7 @@ function TabView(args){
 	this.tabsContainer = new Container({
 		contentDirection:"horizontal",
 	});
+
 	this.documentsContainer = new Container({
 		share:1,
 		contentType:"blocks",

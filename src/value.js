@@ -6,11 +6,6 @@ function Value(args){
 	this.broadcasters = [];
 	this.patterns = [];
 	this.filters = {};
-	//this.eventLocked = {};
-	//this.pendingHandler ={};
-	if(typeof args.value === "undefined"){
-		args.value = "";
-	}
 	this.set({
 		value:args.value,
 	});

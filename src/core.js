@@ -448,13 +448,7 @@ function Label(args){
 		className:"label-text",
 	});
 
-	if(typeof args.text == "string"){
-		this.text.$.text(args.text);
-	}
-	else{
-		this.addClass("notext");
-		//this.text.addClass('hidden');
-	}
+	this.setText(args.text);
 	if(typeof args.icon == "string"){
 		this.setIcon(args.icon);
 	}
@@ -488,6 +482,16 @@ Label.prototype.setText = function(text){
 		this.text.element.innerHTML = '';
 		this.text.element.appendChild(text);
 
+	}
+	else if(text instanceof Value){
+		this.removeClass("notext");
+		this.text.element.innerHTML = '';
+		this.text.element.appendChild(text.addBroadcaster());
+
+	}
+	else if(text == undefined){
+		this.addClass('notext');
+		this.text.element.innerHTML = '';
 	}
 	return this;
 }

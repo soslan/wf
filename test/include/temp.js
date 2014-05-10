@@ -46,6 +46,12 @@ $(document).ready(function(){
 	stack.append(testCont2);
 	stack.append(testCont3);
 
+	var tabs1 = new Tabs({
+		containers:stack,
+	});
+
+	tab2.documentElement.append(tabs1);
+
 	tab1.documentElement.append(new Button({
 		label:"To horizontal layout",
 		onClick:function(){
