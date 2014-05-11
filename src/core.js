@@ -86,7 +86,7 @@ Element.prototype.addEventListener = function(type, handler, useCapture){
 Element.prototype.dispatchEvent = function(eventKey, e){
 	var self = this;
 	var event = new CustomEvent(eventKey, {
-		detail:e.container,
+		detail:e,
 	});
 	this.element.dispatchEvent(event);
 	return this;

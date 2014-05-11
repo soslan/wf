@@ -94,6 +94,9 @@ function Container(args){
 	if(args.hidden){
 		this.hidden.true();
 	}
+	if(args.closeable){
+		this.closeable = true;
+	}
 
 	//args.displayType = args.displayType || args.position;
 	/*if(typeof args.contentType == "string"){
@@ -223,6 +226,12 @@ Container.prototype.show = function(){
 	this.hidden.false();
 };
 
+Container.prototype.close = function(){
+	this.hide();
+	this.element.parentNode.removeChild(this.element);
+	this.dispatchEvent('closed');
+}
+
 function ContainersStack(args){
 	var self = this;
 	args = args?args:{};
@@ -236,6 +245,7 @@ function ContainersStack(args){
 ContainersStack.prototype = Object.create(Container.prototype);
 
 ContainersStack.prototype.append = function(container){
+	var self = this;
 	this.containers.push(container);
 	if(this.containers.length == 1){
 		this.show(container);
@@ -244,18 +254,28 @@ ContainersStack.prototype.append = function(container){
 		container.hide();
 	}
 	Container.prototype.append.call(this, container);
+	container.on('closed',function(){
+		var i = self.containers.indexOf(container);
+		self.containers.splice(i,1);
+		if(self.activeContainer == container){
+			if(i == 0){
+				if(self.containers.length > 0){
+					self.show(self.containers[0]);
+				}
+			}
+			else{
+				self.show(self.containers[i-1]);
+			}
+		}
+	});
 	this.dispatchEvent('container-added', {
 		container:container,
 	});
 };
 
 ContainersStack.prototype.appendAndShow = function(container){
-	this.containers.push(container);
+	this.append(container);
 	this.show(container);
-	Container.prototype.append.call(this, container);
-	this.dispatchEvent('container-added', {
-		container:container,
-	});
 };
 
 ContainersStack.prototype.show = function(container){
@@ -384,7 +404,7 @@ function Tabs(args){
 	this.containers.addClass('tabs-containers');
 
 	this.containers.on('container-added', function(e){
-		self.addContainerTab(e.detail);
+		self.addContainerTab(e.detail.container);
 	});
 
 	for (var i in this.containers.containers){
@@ -404,6 +424,7 @@ Tabs.prototype.addContainerTab = function(container){
 		displayType:'inline',
 		className:'tab',
 	});
+	container.tab = tab;
 	if(container.hidden.get()){
 		tab.addClass('inactive');
 	}
@@ -418,6 +439,9 @@ Tabs.prototype.addContainerTab = function(container){
 		tab.addClass('active');
 		tab.removeClass('inactive')
 	});
+	container.on('closed',function(){
+		tab.close();
+	});
 	if(container.title == undefined){
 		container.title = new Value({
 			value:'Tab',
@@ -426,6 +450,17 @@ Tabs.prototype.addContainerTab = function(container){
 	tab.append(new Label({
 		text:container.title,
 	}));
+	if(container.closeable){
+		tab.append(new Button({
+			icon:'times',
+			className:'tab-close red quiet',
+			onClick:function(){
+				if(typeof container.close == 'function'){
+					container.close();
+				}
+			},
+		}));
+	}
 	tab.addEventListener('click',function(){
 		self.containers.show(container);
 	});

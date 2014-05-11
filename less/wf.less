@@ -539,17 +539,23 @@
 }
 
 .tab{
+	line-height: 26px;
+	height:26px;
 	cursor:pointer;
 	background-color: whitesmoke;
-	padding: 5px;
-	padding-bottom: 10px;
-	margin-top:5px;
+	padding: 0 0 0 5px;
+	padding-bottom: 4px;
+	margin-top:4px;
 	margin-right:5px;
 }
 
 .tab.inactive{
-	background-color: #666;
+	opacity:0.5;
 	//color:#ccc;
+}
+
+.tab.inactive:hover{
+	opacity: 0.6;
 }
 
 .tab.active{
@@ -558,24 +564,37 @@
 }
 
 .tab-fixed{
-	padding-top: 5px;
-	padding-bottom: 10px;
-	margin-top:5px;
+	padding-top: 0;
+	padding-bottom: 4px;
+	margin-top:4px;
 	margin-bottom: 0px;
 }
 
 .tab-floating{
-	padding-top: 5px;
-	padding-bottom: 5px;
-	margin-top:5px;
-	margin-bottom: 5px;
+	padding-top: 0;
+	padding-bottom: 0;
+	margin-top:4px;
+	margin-bottom: 4px;
 }
 
 .tab-pinned{
-	padding-top: 10px;
-	padding-bottom: 5px;
+	padding-top: 4px;
+	padding-bottom: 0;
 	margin-top:0px;
-	margin-bottom: 5px;
+	margin-bottom: 4px;
+}
+
+.tab > .button{
+	border: none;
+	border-radius: 0;
+}
+
+.tab > *{
+	margin-right: 5px;
+}
+
+.tab > .button:last-child{
+	//margin-right: 0;
 }
 
 

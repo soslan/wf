@@ -51,6 +51,7 @@ $(document).ready(function(){
 		onClick:function(){
 			stack.appendAndShow(new Container({
 				share:1,
+				closeable:true,
 			}));
 		},
 	});
@@ -118,6 +119,7 @@ $(document).ready(function(){
 	toolbar2.append(ti);
 	toolbar2.append(testButton1);
 	toolbar2.append(testButton2);
+	toolbar2.append(addButton);
 
 	tab1.tabTitle.setText(ti.value.addBroadcaster());
 
