@@ -29,6 +29,9 @@ function Element(args){
 	else if(args.appendTo instanceof Node){
 		args.appendTo.appendChild(this.element);
 	}
+	if(args.focusable){
+		this.focusable();
+	}
 
 }
 
@@ -57,6 +60,22 @@ Element.prototype.prepend = function(element){
 	$(this.element).prepend(element.element);
 	return this;
 }
+
+Element.prototype.isAncestorOf = function(element){
+	if(!(element instanceof Node)){
+		return false;
+	}
+	var node = element.parentNode;
+	while(node!=null){
+		if(node == this.element){
+			return true;
+		}
+		else{
+			node = node.parentNode;
+		}
+	}
+	return false;
+};
 
 Element.prototype.addClass = function(className){
 	if(typeof className == "string"){
@@ -96,7 +115,13 @@ Element.prototype.on = Element.prototype.addEventListener;
 
 Element.prototype.focusable = function(args){
 	var self = this;
+	var args = args || {};
 	this.element.setAttribute('tabindex',args.tabIndex || 1);
+	this.addEventListener('focusout', function(e){
+		if(!(self.element == e.relatedTarget) && !self.isAncestorOf(e.relatedTarget)){
+			self.dispatchEvent('focusaway');
+		}
+	});
 	if(args.onFocus){
 		this.addEventListener('focus', function(e){
 			args.onFocus({

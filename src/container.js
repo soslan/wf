@@ -1,10 +1,7 @@
 function Container(args){
 	var self = this;
 	args = args?args:{};
-	Element.call(this,{
-		appendTo:args.appendTo,
-		className:args.className,
-	});
+	Element.call(this,args);
 	this.addClass("container");
 	this.contentType = new Value({
 		value: "blocks",
@@ -36,10 +33,12 @@ function Container(args){
 
 	this.hidden.onTrue(function(){
 		self.addClass('hidden');
+		self.dispatchEvent('hidden');
 	});
 
 	this.hidden.onFalse(function(){
 		self.removeClass('hidden');
+		self.dispatchEvent('displayed');
 	});
 
 	this.contentDirection.addFilter('set', function(d){
@@ -227,10 +226,24 @@ Container.prototype.show = function(){
 };
 
 Container.prototype.close = function(){
-	this.hide();
+	//this.hide();
 	this.element.parentNode.removeChild(this.element);
 	this.dispatchEvent('closed');
 }
+
+Container.prototype.onHidden = function(handler){
+	this.addEventListener('hidden', handler);
+};
+
+
+Container.prototype.onDisplayed = function(handler){
+	this.addEventListener('displayed', handler);
+};
+
+
+Container.prototype.onClosed = function(handler){
+	this.addEventListener('closed', handler);
+};
 
 function ContainersStack(args){
 	var self = this;
@@ -248,37 +261,59 @@ ContainersStack.prototype.append = function(container){
 	var self = this;
 	this.containers.push(container);
 	if(this.containers.length == 1){
-		this.show(container);
+		this.switchTo(container);
 	}
 	else{
 		container.hide();
 	}
 	Container.prototype.append.call(this, container);
-	container.on('closed',function(){
+	/*container.on('closed',function(){
 		var i = self.containers.indexOf(container);
 		self.containers.splice(i,1);
 		if(self.activeContainer == container){
 			if(i == 0){
 				if(self.containers.length > 0){
-					self.show(self.containers[0]);
+					self.switchTo(self.containers[0]);
 				}
 			}
 			else{
-				self.show(self.containers[i-1]);
+				self.switchTo(self.containers[i-1]);
 			}
 		}
-	});
+		container.removeEventListener
+	});*/
 	this.dispatchEvent('container-added', {
 		container:container,
 	});
 };
 
-ContainersStack.prototype.appendAndShow = function(container){
-	this.append(container);
-	this.show(container);
+ContainersStack.prototype.remove = function(container){
+	var i = this.containers.indexOf(container);
+	if(i != -1){
+		if(this.activeContainer == container){
+			if(i == 0){
+				if(this.containers.length > 0){
+					this.switchTo(this.containers[0]);
+				}
+			}
+			else{
+				this.switchTo(this.containers[i-1]);
+			}
+		}
+		//this.element.removeChild(container.element);
+		container.close();
+		this.containers.splice(i, 1);
+	}
 };
 
-ContainersStack.prototype.show = function(container){
+ContainersStack.onContainerClosed = function(){};
+
+ContainersStack.prototype.appendAndShow = function(container){
+	this.append(container);
+	this.switchTo(container);
+};
+
+ContainersStack.prototype.switchTo = function(container){
 	var i = this.containers.indexOf(container);
 	if(i != -1){
 		if(this.activeContainer != undefined){
@@ -362,10 +397,10 @@ ContainersStack.prototype.next = function(){
 	if(this.containers.length > 1){
 		var i = this.containers.indexOf(this.activeContainer);
 		if(i+1 == this.containers.length){
-			this.show(this.containers[0]);
+			this.switchTo(this.containers[0]);
 		}
 		else{
-			this.show(this.containers[i+1]);
+			this.switchTo(this.containers[i+1]);
 		}
 	}
 	
@@ -375,10 +410,10 @@ ContainersStack.prototype.prev = function(){
 	if(this.containers.length > 1){
 		var i = this.containers.indexOf(this.activeContainer);
 		if(i == 0){
-			this.show(this.containers[this.containers.length - 1]);
+			this.switchTo(this.containers[this.containers.length - 1]);
 		}
 		else{
-			this.show(this.containers[i-1]);
+			this.switchTo(this.containers[i-1]);
 		}
 	}
 	
@@ -455,14 +490,12 @@ Tabs.prototype.addContainerTab = function(container){
 			icon:'times',
 			className:'tab-close red quiet',
 			onClick:function(){
-				if(typeof container.close == 'function'){
-					container.close();
-				}
+				self.containers.remove(container);
 			},
 		}));
 	}
 	tab.addEventListener('click',function(){
-		self.containers.show(container);
+		self.containers.switchTo(container);
 	});
 	this.append(tab);
 }
@@ -555,11 +588,7 @@ Toolbar.prototype.addToMore = function(element){
 function Panel(args){
 	var self = this;
 	args = args?args:{};
-	Container.call(this,{
-		className:args.className,
-		share:args.share,
-		maximized:args.maximized,
-	});
+	Container.call(this,args);
 
 	this.addClass('panel');
 }

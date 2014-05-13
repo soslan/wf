@@ -28,7 +28,7 @@
 	position:relative;
 }
 
-.root{
+.container.root{
 	display:flex;
 	position:fixed;
 	width:100%;
@@ -126,7 +126,7 @@
 /* Containers stack */
 
 .container.containers-stack{
-	overflow:hidden;
+	//overflow:hidden;
 }
 
 /* Colors */
@@ -216,7 +216,7 @@
 }
 
 .button > .label > .label-icon{
-	margin-right:5px;
+	//margin-right:5px;
 }
 
 .button > .label.notext{
@@ -310,6 +310,7 @@
 /* Dropdown */
 
 .dropdown{
+	width:100px;
 	display:none;
 	left: 0;
 	top: 100%;
@@ -317,6 +318,10 @@
 	padding:10px 0;
 	background-color: @light-gray;
 	z-index:101;
+}
+
+.dropdown > .button{
+	text-align:left;
 }
 
 /* Toggle */
@@ -729,11 +734,14 @@
 	margin-right:5px;
 }
 
+.toolbar > div > *:last-child{
+	margin-right:0;
+}
+
 /* Panel */
 
 .panel{
 	padding:5px;
-	margin:5px;
 	background-color: @white;
 	color:@black;
 }
