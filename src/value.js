@@ -28,6 +28,46 @@ Value.prototype.removeEventListener = function(event, handler){
 	return this;
 }
 
+Value.prototype.adaptTo = function(){
+	if(arguments.length < 2){
+		return;
+	}
+	var func = arguments[arguments.length - 1];
+	if(typeof func != 'function'){
+		return;
+	}
+	var args = arguments.splice(0,arguments.length - 1);
+	var f = function(){
+		func.call(this, args);
+	};
+	for (var i in args){
+		var arg = args[i];
+		if(arg instanceof Value){
+			this.setValue(arg.onChange(f));
+		}
+	}
+};
+
+Value.prototype.listenTo = function(){
+	if(arguments.length < 2){
+		return;
+	}
+	var func = arguments[arguments.length - 1];
+	if(typeof func != 'function'){
+		return;
+	}
+	var args = arguments.splice(0,arguments.length - 1);
+	var f = function(){
+		func.call(this, args);
+	};
+	for (var i in args){
+		var arg = args[i];
+		if(arg instanceof Value){
+			arg.onChange(f);
+		}
+	}
+};
+
 Value.prototype.onChange = function(handler){
 	return this.addEventListener('change', handler);
 }
