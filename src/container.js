@@ -324,12 +324,30 @@ ContainersStack.prototype.switchTo = function(container){
 	}
 }
 
-ContainersStack.prototype.slide = function(container, replacedContainer){
+ContainersStack.prototype.slideTo = function(args, direction){
+	if(args instanceof Element){
+		args = {
+			container:args,
+			direction:direction,
+		}
+	}
+	var container = args.container;
+	var replacedContainer;
+	var direction;
 	if(this.containers.indexOf(container) == -1){
 		return;
 	}
-	if(replacedContainer == undefined){
+	if(args.replacedContainer == undefined){
 		replacedContainer = this.activeContainer;
+	}
+	else{
+		replacedContainer = args.replacedContainer;
+	}
+	if(args.direction == undefined){
+		direction = 'left';
+	}
+	else{
+		direction = args.direction;
 	}
 	this.activeContainer = container;
 	if(this.sliding){
@@ -344,28 +362,40 @@ ContainersStack.prototype.slide = function(container, replacedContainer){
 		height:replacedContainer.$.height(),
 		width:replacedContainer.$.width(),
 		position:'absolute',
+		top:0,
+		left:0,
 	});
-	container.$.css({
-		left:'100%',
+	this.$.css({
+		overflow:'hidden',
 	});
+	if(direction == 'left'){
+		container.$.css({
+			left:'100%',
+		});
+	}
+	else if(direction == 'right'){
+		container.$.css({
+			right:'100%',
+		});
+	}
 	container.show();
 
-	replacedContainer.$.animate({
-		right:'100%',
-	}, 'fast',function(){
+	var done1 = function(){
 		replacedContainer.$.css({
 			height:'',
 			right:'',
+			left:'',
+			//overflow:'',
 			width:'',
 			position:'',
 		});
+	};
+
+	var done2 = function(){
 		replacedContainer.hide();
-	});
-	container.$.animate({
-		left:0,
-	}, 'fast',function(){
 		container.$.css({
 			left:'',
+			right:'',
 		});
 
 		self.sliding = false;
@@ -373,7 +403,29 @@ ContainersStack.prototype.slide = function(container, replacedContainer){
 		if(self.activeContainer != container){
 			self.slide(self.activeContainer, container);
 		}
-	});
+		self.$.css({
+			overflow:'',
+		});
+	};
+
+	if(direction == 'left'){
+		replacedContainer.$.animate({
+			right:'100%',
+		}, 'fast',done1);
+		container.$.animate({
+			left:0,
+		}, 'fast',done2);
+	}
+	else if(direction == 'right'){
+		replacedContainer.$.animate({
+			left:'100%',
+		}, 'fast', done1);
+		container.$.animate({
+			right:0,
+		}, 'fast', done2);
+	}
+
+	
 
 
 }
@@ -514,10 +566,7 @@ function Toolbar(args){
 	var self = this;
 	args = args?args:{};
 	args.contentDirection = args.contentDirection || "horizontal";
-	Container.call(this,{
-		className:args.className,
-		contentDirection:args.contentDirection || "horizontal",
-	});
+	Container.call(this,args);
 
 	this.addClass("toolbar");
 
