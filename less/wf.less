@@ -39,7 +39,9 @@
 }
 
 :focus, input:focus {
-	outline:5px auto @main-color-light;
+	outline:2px auto @main-color-light;
+	//outline:0;
+	//box-shadow: 0 0 5px @main-color-light;
 }
 
 
@@ -147,6 +149,9 @@
 /* Label */
 
 .label{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 	display:inline;
 }
 
@@ -211,7 +216,7 @@
 
 .button > .label{
 	line-height: normal;
-	display:inline-block;
+	//display:inline-block;
 	padding:0 10px;
 }
 

@@ -166,7 +166,8 @@ Element.prototype.focus = function(handler){
 	}
 	else {
 		this.element.dispatchEvent(beforeFocusEvent);
-		this.$.focus();
+		//document.activeElement.blur();
+		this.e.focus();
 	}
 }
 
@@ -228,8 +229,12 @@ Element.prototype.editable = function(args){
 	
 	this.value.addEventListener('change',function(e){
 		self.element.value = e.value;
-		if(document.activeElement == self.element)
-			self.element.setSelectionRange(e.firstPart.length, e.firstPart.length + e.selection.length);
+		if(document.activeElement == self.element){
+			if(e.firstPart != undefined && e.selection != undefined){
+				self.element.setSelectionRange(e.firstPart.length, e.firstPart.length + e.selection.length);
+			}
+		}
+			
 	});
 	this.focusable(args);
 	if(this.element.tagName != 'input' && this.element.tagName != 'textarea'){
@@ -476,14 +481,13 @@ Clickable.prototype = Object.create(Element.prototype);
 function Label(args){
 	var self = this;
 	args = args?args:{};
-	Element.call(this,{
-		tagName:"span",
-		className:"label",
-	});
+	args.tagName = 'span';
+	Element.call(this,args);
 	this.icon = new Element({
 		tagName:"span",
 		className:"fa label-icon",
 	});
+	this.addClass('label');
 	this.text = new Element({
 		tagName:"span",
 		className:"label-text",

@@ -29,6 +29,7 @@ Value.prototype.removeEventListener = function(event, handler){
 }
 
 Value.prototype.adaptTo = function(){
+	var self = this;
 	if(arguments.length < 2){
 		return;
 	}
@@ -36,14 +37,17 @@ Value.prototype.adaptTo = function(){
 	if(typeof func != 'function'){
 		return;
 	}
-	var args = arguments.splice(0,arguments.length - 1);
+	var args = [];
+	/*for(var i = 0; i < arguments.length - 1; i++){
+		args.push(arguments[i]);
+	}*/
 	var f = function(){
-		func.call(this, args);
+		self.setValue(func.call(self, args));
 	};
-	for (var i in args){
-		var arg = args[i];
-		if(arg instanceof Value){
-			this.setValue(arg.onChange(f));
+	for(var i = 0; i < arguments.length - 1; i++){
+		args.push(arguments[i]);
+		if(arguments[i] instanceof Value){
+			arguments[i].onChange(f);
 		}
 	}
 };
@@ -56,14 +60,12 @@ Value.prototype.listenTo = function(){
 	if(typeof func != 'function'){
 		return;
 	}
-	var args = arguments.splice(0,arguments.length - 1);
 	var f = function(){
 		func.call(this, args);
 	};
-	for (var i in args){
-		var arg = args[i];
-		if(arg instanceof Value){
-			arg.onChange(f);
+	for(var i = 0; i < arguments.length - 1; i++){
+		if(arguments[i] instanceof Value){
+			arguments[i].onChange(f);
 		}
 	}
 };
@@ -79,7 +81,7 @@ Value.prototype.setValue = function(value, args){
 }
 
 Value.prototype.addBroadcaster = function(args){
-	var broadcaster = document.createTextNode(this.value.toString());
+	var broadcaster = document.createTextNode(this.value ? this.value.toString() : '');
 	this.broadcasters.push(broadcaster);
 	return broadcaster;
 }

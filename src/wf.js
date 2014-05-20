@@ -84,6 +84,10 @@ function Button(args){
 		}
 	});
 
+	this.on('mousedown', function(e){
+		e.stopPropagation();
+	});
+
 	/*if(typeof args.caption == "string" || typeof args.text == "string" || typeof args.label == "string"){
 		this.setCaption(args.caption || args.text || args.label);
 	}*/
@@ -123,8 +127,10 @@ function ToggleButton(args){
 		}
 	});
 
-	this.addEventListener('click',function(){
+	this.addEventListener('mousedown',function(e){
 		self.value.flip();
+		//e.preventDefault();
+		e.stopPropagation();
 	});
 }
 

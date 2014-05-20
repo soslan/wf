@@ -401,7 +401,7 @@ ContainersStack.prototype.slideTo = function(args, direction){
 		self.sliding = false;
 		container.show();
 		if(self.activeContainer != container){
-			self.slide(self.activeContainer, container);
+			self.slideTo(self.activeContainer, container);
 		}
 		self.$.css({
 			overflow:'',
@@ -534,9 +534,11 @@ Tabs.prototype.addContainerTab = function(container){
 			value:'Tab',
 		});
 	}
-	tab.append(new Label({
-		text:container.title,
-	}));
+	else{
+		tab.append(new Label({
+			text:container.title,
+		}));
+	}
 	if(container.closeable){
 		tab.append(new Button({
 			icon:'times',
@@ -580,29 +582,49 @@ function Toolbar(args){
 		contentDirection:args.contentDirection,
 	});
 
-	this.moreButton = new Button({
+	this.moreButton = new ToggleButton({
 		icon:"ellipsis-v",
 		className:"toolbar-more",
-		onClick:function(){
-			var temp = self.moreContainer.displayType.get();
-			if(temp == "none"){
-				self.moreContainer.displayType.set({
-					value:"new-line",
-				});
-			}
-			else{
-				self.moreContainer.displayType.set({
-					value:"none",
-				});
-			}
-		},
 	});
 	this.moreButton.addClass("hidden");
+
+	this.moreButton.on('mousedown', function(e){
+		e.preventDefault();
+	});
+
+	this.moreButton.value.onTrue(function(){
+		console.log('true');
+		self.moreContainer.show();
+		self.moreContainer.focus();
+	});
+
+	this.moreButton.value.onFalse(function(){
+		console.log('false');
+		self.moreContainer.hide();
+		//self.moreContainer.blur();
+	});
 
 	this.moreContainer = new Container({
 		className:"dropdown toolbar-more-container",
 		contentDirection:"vertical",
-		displayType:"none",
+		//displayType:"none",
+		hidden:true,
+		focusable:true,
+	});
+
+	this.moreContainer.on('click', function(e){
+		e.preventDefault();
+		e.stopPropagation();
+	});
+	this.moreContainer.on('mousedown', function(e){
+		e.preventDefault();
+		e.stopPropagation();
+	});
+
+	this.moreButton.on('focusaway', function(){
+		self.moreButton.value.false();
+		//self.moreContainer.hide();
+		//self.moreContainer.blur();
 	});
 
 	this.moreButton.append(this.moreContainer);
