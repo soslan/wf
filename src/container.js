@@ -225,12 +225,6 @@ Container.prototype.show = function(){
 	this.hidden.false();
 };
 
-Container.prototype.close = function(){
-	//this.hide();
-	this.element.parentNode.removeChild(this.element);
-	this.dispatchEvent('closed');
-}
-
 Container.prototype.onHidden = function(handler){
 	this.addEventListener('hidden', handler);
 };
@@ -245,7 +239,7 @@ Container.prototype.onClosed = function(handler){
 	this.addEventListener('closed', handler);
 };
 
-function ContainersStack(args){
+function ContainerStack(args){
 	var self = this;
 	args = args?args:{};
 	Container.call(this,args);
@@ -255,9 +249,9 @@ function ContainersStack(args){
 	this.activeContainer;
 }
 
-ContainersStack.prototype = Object.create(Container.prototype);
+ContainerStack.prototype = Object.create(Container.prototype);
 
-ContainersStack.prototype.append = function(container){
+ContainerStack.prototype.append = function(container){
 	var self = this;
 	this.containers.push(container);
 	if(this.containers.length == 1){
@@ -287,7 +281,7 @@ ContainersStack.prototype.append = function(container){
 	});
 };
 
-ContainersStack.prototype.remove = function(container){
+ContainerStack.prototype.remove = function(container){
 	var i = this.containers.indexOf(container);
 	if(i != -1){
 		if(this.activeContainer == container){
@@ -306,25 +300,165 @@ ContainersStack.prototype.remove = function(container){
 	}
 };
 
-ContainersStack.onContainerClosed = function(){};
+ContainerStack.prototype.getHandleFor = function(container, handleArgs){
+	var self = this;
+	var handle = new Element(handleArgs);
+	handle.addClass('container-handle');
+	if(container.title === undefined){
+		container.title = "Tab";
+	}
 
-ContainersStack.prototype.appendAndShow = function(container){
+	handle.append(new Label({
+		text:container.title,
+	}));
+	if(container.hidden.get()){
+		handle.addClass('inactive');
+	}
+	else{
+		handle.addClass('active');
+	}
+	container.hidden.onTrue(function(){
+		handle.addClass('inactive');
+		handle.removeClass('active');
+	});
+	container.hidden.onFalse(function(){
+		handle.addClass('active');
+		handle.removeClass('inactive')
+	});
+	container.on('closed',function(){
+		handle.close();
+	});
+	handle.on('click', function(){
+		self.switchTo(container);
+	});
+	if(container.closeable){
+		handle.append(new Button({
+			icon:'times',
+			className:'tab-close red quiet',
+			onClick:function(){
+				self.remove(container);
+			},
+		}));
+	}
+	handle.addClass('tab');
+	container.handle = handle;
+	return handle;
+};
+
+ContainerStack.onContainerClosed = function(){};
+
+ContainerStack.prototype.appendAndShow = function(container){
 	this.append(container);
 	this.switchTo(container);
 };
 
-ContainersStack.prototype.switchTo = function(container){
+ContainerStack.prototype.switchTo = function(container){
+	if(container === this.activeContainer){
+		return;
+	}
 	var i = this.containers.indexOf(container);
 	if(i != -1){
 		if(this.activeContainer != undefined){
-			this.activeContainer.hide();
+			//this.activeContainer.e.style.position = 'absolute';
+			this.activeContainer.$.css({
+				position:'absolute',
+				top:0,
+				bottom:0,
+				right:0,
+				left:0,
+			});
+			//this.activeContainer.hide();
 		}
 		container.show();
+		if(this.activeContainer != undefined){
+			this.activeContainer.hide();
+			this.activeContainer.e.style.position = '';
+		}
 		this.activeContainer = container;
 	}
 }
 
-ContainersStack.prototype.slideTo = function(args, direction){
+ContainerStack.prototype.fadeTo = function(args){
+	if(args instanceof Element){
+		args = {
+			container:args,
+		}
+	}
+	var container = args.container;
+	var replacedContainer;
+	var direction;
+	if(this.containers.indexOf(container) == -1){
+		return;
+	}
+	if(args.replacedContainer == undefined){
+		replacedContainer = this.activeContainer;
+	}
+	else{
+		replacedContainer = args.replacedContainer;
+	}
+	this.activeContainer = container;
+	if(this.fading){
+		return;
+	}
+	else{
+		this.fading = true;
+	}
+	var self = this;
+
+	replacedContainer.$.css({
+		height:replacedContainer.$.height(),
+		width:replacedContainer.$.width(),
+		position:'absolute',
+		opacity:1,
+		'z-index':100,
+		top:0,
+		left:0,
+	});
+	container.$.css({
+		//opacity:0,
+	});
+	container.show();
+
+	var done1 = function(){
+		replacedContainer.hide();
+		replacedContainer.$.css({
+			height:'',
+			right:'',
+			left:'',
+			opacity:'',
+			'z-index':'',
+			width:'',
+			position:'',
+		});
+		self.fading = false;
+
+		if(self.activeContainer != container){
+			self.fadeTo(self.activeContainer);
+		}
+	};
+
+	var done2 = function(){
+		replacedContainer.hide();
+		/*container.$.css({
+			opacity:'',
+		});*/
+
+		self.fading = false;
+		//container.show();
+		if(self.activeContainer != container){
+			self.fadeTo(self.activeContainer);
+		}
+	};
+	replacedContainer.$.animate({
+		opacity:'0',
+	}, 40,done1);
+	/*container.$.animate({
+		opacity:'1',
+	}, 'fast',done2);*/
+}
+
+
+ContainerStack.prototype.slideTo = function(args, direction){
 	if(args instanceof Element){
 		args = {
 			container:args,
@@ -430,7 +564,7 @@ ContainersStack.prototype.slideTo = function(args, direction){
 
 }
 
-ContainersStack.prototype.getNext = function(){
+ContainerStack.prototype.getNext = function(){
 	if(this.containers.length > 1){
 		var i = this.containers.indexOf(this.activeContainer);
 		if(i+1 == this.containers.length){
@@ -445,7 +579,7 @@ ContainersStack.prototype.getNext = function(){
 	}
 }
 
-ContainersStack.prototype.next = function(){
+ContainerStack.prototype.next = function(){
 	if(this.containers.length > 1){
 		var i = this.containers.indexOf(this.activeContainer);
 		if(i+1 == this.containers.length){
@@ -458,7 +592,7 @@ ContainersStack.prototype.next = function(){
 	
 }
 
-ContainersStack.prototype.prev = function(){
+ContainerStack.prototype.prev = function(){
 	if(this.containers.length > 1){
 		var i = this.containers.indexOf(this.activeContainer);
 		if(i == 0){
@@ -471,6 +605,20 @@ ContainersStack.prototype.prev = function(){
 	
 }
 
+ContainerStack.prototype.withLoader = function(){
+	this.loader = new Loader();
+	this.append(this.loader);
+};
+
+ContainerStack.prototype.startLoader = function(){
+	//this.switchTo(this.loader);
+	//this.locked = true;
+	if(this.loader == undefined){
+		this.withLoader();
+	}
+	this.switchTo(this.loader);
+};
+
 function Tabs(args){
 	var self = this;
 	args=args?args:{};
@@ -480,11 +628,11 @@ function Tabs(args){
 	});
 	this.addClass('tabs');
 
-	if(args.containers instanceof ContainersStack){
+	if(args.containers instanceof ContainerStack){
 		this.containers = args.containers;
 	}
 	else{
-		this.containers = new ContainersStack({
+		this.containers = new ContainerStack({
 			share:1,
 		});
 	}
@@ -562,13 +710,52 @@ Tabs.prototype.addContainerTab = function(container){
 	container.tab = new Toolbar();
 }*/
 
+function Panel(args){
+	var self = this;
+	args = args?args:{};
+	Container.call(this,args);
 
+	this.addClass('panel');
+}
+
+Panel.prototype = Object.create(Container.prototype);
+
+function Loader(args){
+	var self = this;
+	args = args?args:{};
+	args.share = 1;
+	Panel.call(this,args);
+
+	var cont = new Element({
+		className:'loader-inner',
+		appendTo:self,
+	});
+	this.message = new Element({
+		className:'loader-message',
+		appendTo:cont,
+	});
+	var spinner = new Element({
+		className:'spinner',
+		appendTo:cont,
+	});
+	spinner.e.innerHTML = '<div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div>';
+
+	this.addClass('loader');
+}
+
+Loader.prototype = Object.create(Panel.prototype);
+
+Loader.prototype.setMessage = function(message){
+	if(typeof message === 'string'){
+		this.message.e.innerHTML = message;
+	}
+};
 
 function Toolbar(args){
 	var self = this;
 	args = args?args:{};
 	args.contentDirection = args.contentDirection || "horizontal";
-	Container.call(this,args);
+	Panel.call(this,args);
 
 	this.addClass("toolbar");
 
@@ -593,13 +780,13 @@ function Toolbar(args){
 	});
 
 	this.moreButton.value.onTrue(function(){
-		console.log('true');
+		//console.log('true');
 		self.moreContainer.show();
 		self.moreContainer.focus();
 	});
 
 	this.moreButton.value.onFalse(function(){
-		console.log('false');
+		//console.log('false');
 		self.moreContainer.hide();
 		//self.moreContainer.blur();
 	});
@@ -636,7 +823,7 @@ function Toolbar(args){
 	this.element.appendChild(this.right.element);
 }
 
-Toolbar.prototype = Object.create(Container.prototype);
+Toolbar.prototype = Object.create(Panel.prototype);
 
 Toolbar.prototype.append = function(element,align){
 	if(align === "right"){
@@ -655,16 +842,6 @@ Toolbar.prototype.addToMore = function(element){
 	this.moreContainer.append(element);
 	this.moreButton.removeClass("hidden");
 }
-
-function Panel(args){
-	var self = this;
-	args = args?args:{};
-	Container.call(this,args);
-
-	this.addClass('panel');
-}
-
-Panel.prototype = Object.create(Container.prototype);
 
 function Window(args){
 	var self = this;

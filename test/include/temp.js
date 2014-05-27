@@ -1,161 +1,98 @@
 $(document).ready(function(){
-	//less.watch();
-	var w = new Element({
+	var root = new Container({
 		className:"root",
+		contentDirection:'vertical',
 	});
 
-	var tabs = new TabView();
-	var tab1 = tabs.addTab({
-		label:"Tab",
-	});
-	var tab2 = tabs.addTab({
-		label:"Tab2",
-		closeable:true,
-	});
+	document.body.appendChild(root.container);
 
-	var testCont1 = new Container({
+	var stack = new ContainerStack({
 		share:1,
 	});
-	var testCont2 = new Container({
+	var tabs = new Toolbar({
+		className:'blackblack',
+	});
+
+	
+	var test1 = new Container({
 		share:1,
+		className:'white',
 	});
+	test1.title = 'Test1';
+	var test1Tab = stack.getHandleFor(test1,{
+		className:'white',
+	});
+	stack.append(test1);
+	tabs.append(test1Tab);
 
-	var testCont3 = new Container({
-		share:1,
-	});
-	testCont1.element.style.backgroundColor = 'red';
-	testCont2.element.style.backgroundColor = 'blue';
-	testCont1.append(new Label({text:'Container 1'}));
-	testCont2.append(new Label({text:'Container 2'}));
 
-	testCont3.append(new Label({text:'Container 3'}));
-	var testButton1 = new Button({
-		icon:'arrow-left',
-		onClick:function(){ stack.prev(); },
+	var toolbar1 = new Toolbar({
+		appendTo:test1,
+		//className:'slategray',
 	});
-
-	var testButton2 = new Button({
-		icon:'arrow-right',
-		onClick:function(){ stack.slide(stack.getNext()); },
-	});
-	var stack = new ContainersStack({
+	
+	var stack1 = new ContainerStack({
+		appendTo:test1,
 		share:1,
 	});
 
-	stack.append(testCont1);
-	stack.append(testCont2);
-	stack.append(testCont3);
+	var panel1 = new Panel({
+		share:1,
+	});
+	var panel2 = new Panel({
+		share:1,
+		className:'slategray',
+	});
 
-	var addButton = new Button({
+	var panel3 = new Panel({
+		share:1,
+		className:'red',
+	});
+	var panel4 = new Panel({
+		share:1,
+		className:'green',
+	});
+	panel2.title = "Panel 2";
+	panel2.closeable = true;
+
+	panel3.title = "Panel 3";
+	panel3.closeable = true;
+	stack1.append(panel1);
+	stack1.append(panel2);
+	stack1.append(panel3);
+	stack1.append(panel4);
+	stack1.withLoader();
+	stack1.loader.setMessage('Loading...');
+
+	var tab2 = stack1.getHandleFor(panel2);
+	toolbar1.append(tab2);
+	tab2.addClass('slategray');
+
+	var tab3 = stack1.getHandleFor(panel3);
+	toolbar1.append(tab3);
+	tab3.addClass('red');
+
+	toolbar1.append(stack1.getHandleFor(panel4,{
+		className:'green',
+	}));
+
+	/*toolbar1.append(new Button({
+		icon:'play',
+		text:'Start Loader',
+		onClick:function(){
+			stack1.startLoader();
+		},
+	}));*/
+	toolbar1.append(new Button({
 		icon:'plus',
+		//text:'',
 		onClick:function(){
-			stack.appendAndShow(new Container({
-				share:1,
-				closeable:true,
-			}));
-		},
-	});
-
-	var tabs1 = new Tabs({
-		containers:stack,
-	});
-
-	tab2.documentElement.append(tabs1);
-	tab2.documentElement.append(addButton);
-
-	tab1.documentElement.append(new Button({
-		label:"To horizontal layout",
-		onClick:function(){
-			tabs.contentDirection.set('horizontal')
-		},
-	})).append(new Button({
-		label:"To vertical layout",
-		onClick:function(){
-			tabs.contentDirection.set('vertical')
+			stack1.switchTo(panel1)
 		},
 	}));
 
-	var acc = new AccordionView({
-		maximized:true,
-		share:1,
-	});
-	var tab3 = acc.addItem({
-		label:"Tab",
-	});
-	var tab4 = acc.addItem({
-		label:"Tab2",
-	});
-	tab3.documentElement.append(new Button({
-		onClick:function(){
-			wind2.hide();
-		},
-		label:"Hide Window example",
-	})).append(new Button({
-		onClick:function(){
-			wind2.show();
-		},
-		label:"Show Window example",
-	}));
+	root.append(tabs);
+	root.append(stack);
 
-	var wind = new Panel({
-		share:1,
-	});
-
-	var wind2 = new Window({
-		maximized:true,
-		share:1,
-		hidden:true,
-		title:"Window example",
-		icon:"camera",
-	});
-
-	var toolbar2 = new Toolbar();
-
-	var ti = new TextInput({
-		label:"Text input ",
-		icon: "user",
-	});
-
-	toolbar2.append(ti);
-	toolbar2.append(testButton1);
-	toolbar2.append(testButton2);
-	toolbar2.append(addButton);
-
-	tab1.tabTitle.setText(ti.value.addBroadcaster());
-
-	wind.append(toolbar2);
-	wind.append(stack);
-	var side = new Container({
-		maximized:true,
-		contentType:'blocks',
-		share:1,
-	});
-	var right = new Container({
-		contentType:'blocks',
-		direction:'v',
-		maximized:true,
-		share:2,
-	});
-	var u = new Container({
-		contentType:'blocks',
-		share:3,
-		maximized:true,
-	});
-	var d = new Container({
-		contentType:'blocks',
-		share:4,
-		maximized:true,
-	});
-	u.append(tabs);
-	d.append(wind);
-	d.append(wind2);
-	side.append(acc);
-	right.append(u)
-		.append(d);
-	w
-		.append(side)
-		.append(right)
-		;
-	document.body.appendChild(w.container);
 });
 

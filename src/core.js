@@ -61,6 +61,12 @@ Element.prototype.prepend = function(element){
 	return this;
 }
 
+Element.prototype.close = function(){
+	//this.hide();
+	this.element.parentNode.removeChild(this.element);
+	this.dispatchEvent('closed');
+}
+
 Element.prototype.isAncestorOf = function(element){
 	if(!(element instanceof Node)){
 		return false;
@@ -118,7 +124,7 @@ Element.prototype.focusable = function(args){
 	var args = args || {};
 	this.element.setAttribute('tabindex',args.tabIndex || 1);
 	this.addEventListener('focusout', function(e){
-		if(!(self.element == e.relatedTarget) && !self.isAncestorOf(e.relatedTarget)){
+		if(!(self.element == e.relatedTarget) && !self.e.contains(e.relatedTarget)){
 			self.dispatchEvent('focusaway');
 		}
 	});

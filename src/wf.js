@@ -71,7 +71,7 @@ function Button(args){
 	Clickable.call(this,{
 		onClick:args.onClick,
 		tabIndex:args.tabIndex || '-1',
-		className:'control button',
+		className:'button',
 	});
 	this.addClass(args.className);
 	//this.addClass('control control-button');
@@ -96,6 +96,13 @@ function Button(args){
 		text:args.text || args.label,
 		icon:args.icon
 	});
+
+	/*if(args.colorScheme == undefined){
+		this.addClass('lightgray');
+	}
+	else{
+		this.addClass('args.colorScheme');
+	}*/
 
 	this.append(this.label);
 }
