@@ -474,7 +474,7 @@ function Clickable(args){
 	var self = this;
 	args = args?args:{};
 	Element.call(this,{
-		tagName:typeof args.tagName == "string"?args.tagName:"button",
+		//tagName:typeof args.tagName == "string"?args.tagName:"button",
 		className:args.className,
 	});
 

@@ -8,12 +8,19 @@ function Container(args){
 	});
 
 	this.displayType = new Value({
-		value: "new-line",
+		//value: "new-line",
 	});
 
 	this.hidden = new BooleanModel({
 		value:false,
-	})
+	});
+	this.displayed = new BooleanModel();
+	this.displayed.adaptTo(this.hidden, function(args){
+		return !args[0].get();
+	});
+	this.hidden.adaptTo(this.displayed, function(args){
+		return !args[0].get();
+	});
 
 	this.position = this.displayType;
 
@@ -619,6 +626,10 @@ ContainerStack.prototype.startLoader = function(){
 	this.switchTo(this.loader);
 };
 
+ContainerStack.prototype.stopLoader = function(){
+	this.switchTo(this.main);
+};
+
 function Tabs(args){
 	var self = this;
 	args=args?args:{};
@@ -769,52 +780,13 @@ function Toolbar(args){
 		contentDirection:args.contentDirection,
 	});
 
-	this.moreButton = new ToggleButton({
-		icon:"ellipsis-v",
-		className:"toolbar-more",
+	this.moreButton = new Dropdown({
+		appendTo:this.right,
+		icon:'ellipsis-v'
 	});
-	this.moreButton.addClass("hidden");
+	this.moreButton.$.hide();
 
-	this.moreButton.on('mousedown', function(e){
-		e.preventDefault();
-	});
-
-	this.moreButton.value.onTrue(function(){
-		//console.log('true');
-		self.moreContainer.show();
-		self.moreContainer.focus();
-	});
-
-	this.moreButton.value.onFalse(function(){
-		//console.log('false');
-		self.moreContainer.hide();
-		//self.moreContainer.blur();
-	});
-
-	this.moreContainer = new Container({
-		className:"dropdown toolbar-more-container",
-		contentDirection:"vertical",
-		//displayType:"none",
-		hidden:true,
-		focusable:true,
-	});
-
-	this.moreContainer.on('click', function(e){
-		e.preventDefault();
-		e.stopPropagation();
-	});
-	this.moreContainer.on('mousedown', function(e){
-		e.preventDefault();
-		e.stopPropagation();
-	});
-
-	this.moreButton.on('focusaway', function(){
-		self.moreButton.value.false();
-		//self.moreContainer.hide();
-		//self.moreContainer.blur();
-	});
-
-	this.moreButton.append(this.moreContainer);
+	this.moreContainer = this.moreButton.panel;
 
 	this.right.append(this.moreButton);
 
@@ -840,7 +812,7 @@ Toolbar.prototype.append = function(element,align){
 
 Toolbar.prototype.addToMore = function(element){
 	this.moreContainer.append(element);
-	this.moreButton.removeClass("hidden");
+	this.moreButton.$.show();
 }
 
 function Window(args){

@@ -6,9 +6,17 @@ function Value(args){
 	this.broadcasters = [];
 	this.patterns = [];
 	this.filters = {};
-	this.set({
-		value:args.value,
-	});
+	if(args.value instanceof Value){
+		this.adaptTo(args.value, function(args){
+			return args[0].get();
+		});
+		this.setValue(args.value.get());
+	}
+	else{
+		this.set({
+			value:args.value,
+		});
+	}
 
 }
 
@@ -50,6 +58,7 @@ Value.prototype.adaptTo = function(){
 			arguments[i].onChange(f);
 		}
 	}
+	//f();
 };
 
 Value.prototype.listenTo = function(){
@@ -149,8 +158,12 @@ Value.prototype.set = function(args){
 	}
 	args.oldValue = this.value;
 	args = this.applyFilter('set', args);
-	
-	this.value = args.value;
+	if(this.value !== args.value){
+		this.value = args.value;
+	}
+	else{
+		return;
+	}
 	this.dispatchEvent('change',args);
 	this.broadcast(args);
 }

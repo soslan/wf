@@ -86,6 +86,8 @@ function Button(args){
 
 	this.on('mousedown', function(e){
 		e.stopPropagation();
+		e.preventDefault();
+		//self.focus
 	});
 
 	/*if(typeof args.caption == "string" || typeof args.text == "string" || typeof args.label == "string"){
@@ -114,9 +116,14 @@ function ToggleButton(args){
 	args = args?args:{};
 	Button.call(this,args);
 
-	this.value = new BooleanModel({
-		value:args.defaultValue == undefined ? args.defaultValue : false,
-	});
+	if(args.value instanceof BooleanModel){
+		this.value = args.value;
+	}
+	else{
+		this.value = new BooleanModel({
+			value:args.defaultValue == undefined ? args.defaultValue : false,
+		});
+	}
 
 	this.value.addEventListener('on', function(){
 		self.removeClass('inactive');
@@ -142,6 +149,51 @@ function ToggleButton(args){
 }
 
 ToggleButton.prototype = Object.create(Button.prototype);
+
+ToggleButton.prototype.onOn = function(handler){
+	this.value.onTrue(handler);
+};
+
+ToggleButton.prototype.onOff = function(handler){
+	this.value.onFalse(handler);
+};
+
+function Dropdown(args){
+	var self = this;
+	var args = args || {};
+	Element.call(this,{});
+	this.addClass('dropdown-container');
+
+	this.panel = new Panel({
+		className:'dropdown whitewhite nest-whitewhite',
+	});
+	args.value = this.panel.displayed;
+	this.button = new ToggleButton(args);
+	this.panel.on('click', function(e){
+		e.stopPropagation();
+		e.preventDefault();
+	});
+	this.panel.on('mousedown', function(e){
+		e.stopPropagation();
+		e.preventDefault();
+	});
+	this.panel.on('displayed', function(){
+		self.panel.focus();
+	});
+	this.button.on('mousedown',function(e){
+		e.preventDefault();
+		e.stopPropagation();
+	})
+	this.panel.focusable();
+	this.panel.on('focusaway',function(){
+		self.panel.hide();
+	});
+	this.panel.hide();
+	this.append(this.button);
+	this.append(this.panel);
+}
+
+Dropdown.prototype = Object.create(ToggleButton.prototype);
 
 function Toggle(args){
 	var self = this;
