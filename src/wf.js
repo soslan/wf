@@ -142,7 +142,28 @@ function ToggleButton(args){
 	});
 
 	this.addEventListener('mousedown',function(e){
-		self.value.flip();
+		if(!self.value.get()){
+			self.value.true();
+			e.preventDefault();
+			self.pressed = true;
+			//e.stopPropagation();
+		}
+		else{
+			self.pressed = false;
+		}
+		//self.value.flip();
+		//e.preventDefault();
+		e.stopPropagation();
+	});
+	this.addEventListener('mouseup',function(e){
+		if(self.pressed){
+			self.pressed = false;
+		}
+		else{
+			self.value.false();
+		}		
+		
+		//self.value.flip();
 		//e.preventDefault();
 		e.stopPropagation();
 	});
