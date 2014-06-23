@@ -1,3 +1,6 @@
+//document.oncontextmenu = function () { // Use document as opposed to window for IE8 compatibility
+//   return false;
+//};
 function Base(args){
 	args=args?args:{};
 	args.tag = args.tag ? args.tag : "div";
@@ -86,7 +89,7 @@ function Button(args){
 
 	this.on('mousedown', function(e){
 		e.stopPropagation();
-		e.preventDefault();
+		//e.preventDefault();
 		//self.focus
 	});
 

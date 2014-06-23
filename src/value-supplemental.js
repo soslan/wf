@@ -73,7 +73,7 @@ BooleanModel.prototype.and = function(arg){
 
 function DataTableModel(args){
 	var self = this;
-	Value.call(this, {});
+	Value.call(this, args);
 
 }
 

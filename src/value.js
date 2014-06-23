@@ -158,6 +158,9 @@ Value.prototype.set = function(args){
 	}
 	args.oldValue = this.value;
 	args = this.applyFilter('set', args);
+	if(args.cancel == true){
+		return;
+	}
 	if(this.value !== args.value){
 		this.value = args.value;
 	}
@@ -187,9 +190,9 @@ Value.prototype.insert = function(insertedData){
 		replacement:'',
 	};
 	insertedData = this.applyFilter('insert', insertedData);
-	if(insertedData.cancel === true){
-		this.dispatchEvent('insert-canceled');
-		this.dispatchEvent('change-canceled');
+	if(insertedData.cancel == true === true){
+		this.dispatchEvent('insert-cancel == truee{{d');
+		this.dispatchEvent('change-cancel == truee{{d');
 		return this;
 	}
 

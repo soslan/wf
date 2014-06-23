@@ -108,6 +108,10 @@ Element.prototype.addEventListener = function(type, handler, useCapture){
 	}
 }
 
+Element.prototype.removeEventListener = function(type, handler){
+	this.e.removeEventListener(type, handler);
+}
+
 Element.prototype.dispatchEvent = function(eventKey, e){
 	var self = this;
 	var event = new CustomEvent(eventKey, {
@@ -330,6 +334,9 @@ Element.prototype.draggable = function(args){
 	var args = args || {};
 	var dragged = false;
 	var minX, maxX, minY, maxY;
+	var position = [0,0];
+	var newPositionY = 0;
+	var newPositionX = 0;
 	this.draggingMode = args.mode || 'hv';
 	if(this.draggingMode == 'h'){
 		this.vDraggable = false;
@@ -352,8 +359,8 @@ Element.prototype.draggable = function(args){
 		if(self.hDraggable){
 			shift[0] = e.pageX - self.latestMouseDownPosition[0];
 		}
-		var newPositionX = self.latestElementPositionOnMD.left + shift[0];
-		var newPositionY = self.latestElementPositionOnMD.top + shift[1];
+		newPositionX = position[0] + shift[0];
+		newPositionY = position[1] + shift[1];
 		if(newPositionX<minX){
 			newPositionX = minX;
 		}
@@ -367,15 +374,19 @@ Element.prototype.draggable = function(args){
 			newPositionY = maxY;
 		}
 
-		self.$.css({
-			left:newPositionX,
-			top:newPositionY,
-		});
+		//self.$.css({
+			//'-webkit-transform': ,
+			//left:newPositionX,
+			//top:newPositionY,
+		//});
+		self.e.style.webkitTransform = 'translate('+newPositionX+'px, '+newPositionY+'px)';
+		//console.log('translate('+newPositionX+', '+newPositionY+')');
 		e.stopPropagation();
 		e.preventDefault();
 	}
 
 	this.documentOnMouseUp = function(e){
+		position = [newPositionX, newPositionY];
 		document.removeEventListener('mousemove', self.documentOnMove);
 		document.removeEventListener('mouseup', self.documentOnMouseUp);
 		if(dragged){
@@ -394,45 +405,58 @@ Element.prototype.draggable = function(args){
 	if(typeof args.afterNoMove == "function"){
 		this.addEventListener('afterdragnomove',args.afterNoMove);
 	}
+
+	this.onMouseDown = function(e){
+		if(e.which === 1){
+			dragged = false;
+			if(typeof args.minX == "function"){
+				minX = args.minX();
+			}
+			else{
+				minX = args.minX;
+			}
+			if(typeof args.maxX == "function"){
+				maxX = args.maxX();
+			}
+			else{
+				maxX = args.maxX;
+			}
+			if(typeof args.minY == "function"){
+				minY = args.minY();
+			}
+			else{
+				minY = args.minY;
+			}
+			if(typeof args.maxY == "function"){
+				maxY = args.maxY();
+			}
+			else{
+				maxY = args.maxY;
+			}
+			self.latestMouseDownPosition = [e.pageX, e.pageY];
+			//self.latestElementPositionOnMD = self.$.position();
+			document.addEventListener('mousemove',self.documentOnMove);
+			document.addEventListener('mouseup',self.documentOnMouseUp);
+			e.preventDefault();
+			e.stopPropagation();
+		}
+	};
 	
 
-	this.addEventListener('mousedown',function(e){
-		dragged = false;
-		if(typeof args.minX == "function"){
-			minX = args.minX();
-		}
-		else{
-			minX = args.minX;
-		}
-		if(typeof args.maxX == "function"){
-			maxX = args.maxX();
-		}
-		else{
-			maxX = args.maxX;
-		}
-		if(typeof args.minY == "function"){
-			minY = args.minY();
-		}
-		else{
-			minY = args.minY;
-		}
-		if(typeof args.maxY == "function"){
-			maxY = args.maxY();
-		}
-		else{
-			maxY = args.maxY;
-		}
-		self.latestMouseDownPosition = [e.pageX, e.pageY];
-		self.latestElementPositionOnMD = self.$.position();
-		document.addEventListener('mousemove',self.documentOnMove);
-		document.addEventListener('mouseup',self.documentOnMouseUp);
-	});
+	this.addEventListener('mousedown',this.onMouseDown);
 
 	this.addEventListener('click',function(e){
 		e.stopPropagation();
 		e.preventDefault();
 	});
 }
+
+Element.prototype.notDraggable = function(){
+	this.removeEventListener('mousedown',this.onMouseDown);
+	this.e.style.webkitTransform = '';
+	document.removeEventListener('mouseup',this.documentOnMouseUp);
+	document.removeEventListener('mousemove',this.documentOnMove);
+};
 
 // Prototype
 Element.prototype.valueCarrier = function(args){

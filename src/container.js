@@ -4,7 +4,7 @@ function Container(args){
 	Element.call(this,args);
 	this.addClass("container");
 	this.contentType = new Value({
-		value: "blocks",
+		//value: "blocks",
 	});
 
 	this.displayType = new Value({
@@ -21,6 +21,8 @@ function Container(args){
 	this.hidden.adaptTo(this.displayed, function(args){
 		return !args[0].get();
 	});
+
+	//this.displayed.addFilter
 
 	this.position = this.displayType;
 
@@ -44,6 +46,25 @@ function Container(args){
 	});
 
 	this.hidden.onFalse(function(){
+		/*var displayType = self.displayType.get();
+		if(displayType === 'unmaximized'){
+			//self.parent.
+		}
+		else if(displayType === 'maximized'){
+			if(typeof self.parent.activeMaximizedContainer !== 'undefined'){
+				self.parent.activeMaximizedContainer.hide();
+			}
+			else if(typeof self.parent.activeContainer !== 'undefined'){
+				self.parent.activeContainer.hide();
+			}
+			if(typeof self.parent.activeUnmaximizedContainers !== 'undefined'){
+				for (i in self.parent.activeUnmaximizedContainers){
+					self.parent.activeUnmaximizedContainers[i].hide();
+				}
+			}
+			self.parent.activeMaximizedContainer = self;
+			
+		}*/
 		self.removeClass('hidden');
 		self.dispatchEvent('displayed');
 	});
@@ -59,14 +80,8 @@ function Container(args){
 	});
 
 	this.displayType.addFilter('set', function(d){
-		if(d.value == "inline"){
-			d.value = "inline";
-		}
-		else if(d.value == "none"){
-			d.value = "none";
-		}
-		else{
-			d.value = "new-line";
+		if(Container.displayTypes.indexOf(d.value) == -1){
+			d.cancel = true;
 		}
 		return d;
 	});
@@ -140,6 +155,69 @@ function Container(args){
 			self.removeClass('display-type-' + d.oldValue);
 		}
 		self.addClass('display-type-'+d.value);
+		if(d.oldValue === 'unmaximized'){
+			if(d.value === 'unmaximized-pinned'){
+				//var i = self.parent.activeUnmaximizedContainers.indexOf(self);
+				//if(i != -1){
+				//	self.parent.activeUnmaximizedContainers.splice(i,1);
+				//}
+				
+			}
+			else if(d.value === 'maximized'){
+				var i = self.parent.activeUnmaximizedContainers.indexOf(self);
+				self.parent.activeUnmaximizedContainers.splice(i,1);
+				if(self.displayed.value){
+					if(typeof self.parent.displayedMaximized !== 'undefined'){
+						self.parent.displayedMaximized.hide();
+					}
+					self.parent.displayedMaximized = self;
+				}
+
+				self.$.css({
+					'z-index':'',
+					top:'',
+					left:'',
+				});
+				self.notDraggable();
+			}
+		}
+		else if(d.oldValue === 'unmaximized-pinned'){
+
+		}
+		else if(d.oldValue === 'maximized'){
+			if(d.value === 'unmaximized' || d.value === 'unmaximized-pinned'){
+				if(typeof self.parent.previousMaximized !== 'undefined'){
+					self.parent.previousMaximized.show();
+				}
+				self.parent.activeUnmaximizedContainers.push(self);
+				self.parent.displayedMaximized = self.parent.previousMaximized;
+				self.parent.previousMaximized = undefined;
+				self.draggable();
+				self.$.css({
+					//'z-inde'
+					top:0,
+					left:0,
+				});
+			}
+		}
+		else if(d.value === 'unmaximized' || d.value === 'unmaximized-pinned' || d.value === 'maximized'){
+			//self.focusable();
+			//self.addEventListener('focusin', function(){
+				//self.top();
+			//});
+			self.e.addEventListener('mousedown', function(){
+				self.parent.switchTo(self);
+			}, true);
+			if(d.value === 'unmaximized-pinned' || d.value === 'unmaximized'){
+				self.draggable();
+				self.$.css({
+					//'z-inde'
+					top:0,
+					left:0,
+				});
+			}
+			//self.draggable();
+		}
 	});
 	//this.displayType.addEventListener('change',onContentTypeOrPositionChange);
 
@@ -177,7 +255,7 @@ function Container(args){
 	*/
 
 	this.displayType.set({
-		value:args.displayType || args.position,
+		value:args.displayType || args.position || 'new-line',
 	});
 
 	this.contentType.set({
@@ -224,12 +302,26 @@ function Container(args){
 
 Container.prototype = Object.create(Element.prototype);
 
+Container.displayTypes = ['inline', 'new-line', 'unmaximized', 'maximized', 'unmaximized-pinned'];
+
 Container.prototype.hide = function(){
 	this.hidden.true();
 };
 
 Container.prototype.show = function(){
 	this.hidden.false();
+};
+
+Container.prototype.top = function(){
+	if(this.displayType.value === 'unmaximized'){
+		this.e.style.zIndex = this.parent.topZIndex + 1;
+		this.parent.topZIndex += 1;
+		if(this.parent.topWindow instanceof Element){
+			this.parent.topWindow.dispatchEvent('untopped');
+		}
+		this.parent.topWindow = this;
+		this.dispatchEvent('topped');
+	}
 };
 
 Container.prototype.onHidden = function(handler){
@@ -251,22 +343,60 @@ function ContainerStack(args){
 	args = args?args:{};
 	Container.call(this,args);
 	this.addClass('containers-stack');
-
+	this.activeUnmaximizedContainers = [];
 	this.containers = [];
+	this.topZIndex = 200;
 	this.activeContainer;
+	this.activeMaximizedContainer = this.activeContainer;
 }
 
 ContainerStack.prototype = Object.create(Container.prototype);
 
 ContainerStack.prototype.append = function(container){
 	var self = this;
-	this.containers.push(container);
-	if(this.containers.length == 1){
+	var displayType;
+	if(['maximized', 'unmaximized', 'unmaximized-pinned'].indexOf(container.displayType.get()) == -1){
+		container.displayType.setValue('maximized');
+		displayType = 'maximized';
+	}
+	else{
+		displayType = container.displayType.get();
+	}
+
+	if(displayType === 'unmaximized' || displayType === 'unmaximized-pinned'){
+		if(typeof this.activeUnmaximizedContainers === 'undefined'){
+			this.activeUnmaximizedContainers = [];
+			this.topZIndex = 200;
+		}
+		this.activeUnmaximizedContainers.push(container);
+
+	}
+
+	if(this.activeContainer == undefined){
 		this.switchTo(container);
 	}
 	else{
 		container.hide();
 	}
+
+	container.parent = this;
+	if(typeof container.windowMode === 'undefined'){
+		container.windowMode = 'extended';
+	}
+	if(container.windowMode === 'unmaximized'){
+
+	}
+	else{
+		this.containers.push(container);
+		if(this.containers.length == 1){
+			this.switchTo(container);
+		}
+		else{
+			container.hide();
+		}
+	}
+	
+	
 	Container.prototype.append.call(this, container);
 	/*container.on('closed',function(){
 		var i = self.containers.indexOf(container);
@@ -310,7 +440,7 @@ ContainerStack.prototype.remove = function(container){
 ContainerStack.prototype.getHandleFor = function(container, handleArgs){
 	var self = this;
 	var handle = new Element(handleArgs);
-	handle.addClass('container-handle');
+	handle.addClass('container-handle white');
 	if(container.title === undefined){
 		container.title = "Tab";
 	}
@@ -324,19 +454,141 @@ ContainerStack.prototype.getHandleFor = function(container, handleArgs){
 	else{
 		handle.addClass('active');
 	}
-	container.hidden.onTrue(function(){
+	/*container.hidden.onTrue(function(){
 		handle.addClass('inactive');
 		handle.removeClass('active');
 	});
 	container.hidden.onFalse(function(){
 		handle.addClass('active');
-		handle.removeClass('inactive')
+		handle.removeClass('inactive');
+	});*/
+	container.on('activated', function(){
+		handle.addClass('active');
+		handle.removeClass('inactive');
+	});
+	container.on('deactivated', function(){
+		handle.addClass('inactive');
+		handle.removeClass('active');
 	});
 	container.on('closed',function(){
 		handle.close();
 	});
-	handle.on('click', function(){
-		self.switchTo(container);
+	container.displayType.onChange(function(d){
+		if(d.value === 'maximized'){
+			handle.addClass('tab');
+		}
+		else if(d.value === 'unmaximized-pinned'){
+			handle.addClass('pinned');
+		}
+		if(d.oldValue === 'maximized'){
+			handle.removeClass('tab');
+		}
+		else if(d.oldValue === 'unmaximized-pinned'){
+			handle.removeClass('pinned');
+		}
+	});
+	handle.on('contextmenu', function(e){
+		//e.stopPropagation();
+		e.preventDefault();
+	});
+	handle.on('mousedown', function(e){
+		//e.stopPropagation();
+		handle.savedPos = e.pageY;
+		handle.pressed = true;
+		handle.moved = false;
+		e.preventDefault();
+		handle.wasActive = container.parent.activeContainer == container;
+		var onMouseMove = function(e){
+			if(handle.pressed){
+				handle.moved = true;
+				var shift = e.pageY - handle.savedPos;
+				var displayType = container.displayType.value;
+				if(displayType === 'unmaximized'){
+					if(shift >=5){
+						container.displayType.setValue('maximized');
+						console.log('Maximized');
+						handle.savedPos = handle.savedPos + 5;
+					}else if(shift <= -5){
+						container.displayType.setValue('unmaximized-pinned');
+						console.log('Pinned');
+						handle.savedPos = handle.savedPos - 5;
+					}
+				}
+				else if(displayType === 'unmaximized-pinned'){
+					if(shift >= 5){
+						container.displayType.setValue('unmaximized');
+						console.log('Unpinned');
+						handle.savedPos = handle.savedPos + 5;
+					}
+				}
+				else if(displayType === 'maximized'){
+					if(shift <= -5){
+						container.displayType.setValue('unmaximized');
+						console.log('Unmaximized');
+						handle.savedPos = handle.savedPos - 5;
+					}
+				}
+				e.preventDefault();
+			}
+		};
+		var onMouseUp = function(e){
+			handle.pressed = false;
+			document.removeEventListener(onMouseMove);
+			document.removeEventListener(onMouseUp);
+			if(!handle.moved && handle.wasActive){
+				if(container.parent.activeContainer == container){
+					if(container.displayType.value !== 'maximized'){
+						//container
+						container.parent.switchTo();
+						container.hide();
+					}
+				}
+				else{
+					//self.switchTo(container);
+					container.hide();
+				}
+			}
+		};
+		document.addEventListener('mousemove',onMouseMove);
+		document.addEventListener('mouseup',onMouseUp);
+	});
+	
+	handle.$.on('mousedown', function(e){
+		handle.moved = false;
+		if(e.which === 1){
+			if(container.parent.activeContainer == container){
+				//if(container.displayType.value !== 'maximized'){
+				//	//container
+				//	container.parent.switchTo();
+				//	container.hide();
+				//}
+			}
+			else{
+				self.switchTo(container);
+			}
+		}
+		else if(e.which === 2){
+			if(container.parent.activeContainer == container){
+				if(container.displayType.value !== 'maximized'){
+					//container
+					container.parent.switchTo();
+					container.hide();
+				}
+			}
+			else{
+				//self.switchTo(container);
+				container.hide();
+			}
+		}
+		
+		
+		//container.show();
+	});
+	container.on('topped', function(){
+		handle.addClass('topped');
+	});
+	container.on('untopped', function(){
+		handle.removeClass('topped');
 	});
 	if(container.closeable){
 		handle.append(new Button({
@@ -347,7 +599,13 @@ ContainerStack.prototype.getHandleFor = function(container, handleArgs){
 			},
 		}));
 	}
-	handle.addClass('tab');
+	if(container.displayType.get() === 'maximized'){
+		handle.addClass('tab');
+	}
+	else if(container.displayType.get() === 'unmaximized-pinned'){
+		handle.addClass('pinned');
+	}
+	
 	container.handle = handle;
 	return handle;
 };
@@ -363,7 +621,60 @@ ContainerStack.prototype.switchTo = function(container){
 	if(container === this.activeContainer){
 		return;
 	}
-	var i = this.containers.indexOf(container);
+	else if(typeof container === 'undefined'){
+		if(typeof this.activeContainer !== 'undefined'){
+			this.activeContainer.dispatchEvent('deactivated');
+			this.activeContainer = undefined;
+		}
+		
+	}
+	else if(container instanceof Element){
+		var displayType = container.displayType.get();
+		this.previousContainer = this.activeContainer;
+		if(displayType === 'maximized'){
+			//this.previousMaximized
+			if(typeof this.activeContainer !== 'undefined'){
+				this.activeContainer.dispatchEvent('deactivated');
+				for (var i in this.activeUnmaximizedContainers){
+					if(this.activeUnmaximizedContainers[i].displayType.value !== 'unmaximized-pinned'){
+						this.activeUnmaximizedContainers[i].hide();
+					}
+					
+				}
+				if(this.activeContainer.displayType.value !== 'unmaximized-pinned'){
+					this.activeContainer.hide();
+				}
+				
+			}
+			if(this.displayedMaximized != container && this.displayedMaximized != undefined){
+				this.previousMaximized = this.displayedMaximized;
+				this.displayedMaximized.hide();
+			}
+			this.activeContainer = container;
+			this.displayedMaximized = container;
+			container.dispatchEvent('activated');
+			container.show();
+		}
+		else if(displayType === 'unmaximized' || displayType === 'unmaximized-pinned'){
+			if(typeof this.activeContainer !== 'undefined'){
+				this.activeContainer.dispatchEvent('deactivated');
+			}
+			
+			//this.activeContainer.hide();
+			this.activeContainer = container;
+			container.dispatchEvent('activated');
+			container.e.style.zIndex = this.topZIndex + 1;
+			this.topZIndex += 1;
+			container.show();
+
+		}else if(displayType ==='unmaximized-pinned'){
+
+		}
+	}
+
+
+
+	/*var i = this.containers.indexOf(container);
 	if(i != -1){
 		if(this.activeContainer != undefined){
 			//this.activeContainer.e.style.position = 'absolute';
@@ -383,6 +694,9 @@ ContainerStack.prototype.switchTo = function(container){
 		}
 		this.activeContainer = container;
 	}
+	else{
+		container.show();
+	}*/
 }
 
 ContainerStack.prototype.fadeTo = function(args){
@@ -735,6 +1049,7 @@ function Loader(args){
 	var self = this;
 	args = args?args:{};
 	args.share = 1;
+	//args.contentType = 'lines';
 	Panel.call(this,args);
 
 	var cont = new Element({
