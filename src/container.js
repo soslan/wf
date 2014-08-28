@@ -786,6 +786,8 @@ ContainerStack.prototype.slideTo = function(args, direction){
 			direction:direction,
 		}
 	}
+	this.switchTo(args.container);
+	return;
 	var container = args.container;
 	var replacedContainer;
 	var direction;
@@ -1062,7 +1064,7 @@ function Loader(args){
 	});
 	var spinner = new Element({
 		className:'spinner',
-		appendTo:cont,
+		//appendTo:cont,
 	});
 	spinner.e.innerHTML = '<div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div>';
 

@@ -3,6 +3,7 @@ function SVGElement(args){
 	args=args?args:{};
 	args.tagName = typeof args.tagName == "string" ? args.tagName : "svg";
 	this.element = document.createElementNS("http://www.w3.org/2000/svg", args.tagName);
+	this.e = this.element;
 	this.$element = $(this.element);
 	this.$ = this.$element;
 	this.tagName = args.tagName;

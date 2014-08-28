@@ -73,8 +73,39 @@ BooleanModel.prototype.and = function(arg){
 
 function DataTableModel(args){
 	var self = this;
+	args = args || {};
+	args.value = args.value || [];
 	Value.call(this, args);
 
 }
 
 DataTableModel.prototype = Object.create(Value.prototype);
+
+DataTableModel.prototype.extract = function(){
+	var out = {
+		rows:[],
+		range:{},
+	};
+	for(var i in this.value){
+		var row = this.value[i];
+		Object.keys(row).forEach(function(key){
+			if(out.range[key] === undefined){
+				out.range[key] = [undefined, undefined];
+				if(row[key] !== null){
+					out.range[key] = [row[key], row[key]];
+				}
+			}
+			else if(row[key] !== null){
+				if(out.range[key][0] === undefined || out.range[key][0] > row[key]){
+					out.range[key][0] = row[key];
+				}
+				if(out.range[key][1] === undefined || out.range[key][1] < row[key]){
+					out.range[key][1] = row[key];
+				}
+			}
+
+		});
+		out.rows.push(row);
+	}
+	return out;
+};
