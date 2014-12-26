@@ -45,12 +45,18 @@ BooleanModel.prototype.false = function(args){
 	this.setValue(false, args);
 }
 
-BooleanModel.prototype.onTrue = function(handler){
+BooleanModel.prototype.onTrue = function(handler, check){
 	this.addEventListener('on', handler);
+	if (check==true && this.value === true){
+		handler();
+	}
 }
 
-BooleanModel.prototype.onFalse = function(handler){
+BooleanModel.prototype.onFalse = function(handler, check){
 	this.addEventListener('off', handler);
+	if (check==true && this.value === false){
+		handler();
+	}
 }
 
 BooleanModel.prototype.and = function(arg){
@@ -68,6 +74,20 @@ BooleanModel.prototype.and = function(arg){
 
 	return newBool;
 }
+
+BooleanModel.prototype.switchClass = function(elem, onTrue){
+	this.onTrue(function(){
+		if (elem instanceof Element){
+			elem.addClass(onTrue);
+		}
+	}, 1);
+	this.onFalse(function(){
+		if (elem instanceof Element){
+			elem.removeClass(onTrue);
+		}
+	}, 1);
+
+};
 
 
 
@@ -109,3 +129,82 @@ DataTableModel.prototype.extract = function(){
 	}
 	return out;
 };
+
+
+function DateModel(args){
+	var self = this;
+	if (typeof args == 'number'){
+		self.value = Date(Number(args));
+	}
+	else if (typeof args == 'object') {
+		self.value = args.value;
+	}
+
+
+
+}
+
+DateModel.prototype = Object.create(Value.prototype);
+
+DateModel.startClock = function(){
+	DateModel.minClock = setInterval(function(){
+		var now = new Date();
+		for (var i in DateModel.HBroadcastedDatesMin){
+			var date = DateModel.HBroadcastedDatesMin[i];
+			var interval = now - date['date'];
+			if (interval < 60 * 1000){
+				date['node'].nodeValue = "just now";
+			}
+			else if (interval < 60 * 60 * 1000){
+				date['node'].nodeValue = String(Math.round(interval / (60 * 1000))) + " min ago";
+			}
+			else {
+				date['node'].nodeValue = String(Math.round(interval / (60 * 1000))) + " min ago";
+			}
+		}
+	}, 60000);
+}
+
+DateModel.stopClock = function(){
+	stopInterval(DateModel.minClock);
+	delete DateModel.minClock;
+}
+
+DateModel.HBroadcastedDatesMin = [];
+
+DateModel.getHBroadcaster = function(date){
+	//var item = {}
+	if (date instanceof Date){
+		var item = {
+			date:date,
+			node:new Text(),
+		};
+
+		var now = new Date();
+
+		var interval = now - date;
+
+		if (interval < 60 * 1000){
+			item['node'].nodeValue = "just now";
+		}
+		else if (interval < 60 * 60 * 1000){
+			item['node'].nodeValue = String(Math.round(interval / (60 * 1000))) + " min ago";
+		}
+		else {
+			item['node'].nodeValue = String(Math.round(interval / (60 * 1000))) + " min ago";
+		}
+
+		DateModel.HBroadcastedDatesMin.push(item);
+		if (DateModel.minClock === undefined){
+			DateModel.startClock();
+		}
+
+		return item['node'];
+	}
+
+	
+}
+
+DateModel.prototype.getHBroadcaster = function(){
+
+}

@@ -159,9 +159,9 @@ function DataTableChart(args){
 		o:[undefined, undefined],
 	};
 
-	//this.limits = {};
+	//this.tempLimits = {};
 
-	this.defaultsB = {
+	this.canvasDefaults = {
 		x:undefined,
 		y:undefined,
 		r:5,
@@ -170,6 +170,8 @@ function DataTableChart(args){
 		cB:0,
 		o:0.8,
 	};
+
+	this.defaultsB = this.canvasDefaults;
 }
 
 DataTableChart.prototype = Object.create(SVGElement.prototype);
@@ -207,11 +209,14 @@ DataTableChart.prototype.addChannel = function(ch){
 	this.channels.push(channel);
 }
 
+DataTableChart.prototype.processLimits = function(){
+
+};
+
 DataTableChart.prototype.draw = function(){
 	var self = this;
 	var tempLimits = {};
 	var rows = this.data.get();
-	//var channelRows = [];
 	this.canvasLimits.x[1] = this.canvas.$.width();
 	this.canvasLimits.y[0] = this.canvas.$.height();
 	for(var i in this.channels){

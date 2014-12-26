@@ -14,7 +14,9 @@ function Container(args){
 	this.hidden = new BooleanModel({
 		value:false,
 	});
-	this.displayed = new BooleanModel();
+	this.displayed = new BooleanModel({
+		value:true,
+	});
 	this.displayed.adaptTo(this.hidden, function(args){
 		return !args[0].get();
 	});
@@ -65,6 +67,7 @@ function Container(args){
 			self.parent.activeMaximizedContainer = self;
 			
 		}*/
+		self.dispatchEvent('before-displayed');
 		self.removeClass('hidden');
 		self.dispatchEvent('displayed');
 	});
@@ -312,6 +315,22 @@ Container.prototype.show = function(){
 	this.hidden.false();
 };
 
+Container.prototype.setDisplayType = function(displayType){
+	this.displayType.setValue(displayType);
+	this.dispatchEvent('display-type-changed');
+};
+
+Container.prototype.getDisplayType = function(){
+	return this.displayType.get();
+};
+
+Container.prototype.getHandle = function(args){
+	args = args || {};
+	args.container = this;
+	var handle = new ContainerHandle(args);
+	return handle;
+};
+
 Container.prototype.top = function(){
 	if(this.displayType.value === 'unmaximized'){
 		this.e.style.zIndex = this.parent.topZIndex + 1;
@@ -338,6 +357,86 @@ Container.prototype.onClosed = function(handler){
 	this.addEventListener('closed', handler);
 };
 
+function ContainerHandle(args){
+	var self = this;
+	args = args?args:{};
+	Element.call(this,args);
+	if(args.container === undefined){
+		return;
+	}
+	this.container = args.container;
+	this.addClass('container-handle');
+	this.append(new Label({
+		text:args.text || 'Container',
+	}));
+	var displayType = this.container.getDisplayType();
+	if(displayType === undefined || displayType === 'maximized'){
+		this.addClass('container-handle-maximized');
+	}
+
+	this.container.on('activated', function(){
+		self.addClass('active');
+		self.removeClass('inactive');
+	});
+	this.container.on('deactivated', function(){
+		self.addClass('inactive');
+		self.removeClass('active');
+	});
+	this.container.on('closed',function(){
+		self.close();
+	});
+
+	if(this.container.displayed.get()){
+		self.addClass('active');
+		self.removeClass('inactive');
+	}
+
+	this.$.on('mousedown', function(e){
+		if(e.which === 1){
+			if(self.container.parent.activeContainer == self.container){
+				//if(container.displayType.value !== 'maximized'){
+				//	//container
+				//	container.parent.switchTo();
+				//	container.hide();
+				//}
+			}
+			else{
+				self.container.parent.switchTo(self.container);
+			}
+		}
+		/*else if(e.which === 2){
+			if(container.parent.activeContainer == container){
+				if(container.displayType.value !== 'maximized'){
+					//container
+					container.parent.switchTo();
+					container.hide();
+				}
+			}
+			else{
+				//self.switchTo(container);
+				container.hide();
+			}
+		}*/
+		
+		
+		//container.show();
+	});
+
+	if(args.closeable){
+		self.append(new Button({
+			icon:'times',
+			className:'tab-close red quiet',
+			onClick:function(){
+				self.container.parent.remove(self.container);
+			},
+		}));
+	}
+	
+}
+
+ContainerHandle.prototype = Object.create(Element.prototype);
+
+
 function ContainerStack(args){
 	var self = this;
 	args = args?args:{};
@@ -355,6 +454,11 @@ ContainerStack.prototype = Object.create(Container.prototype);
 ContainerStack.prototype.append = function(container){
 	var self = this;
 	var displayType;
+	if (container.displayType === undefined){
+		container.displayType = new Value({
+			value:'maximized'
+		});
+	}
 	if(['maximized', 'unmaximized', 'unmaximized-pinned'].indexOf(container.displayType.get()) == -1){
 		container.displayType.setValue('maximized');
 		displayType = 'maximized';
@@ -628,7 +732,7 @@ ContainerStack.prototype.switchTo = function(container){
 		}
 		
 	}
-	else if(container instanceof Element){
+	else if(container instanceof Container){
 		var displayType = container.displayType.get();
 		this.previousContainer = this.activeContainer;
 		if(displayType === 'maximized'){
@@ -1245,4 +1349,23 @@ Window.prototype.closeable = function(){
 		}
 	});
 	this.titleBar.append(this.closeButton,"right");
+}
+
+
+function MessageBox(args){
+	var self = this;
+	args = args || {};
+	//args.className = 'messagebox';
+	Panel.call(this, args);
+	this.addClass('messagebox');
+	this.message = new Element({
+	});
+	this.append(this.message);
+}
+
+MessageBox.prototype = Object.create(Panel.prototype);
+
+
+MessageBox.prototype.setMessage = function(message){
+	this.message.e.innerHTML = message;
 }

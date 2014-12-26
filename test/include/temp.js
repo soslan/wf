@@ -6,7 +6,7 @@ $(document).ready(function(){
 
 	document.body.appendChild(root.container);
 
-	var stack = new ContainerStack({
+	var stack = new Containers({
 		share:1,
 	});
 	var tabs = new Toolbar({
@@ -31,7 +31,7 @@ $(document).ready(function(){
 		//className:'slategray',
 	});
 	
-	var stack1 = new ContainerStack({
+	var stack1 = new Containers({
 		appendTo:test1,
 		share:1,
 	});
@@ -64,7 +64,9 @@ $(document).ready(function(){
 	stack1.withLoader();
 	stack1.loader.setMessage('Loading...');
 
-	var tab2 = stack1.getHandleFor(panel2);
+	var tab2 = panel2.getHandle({
+		closeable:true,
+	});
 	toolbar1.append(tab2);
 	tab2.addClass('slategray');
 

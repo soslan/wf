@@ -12,6 +12,7 @@ function Element(args){
 	this.element = document.createElement(args.tagName);
 	this.e = this.element;
 	this.element.wfElement = this;
+	this.wfe = this;
 	this.$element = $(this.element);
 	this.$ = this.$element;
 
@@ -45,12 +46,15 @@ Element.prototype.value = function(value){
 }
 
 Element.prototype.append = function(element){
-	if(element instanceof Node ){
+	if(element instanceof Node || element instanceof Text){
 		this.element.appendChild(element);
 	}
-	else{
+	else if(element instanceof Element){
 		this.element.appendChild(element.element);
 		element.parent = this;
+	}
+	else{
+		this.element.appendChild(new Text(String(element)));
 	}
 	return this;
 }
@@ -83,11 +87,25 @@ Element.prototype.isAncestorOf = function(element){
 	return false;
 };
 
+Element.prototype.positionWithinWindow = function(){
+	var temp = this.e;
+	var offset = [0,0];
+	while (temp !== null){
+		offset[0] += temp.offsetLeft;
+		offset[1] += temp.offsetTop;
+		temp = temp.offsetParent;
+	}
+
+	return offset;
+}
+
 Element.prototype.addClass = function(className){
 	if(typeof className == "string"){
 		var classList = className.split(' ');
 		for(var i in classList){
-			this.element.classList.add(classList[i]);
+			if (classList[i] !==""){
+				this.element.classList.add(classList[i]);
+			}
 		}
 	}
 	return this;
@@ -549,8 +567,14 @@ Label.prototype.setIcon = function(iconTag){
 
 Label.prototype.setText = function(text){
 	if(typeof text == "string"){
-		this.removeClass("notext");
-		this.text.element.innerHTML = text;
+		if (text == ""){
+			this.text.element.innerHTML = text;
+			this.addClass("notext");
+		}
+		else{
+			this.removeClass("notext");
+			this.text.element.innerHTML = text;
+		}
 	}
 	else if(text instanceof Text){
 		this.removeClass("notext");

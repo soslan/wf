@@ -77,6 +77,7 @@ function Button(args){
 		className:'button',
 	});
 	this.addClass(args.className);
+	this.addClass(args.style);
 	//this.addClass('control control-button');
 
 	this.addEventListener('keydown',function(e){
@@ -191,7 +192,34 @@ function Dropdown(args){
 	this.panel = new Panel({
 		className:'dropdown whitewhite nest-whitewhite',
 	});
+	this.panel.addEventListener('before-displayed', function(){
+		self.panel.e.style.visibility = 'hidden';
+		self.panel.e.style.left = '';
+		self.panel.removeClass('hidden');
+		var width = self.panel.e.offsetWidth;
+		var screenWidth = window.innerWidth;
+
+
+		if (width >= screenWidth){
+			var offset = self.panel.positionWithinWindow()[0];
+			self.panel.e.style.left = (-offset)+"px";
+			self.panel.e.style.right = (-offset + screenWidth - width) + "px";
+		}
+		else{
+			var offset = self.panel.positionWithinWindow()[0];
+			if (offset > screenWidth / 2){
+				self.panel.e.style.left = Math.max(( -width + self.panel.e.offsetParent.offsetWidth), -offset) + "px";
+			}
+			else if(offset < 0){
+				self.panel.e.style.left = (offset) + "px";
+			}
+		}
+		self.panel.e.style.visibility = 'visible';
+		//alert(self.panel.e.offsetLeft);
+		//self.hidden.false();
+	});
 	args.value = this.panel.displayed;
+	args.style = args.buttonStyle;
 	this.button = new ToggleButton(args);
 	this.panel.on('click', function(e){
 		e.stopPropagation();
@@ -199,7 +227,7 @@ function Dropdown(args){
 	});
 	this.panel.on('mousedown', function(e){
 		e.stopPropagation();
-		e.preventDefault();
+		//e.preventDefault();
 	});
 	this.panel.on('displayed', function(){
 		self.panel.focus();
@@ -217,7 +245,7 @@ function Dropdown(args){
 	this.append(this.panel);
 }
 
-Dropdown.prototype = Object.create(ToggleButton.prototype);
+Dropdown.prototype = Object.create(Element.prototype);
 
 function Toggle(args){
 	var self = this;
@@ -984,4 +1012,61 @@ function Frames(args){
 
 
 
+}
+
+function text(text){
+	return new Text(text || '');
+}
+
+function span(text, className, appendTo){
+	var out = new Element({
+		tagName:'span',
+	});
+	if(typeof className === 'string'){
+		out.addClass(className);
+	}
+	if(typeof text == 'string'){
+		out.append(text);
+	}
+	
+	return out;
+}
+
+function e(tag, className, appendTo){
+	if (arguments.length == 0){
+		return new Element();
+	}
+	else if(arguments.length == 1){
+		if (typeof tag == "string"){
+			return new Element({
+				tagName:tag,
+			})
+		}
+	}
+	else if(arguments.length == 2){
+		if (typeof tag == "string"){
+			if (typeof className == "string"){
+				return new Element({
+					tagName:tag,
+					className:className,
+				});
+			}
+			else if(className instanceof Element){
+				return new Element({
+					tagName:tag,
+					appendTo:className,
+				});
+			}
+			
+		}
+	}
+	else{
+		if (typeof tag == "string"){
+			return new Element({
+				tagName:tag,
+				className:className,
+				appendTo:appendTo,
+			})
+		}
+	}
 }

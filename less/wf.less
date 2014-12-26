@@ -34,8 +34,9 @@
 @lightslategray: #778899;
 @blackblack: #000;
 @whitewhite: #fff;
+@crayola: #FCE883;
 @colors: 'blue', 'red', 'green', 'jungle-green', 'lightgray', 'gainsboro', 'silver', 'gray', 'slategray',
- 'lightslategray', 'blackblack', 'white', 'black', 'whitewhite';
+ 'lightslategray', 'blackblack', 'white', 'black', 'whitewhite', 'crayola';
 
 .color-style-mixin(@bg) when(iscolor(@bg) = true){
 	.get-text-color(@bg);
@@ -72,7 +73,7 @@
 	height: 100%;
 	top:0;
 	left:0;
-	background-color: @black;
+	//background-color: @black;
 	font-family:Arial;
 }
 
@@ -185,6 +186,15 @@
 	//overflow:hidden;
 }
 
+/* Containers */
+.containers > .container{
+	position:absolute;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+}
+
 /* Colors */
 
 /* Core */
@@ -260,6 +270,11 @@
 	content:'';
 }
 
+/* Clickable */
+.clickable{
+	cursor:pointer;
+}
+
 /* Button */
 
 .button{
@@ -285,10 +300,14 @@
 
 .button > .label{
 	line-height: normal;
-	font-size:105%;
-	font-weight:bold;
+	//font-size:105%;
+	//font-weight:bold;
 	//display:inline-block;
 	padding:0 10px;
+}
+
+.button.simple > .label{
+	padding:0;
 }
 
 .button > .label > .label-icon{
@@ -338,13 +357,25 @@
 	border:none;
 	border-radius:0;
 }
+
+.button.s,
+.s > .button,
+.s > div > .button{
+	line-height:20px;
+	min-height:20px;
+	line-height:inherit;
+	
+}
+
+
 /* Dropdown */
 .dropdown-container{
+	display:inline-block;
 	position:relative;
 }
 
 .dropdown-container .dropdown{
-	margin-top:10px;
+	margin-top:5px;
 }
 
 .dropdown-container.active{
@@ -352,11 +383,11 @@
 }
 
 .dropdown.panel{
-	box-shadow: 0 6px 12px rgba(0,0,0,.175);
+	box-shadow: 0 0px 12px rgba(0,0,0,.175);
 	//padding:5px 0;
 }
 
-.dropdown::before{
+/*.dropdown::before{
 	position:absolute;
 	top:-10px;
 	left:5px;
@@ -366,7 +397,7 @@
 	border-left:5px solid transparent;
 	border-right:5px solid transparent;
 	border-bottom:10px solid @whitewhite;
-}
+}*/
 
 .dropdown-container > .button.active{
 	//padding-bottom:5px;
@@ -376,7 +407,7 @@
 .dropdown{
 
 	text-align:left;
-	width:100px;
+	min-width:100px;
 	//display:none;
 	left: 0;
 	top: 100%;
@@ -643,7 +674,9 @@
 }
 
 .container-handle.tab.g-style.active,
-.container-handle.tab.g-style:hover{
+.container-handle.tab.g-style:hover,
+.container-handle-maximized.g-style.active,
+.container-handle-maximized.g-style:hover{
 	border-bottom-width: 5px;
 }
 
@@ -673,7 +706,8 @@
 	margin-right: 0;
 }
 
-.container-handle.tab{
+.container-handle.tab,
+.container-handle-maximized{
 	padding-bottom: 5px;
 	margin-bottom:-5px;
 }
@@ -872,8 +906,16 @@
 	margin-right:5px;
 }
 
-.toolbar > div > *:last-child{
+.toolbar > div > *:last-child,
+.toolbar.group > div > *{
 	margin-right:0;
+}
+
+.toolbar.s{
+	line-height: 20px;
+	font-size: 14px;
+	height: 20px;
+	padding: 3px 5px;
 }
 
 /* Panel */
@@ -907,37 +949,62 @@
 }
 
 .panel > .toolbar,
-.panel > .panel{
+.panel > .panel,
+.toolbar > div > .panel{
 	padding:0;
 }
 
+/* Message Box */
+.messagebox{
+	justify-content:center;
+	text-align:center;
+}
+
 /* Styles */
-.generate-styles(@i: length(@colors)) when (@i > 0){
+.generate-nest-styles(@i: length(@colors)) when (@i > 0){
 	@name: e(extract(@colors, @i));
 	.nest-@{name} .button,
-	.nest-@{name} .panel,{
+	.nest-@{name} .panel,
+	.nest-@{name} .clickable,{
 		.color-style-mixin(@@name);
 	}
-	.nest-@{name} .button:hover{
+	.nest-@{name} .button:hover,
+	.nest-@{name} .clickable:hover{
 		.color-style-mixin(darken(@@name, 5%));
 	}
 	.nest-@{name} .button:active,
-	.nest-@{name} .button.active{
+	.nest-@{name} .button.active,
+	.nest-@{name} .clickable:active,
+	.nest-@{name} .clickable.active,{
 		.color-style-mixin(darken(@@name, 7%));
 	}
+	.generate-nest-styles((@i - 1));
+}
+
+.generate-nest-styles;
+
+.generate-styles(@i: length(@colors)) when (@i > 0){
+	@name: e(extract(@colors, @i));
 	.@{name}.button,
+	.@{name}.clickable,
 	.@{name}.panel,{
 		.color-style-mixin(@@name);
 	}
-	.button.@{name}:hover{
+	.button.@{name}:hover,
+	.clickable.@{name}:hover{
 		.color-style-mixin(darken(@@name, 5%));
 	}
 	.button.@{name}:active,
-	.button.@{name}.active{
+	.button.@{name}.active,
+	.clickable.@{name}:active,
+	.clickable.@{name}.active,{
 		.color-style-mixin(darken(@@name, 7%));
 	}
 	.@{name}{
 		.color-style-mixin(@@name);
+	}
+	.@{name}.quiet{
+		.color-style-mixin(transparent, inherit);
 	}
 	.generate-styles((@i - 1));
 }
@@ -945,7 +1012,8 @@
 .generate-styles;
 
 .button.quiet,
-.panel.quiet{
+.panel.quiet,
+.quiet{
 	.color-style-mixin(transparent, inherit);
 }
 
