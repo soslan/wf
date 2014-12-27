@@ -1070,3 +1070,29 @@ function e(tag, className, appendTo){
 		}
 	}
 }
+
+function lines(className, appendTo){
+	if (arguments.length == 1){
+		if (typeof className === "string"){
+			return new Element({
+				className:'lines '+className,
+			});
+		}
+		else if (className instanceof Element){
+			return new Element({
+				appendTo:className,
+			});
+		}
+	}
+	else if (arguments.length == 2){
+		new Element({
+			className:'lines '+className,
+			appendTo:appendTo,
+		});
+	}
+	else if (arguments.length == 0){
+		return new Element({
+			className:'lines',
+		});
+	}
+}
