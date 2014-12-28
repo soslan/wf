@@ -1096,3 +1096,29 @@ function lines(className, appendTo){
 		});
 	}
 }
+
+function StandardWindow(args){
+	var self = this;
+	args = args || {};
+	Container.call(this, {
+		className:'standard-window',
+	});
+	this.addClass(args.className);
+
+	this.toolbar = new Toolbar({
+
+	});
+	this.body = new Container({
+		share:1,
+	});
+	this.body.addClass(args.bodyStyle);
+	this.toolbar.addClass(args.toolbarStyle);
+	Container.prototype.append.call(this, this.toolbar);
+	Container.prototype.append.call(this, this.body);
+}
+
+StandardWindow.prototype = Object.create(Container.prototype);
+
+StandardWindow.prototype.append = function(arg1){
+	this.body.append(arg1);
+}
