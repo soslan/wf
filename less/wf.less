@@ -972,6 +972,21 @@
 	display:inline-flex;
 }
 
+.rows{
+	display:flex;
+	flex-direction:column,
+}
+
+.rows.inline,
+.columns.inline{
+	display:inline-flex;
+}
+
+.columns{
+	display:flex;
+	flex-direction:row;
+}
+
 /* Message Box */
 .messagebox{
 	justify-content:center;
@@ -999,7 +1014,7 @@
 	.generate-nest-styles((@i - 1));
 }
 
-.generate-nest-styles;
+//.generate-nest-styles;
 
 .generate-styles(@i: length(@colors)) when (@i > 0){
 	@name: e(extract(@colors, @i));

@@ -1097,6 +1097,27 @@ function lines(className, appendTo){
 	}
 }
 
+function Rows(args){
+	Element.call(this, args);
+	this.addClass('rows');
+}
+
+Rows.prototype = Object.create(Element.prototype);
+
+function Columns(args){
+	Element.call(this, args);
+	this.addClass('columns');
+}
+
+Columns.prototype = Object.create(Element.prototype);
+
+function Lines(args){
+	Element.call(this, args);
+	this.addClass('lines');
+}
+
+Lines.prototype = Object.create(Element.prototype);
+
 function StandardWindow(args){
 	var self = this;
 	args = args || {};
@@ -1106,10 +1127,11 @@ function StandardWindow(args){
 	this.addClass(args.className);
 
 	this.toolbar = new Toolbar({
-
+		className:'standard-window-toolbar'
 	});
 	this.body = new Container({
 		share:1,
+		className:'standard-window-body'
 	});
 	this.body.addClass(args.bodyStyle);
 	this.toolbar.addClass(args.toolbarStyle);
