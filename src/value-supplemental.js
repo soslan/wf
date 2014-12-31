@@ -208,3 +208,7 @@ DateModel.getHBroadcaster = function(date){
 DateModel.prototype.getHBroadcaster = function(){
 
 }
+
+function StringModel(args){
+	
+}

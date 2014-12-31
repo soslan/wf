@@ -18,11 +18,7 @@ function Element(args){
 
 	this.container = this.element; // Temporary.
 	this.eventListeners;
-
-
-	if(typeof args.className == "string"){
-		this.addClass(args.className);
-	}
+	this.addClass(args.className);
 	if(args.appendTo instanceof Element){
 		args.appendTo.append(self);
 		this.parent = args.appendTo;
@@ -100,6 +96,7 @@ Element.prototype.positionWithinWindow = function(){
 }
 
 Element.prototype.addClass = function(className){
+	var self = this;
 	if(typeof className == "string"){
 		var classList = className.split(' ');
 		for(var i in classList){
@@ -107,6 +104,13 @@ Element.prototype.addClass = function(className){
 				this.element.classList.add(classList[i]);
 			}
 		}
+	}
+	else if (className instanceof Value){
+		this.addClass(String(className.get()));
+		className.onChange(function(d){
+			self.removeClass(String(d.oldValue));
+			self.addClass(String(d.value));
+		});
 	}
 	return this;
 }
