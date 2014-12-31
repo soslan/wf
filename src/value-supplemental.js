@@ -1,6 +1,7 @@
 function BooleanModel(args){
 	var self = this;
 	args = args || {};
+	args.value = Boolean(args.value);
 
 	Value.call(this, args);
 
@@ -210,5 +211,27 @@ DateModel.prototype.getHBroadcaster = function(){
 }
 
 function StringModel(args){
-	
+	if (args == undefined){
+		args = {};
+	}
+	else if (typeof args === "string"){
+		args = {
+			value:args,
+		}
+	}
+
+	if(args.value === undefined){
+		args.value = '';
+	}
+	 
+	Value.call(this, {
+		value:String(args.value),
+	});
+	this.filter('set', function(d){
+		d.value = String(d.value);
+		return d;
+	})
+
 }
+
+StringModel.prototype = Object.create(Value.prototype);

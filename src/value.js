@@ -28,6 +28,8 @@ Value.prototype.addEventListener = function(event, handler){
 	return this;
 }
 
+Value.prototype.on = Value.prototype.addEventListener;
+
 Value.prototype.removeEventListener = function(event, handler){
 	var i = this.eventListeners[event].indexOf(handler);
 	if(i > -1){
@@ -128,6 +130,8 @@ Value.prototype.addFilter = function(filter, handler){
 	return this;
 }
 
+Value.prototype.filter = Value.prototype.addFilter;
+
 Value.prototype.removeFilter = function(filter, handler){
 	var i = this.filters[filter].indexOf(handler);
 	if(i > -1){
@@ -217,3 +221,7 @@ Value.prototype.deleteAt = function(value, selectionStart, selectionEnd){
 	}
 	this.dispatchEvent('change',e);
 }
+
+Value.prototype.valueOf = function(){
+	return this.get();
+};
