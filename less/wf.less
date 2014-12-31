@@ -35,7 +35,30 @@
 @blackblack: #000;
 @whitewhite: #fff;
 @crayola: #FCE883;
-@colors: 'blue', 'red', 'green', 'jungle-green', 'lightgray', 'gainsboro', 'silver', 'gray', 'slategray',
+
+/* Material design colors */
+@red: #F44336;
+@pink: #E91E63;
+@purple: #9C27B0;
+@deeppurple: #673AB7;
+@indigo: #3F51B5;
+@blue: #2196F3;
+@lightblue: #03A9F4;
+@cyan: #00BCD4;
+@teal: #009688;
+@green: #4CAF50;
+@lightgreen: #8BC34A;
+@lime: #CDDC39;
+@yellow: #FFEB3B;
+@amber: #FFC107;
+@orange: #FF9800;
+@deeporange: #FF5722;
+@brown: #795548;
+@gray: #9E9E9E;
+@bluegray: #607D8B;
+
+
+@colors: 'blue', 'red', 'pink', 'purple', 'deeppurple', 'indigo', 'lightblue', 'cyan', 'teal', 'lightgreen', 'lime', 'yellow', 'amber', 'orange', 'deeporange', 'brown', 'bluegray', 'green', 'jungle-green', 'lightgray', 'gainsboro', 'silver', 'gray', 'slategray',
  'lightslategray', 'blackblack', 'white', 'black', 'whitewhite', 'crayola';
 
 .color-style-mixin(@bg) when(iscolor(@bg) = true){
@@ -52,10 +75,10 @@
 	border-color: @bg;
 }
 
-.get-text-color(@clr) when (lightness(@clr) > 50){
+.get-text-color(@clr) when (lightness(@clr) > 40){
 	@text_color: @black;
 }
-.get-text-color(@clr) when (lightness(@clr) <= 50 ){
+.get-text-color(@clr) when (lightness(@clr) <= 60 ){
 	@text_color: @white;
 }
 
