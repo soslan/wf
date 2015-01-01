@@ -235,3 +235,31 @@ function StringModel(args){
 }
 
 StringModel.prototype = Object.create(Value.prototype);
+
+function NumberModel(args){
+	if (args == undefined){
+		args = {};
+	}
+	else if (typeof args === "number"){
+		args = {
+			value:args,
+		}
+	}
+	if (args.value === undefined || Number(args.value) == NaN){
+		args.value = 0;
+	}
+
+	Value.call(this, {
+		value: Number(args.value),
+	});
+	this.filter('set', function(d){
+		d.value = Number(d.value);
+		if(d.value == NaN){
+			d.cancel = true;
+		}
+		return d;
+	});
+
+}
+
+NumberModel.prototype = Object.create(Value.prototype);
