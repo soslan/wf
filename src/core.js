@@ -83,6 +83,19 @@ Element.prototype.isAncestorOf = function(element){
 	return false;
 };
 
+Element.prototype.isParentOf = function(element){
+	if(element instanceof Element){
+		element = element.element;
+	}
+	else if(!(element instanceof Node)){
+		return false;
+	}
+	if (this.element === element.parentNode){
+		return true;
+	}
+	return false;
+};
+
 Element.prototype.positionWithinWindow = function(){
 	var temp = this.e;
 	var offset = [0,0];
