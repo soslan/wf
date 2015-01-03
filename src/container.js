@@ -28,7 +28,7 @@ function Container(args){
 
 	this.position = this.displayType;
 
-	this.maximized = new Value();
+	this.maximized = new BooleanModel(true);
 	this.share = new Value();
 
 	this.contentDirection = new Value();
@@ -369,8 +369,7 @@ function ContainerHandle(args){
 	this.append(new Label({
 		text:args.text || 'Container',
 	}));
-	var displayType = this.container.getDisplayType();
-	if(displayType === undefined || displayType === 'maximized'){
+	if(this.container.maximized){
 		this.addClass('container-handle-maximized');
 	}
 
@@ -386,10 +385,10 @@ function ContainerHandle(args){
 		self.close();
 	});
 
-	if(this.container.displayed.get()){
+	/*if(this.container.displayed.get()){
 		self.addClass('active');
 		self.removeClass('inactive');
-	}
+	}*/
 
 	this.$.on('mousedown', function(e){
 		if(e.which === 1){

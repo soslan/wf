@@ -135,7 +135,6 @@ function Windows(args){
 	this.windows = [];
 	this.topZIndex = 200;
 	this.active;
-	//this.activeMaximizedContainer;
 }
 
 Windows.prototype = Object.create(Container.prototype);
@@ -143,53 +142,10 @@ Windows.prototype = Object.create(Container.prototype);
 Windows.prototype.append = function(container){
 	var self = this;
 	var displayType;
-	if (!(container instanceof Container)){
-		return;
+	container.hide();
+	if (container.maximized === undefined){
+		container.maximize();
 	}
-	if (1 || container.displayType === undefined){
-		container.setDisplayType('maximized');
-	}
-	/*if(['maximized', 'unmaximized', 'unmaximized-pinned'].indexOf(container.displayType.get()) == -1){
-		container.displayType.setValue('maximized');
-		displayType = 'maximized';
-	}
-	else{
-		displayType = container.displayType.get();
-	}
-
-	if(displayType === 'unmaximized' || displayType === 'unmaximized-pinned'){
-		if(typeof this.activeUnmaximizedContainers === 'undefined'){
-			this.activeUnmaximizedContainers = [];
-			this.topZIndex = 200;
-		}
-		this.activeUnmaximizedContainers.push(container);
-
-	}
-
-	if(this.activeContainer == undefined){
-		this.switchTo(container);
-	}
-	else{
-		container.hide();
-	}
-
-	container.parent = this;
-	if(typeof container.windowMode === 'undefined'){
-		container.windowMode = 'extended';
-	}
-	if(container.windowMode === 'unmaximized'){
-
-	}
-	else{
-		this.containers.push(container);
-		if(this.containers.length == 1){
-			this.switchTo(container);
-		}
-		else{
-			container.hide();
-		}
-	}*/
-	this.containers.push(container);
 	container.e.style.visibility = "none";
 
 	Container.prototype.append.call(this, container);
@@ -201,23 +157,33 @@ Windows.prototype.append = function(container){
 		container.hide();
 	}
 	container.e.style.visibility = "";
-	/*container.on('closed',function(){
-		var i = self.containers.indexOf(container);
-		self.containers.splice(i,1);
-		if(self.activeContainer == container){
-			if(i == 0){
-				if(self.containers.length > 0){
-					self.switchTo(self.containers[0]);
-				}
-			}
-			else{
-				self.switchTo(self.containers[i-1]);
-			}
-		}
-		container.removeEventListener
-	});*/
 	this.dispatchEvent('container-added', {
 		container:container,
 	});
 };
 
+Windows.prototype.switchTo = function(wind){
+	if (wind === this.activeContainer){
+		return;
+	}
+	if (this.isParentOf(wind)){
+		if (wind.maximized){
+			var previousActive = this.activeContainer;
+		
+			this.activeContainer = wind;
+			wind.e.style.zIndex = this.topZIndex + 1;
+			this.topZIndex += 1;
+			wind.e.style.opacity = 0;
+			wind.show();
+			wind.$.animate({
+				opacity:1,
+			}, 40, function(){
+				wind.dispatchEvent('activated');
+				if(previousActive !== undefined){
+					previousActive.dispatchEvent('deactivated');
+					previousActive.hide();
+				}
+			});
+		}
+	}
+}

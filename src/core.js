@@ -61,6 +61,23 @@ Element.prototype.prepend = function(element){
 	return this;
 }
 
+Element.prototype.hide = function(){
+	this.addClass('hidden');
+	this.dispatchEvent('hide');
+}
+
+Element.prototype.show = function(){
+	this.removeClass('hidden');
+	this.dispatchEvent('show');
+}
+
+Element.prototype.getHandle = function(args){
+	args = args || {};
+	args.container = this;
+	var handle = new ContainerHandle(args);
+	return handle;
+};
+
 Element.prototype.close = function(){
 	//this.hide();
 	this.element.parentNode.removeChild(this.element);
@@ -231,6 +248,11 @@ Element.prototype.blur = function(handler){
 			return false;
 		}
 	}
+}
+
+Element.prototype.maximize = function(args){
+	this.addClass('maximized');
+	this.maximized = true;
 }
 
 Element.prototype.beforeFocus = function(handler){
