@@ -151,16 +151,19 @@ DateModel.startClock = function(){
 	DateModel.minClock = setInterval(function(){
 		var now = new Date();
 		for (var i in DateModel.HBroadcastedDatesMin){
-			var date = DateModel.HBroadcastedDatesMin[i];
-			var interval = now - date['date'];
+			var item = DateModel.HBroadcastedDatesMin[i];
+			var interval = now - item['date'];
 			if (interval < 60 * 1000){
-				date['node'].nodeValue = "just now";
+				item['node'].nodeValue = "just now";
 			}
 			else if (interval < 60 * 60 * 1000){
-				date['node'].nodeValue = String(Math.round(interval / (60 * 1000))) + " min ago";
+				item['node'].nodeValue = String(Math.round(interval / (60 * 1000))) + " min ago";
+			}
+			else if (interval < 24 * 60 * 60 * 1000){
+				item['node'].nodeValue = String(Math.round(interval / (60 * 60 * 1000))) + " hrs ago";
 			}
 			else {
-				date['node'].nodeValue = String(Math.round(interval / (60 * 1000))) + " min ago";
+				item['node'].nodeValue = String(DateModel.monthAbbr[item.date.getMonth()]) + ' ' + String(item.date.getDate());
 			}
 		}
 	}, 60000);
@@ -172,6 +175,8 @@ DateModel.stopClock = function(){
 }
 
 DateModel.HBroadcastedDatesMin = [];
+
+DateModel.monthAbbr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 DateModel.getHBroadcaster = function(date){
 	//var item = {}
@@ -191,8 +196,11 @@ DateModel.getHBroadcaster = function(date){
 		else if (interval < 60 * 60 * 1000){
 			item['node'].nodeValue = String(Math.round(interval / (60 * 1000))) + " min ago";
 		}
+		else if (interval < 24 * 60 * 60 * 1000){
+			item['node'].nodeValue = String(Math.round(interval / (60 * 60 * 1000))) + " hrs ago";
+		}
 		else {
-			item['node'].nodeValue = String(Math.round(interval / (60 * 1000))) + " min ago";
+			item['node'].nodeValue = String(DateModel.monthAbbr[date.getMonth()]) + ' ' + String(date.getDate());
 		}
 
 		DateModel.HBroadcastedDatesMin.push(item);
