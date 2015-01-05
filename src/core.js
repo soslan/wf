@@ -41,6 +41,10 @@ Element.prototype.value = function(value){
 	}
 }
 
+Element.prototype.setAttribute = function(key, value){
+	this.e.setAttribute(key, value);
+}
+
 Element.prototype.append = function(element){
 	if(element instanceof Node || element instanceof Text){
 		this.element.appendChild(element);
@@ -541,15 +545,23 @@ function TextElement(args){
 function TextInputCore(args){
 	var self = this;
 	args = args?args:{};
-	Element.call(this,{
-		tagName:"input",
-		className:"text-input",
-	});
-
-	this.editable(args);
+	args.tagName = "input";
+	Element.call(this,args);
+	this.addClass("text-input");
+	this.setAttribute('type', 'text');
 }
 
 TextInputCore.prototype = Object.create(Element.prototype);
+
+TextInputCore.prototype.getValue = function(){
+	return this.e.value;
+}
+
+TextInputCore.prototype.setValue = function(value){
+	if(typeof value === "string"){
+		this.e.value = value;
+	}
+}
 
 function Clickable(args){
 	var self = this;
