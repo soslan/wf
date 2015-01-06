@@ -91,11 +91,13 @@ Value.prototype.setValue = function(value, args){
 	this.set(args);
 }
 
-Value.prototype.addBroadcaster = function(args){
-	var broadcaster = document.createTextNode(this.value ? this.value.toString() : '');
+Value.prototype.getBroadcaster = function(args){
+	var broadcaster = document.createTextNode(this.value !== undefined ? this.toString() : '');
 	this.broadcasters.push(broadcaster);
 	return broadcaster;
 }
+
+Value.prototype.addBroadcaster = Value.prototype.getBroadcaster;
 
 Value.prototype.removeBroadcaster = function(element){
 	var i = this.broadcasters.indexOf(element);
@@ -152,7 +154,7 @@ Value.prototype.applyFilter = function(filter, data){
 
 
 Value.prototype.set = function(args){
-	if(typeof args === "string"){
+	if(typeof args !== "object"){
 		args = {
 			value:args,
 		}
@@ -225,3 +227,7 @@ Value.prototype.deleteAt = function(value, selectionStart, selectionEnd){
 Value.prototype.valueOf = function(){
 	return this.get();
 };
+
+Value.prototype.toString = function(){
+	return String(this.get());
+}

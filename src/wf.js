@@ -183,15 +183,15 @@ ToggleButton.prototype.onOff = function(handler){
 	this.value.onFalse(handler);
 };
 
-function Dropdown(args){
+function Dropdown(args, dropdownArgs){
 	var self = this;
 	var args = args || {};
 	Element.call(this,{});
 	this.addClass('dropdown-container');
 
-	this.panel = new Panel({
-		className:'dropdown whitewhite nest-whitewhite',
-	});
+	dropdownArgs = dropdownArgs || {};
+	this.panel = new Panel(dropdownArgs);
+	this.panel.addClass('dropdown');
 	this.panel.addEventListener('before-displayed', function(){
 		self.panel.e.style.visibility = 'hidden';
 		self.panel.e.style.left = '';
