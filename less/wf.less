@@ -1,6 +1,7 @@
 @main-color: #46a;
 @main-color-light: #79f;
-@white: whitesmoke;
+@white: #fff;
+@whitesmoke: whitesmoke;
 @black: #333;
 @gray: #888;
 @light-gray: #ccc;
@@ -568,7 +569,12 @@
 
 /* Text Input */
 .text-input{
-	border-style:solid,
+	border-style:solid;
+	height:26px;
+	line-height:20px;
+	font-size:16px;
+	border:1px solid black;
+	padding:0 5px;
 }
 
 .text-input > .control{
@@ -920,7 +926,8 @@
 }
 
 /* Windows */
-.windows > .maximized{
+.windows > .maximized,
+.windows > *{
 	position:absolute;
 	top:0;
 	bottom:0;

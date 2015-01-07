@@ -135,6 +135,7 @@ function Windows(args){
 	this.windows = [];
 	this.topZIndex = 200;
 	this.active;
+	this.history = [];
 }
 
 Windows.prototype = Object.create(Container.prototype);
@@ -162,7 +163,29 @@ Windows.prototype.append = function(container){
 	});
 };
 
-Windows.prototype.switchTo = function(wind){
+Windows.prototype.remove = function(arg1){
+	if(this.isParentOf(arg1)){
+		if(arg1.maximized && arg1 === this.activeContainer){
+			var prev = this.history.pop();
+			while(prev === arg1 || !this.isParentOf(prev)){
+				prev = this.history.pop();
+			}
+			this.switchTo(prev,function(){
+				arg1.close();
+			});
+		}
+		else{
+			arg1.close();
+		}
+	}
+}
+
+Windows.prototype.appendAndShow = function(container){
+	this.append(container);
+	this.switchTo(container);
+};
+
+Windows.prototype.switchTo = function(wind, done){
 	if (wind === this.activeContainer){
 		return;
 	}
@@ -175,11 +198,15 @@ Windows.prototype.switchTo = function(wind){
 			this.topZIndex += 1;
 			wind.e.style.opacity = 0;
 			wind.show();
+			this.history.push(wind);
 			wind.$.animate({
 				opacity:1,
 			}, 40, function(){
 				wind.dispatchEvent('activated');
 				if(previousActive !== undefined){
+					if (typeof done == "function"){
+						done();
+					}
 					previousActive.dispatchEvent('deactivated');
 					previousActive.hide();
 				}
