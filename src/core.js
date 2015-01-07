@@ -5,11 +5,18 @@ var afterDragEvent = new Event('afterdrag');
 var afterDragNoMoveEvent = new Event('afterdragnomove');
 var beforeDragEvent = new Event('beforedrag');
 
-function Element(args){
+function Element(arg1, arg2){
 	var self = this;
-	args=args?args:{};
-	args.tagName = typeof args.tagName == "string" ? args.tagName : "div";
-	this.element = document.createElement(args.tagName);
+	var args;
+	if (arg1 instanceof Node){
+		args = arg2?arg2:{};
+		this.element = arg1;
+	}
+	else{
+		args=arg1?arg1:{};
+		this.element = document.createElement(args.tagName || "div");
+	}
+	
 	this.e = this.element;
 	this.element.wfElement = this;
 	this.wfe = this;
