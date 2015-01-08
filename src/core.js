@@ -166,8 +166,11 @@ Element.prototype.removeClass = function(className){
 
 Element.prototype.addEventListener = function(type, handler, useCapture){
 	var useCapture = useCapture || false;
-	if(typeof handler == "function"){
-		this.element.addEventListener(type, handler, useCapture);
+	if (typeof type == "string" && typeof handler == "function"){
+		var events = type.split(" ");
+		for (var i in events){
+			this.element.addEventListener(events[i], handler, useCapture);
+		}
 	}
 }
 
