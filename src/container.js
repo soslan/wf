@@ -390,8 +390,8 @@ function ContainerHandle(args){
 		self.removeClass('inactive');
 	}*/
 
-	this.$.on('mousedown', function(e){
-		if(e.which === 1){
+	this.$.on('touchstart mousedown', function(e){
+		if(e.which === 1 || e.type === "touchstart"){
 			if(self.container.parent.activeContainer == self.container){
 				//if(container.displayType.value !== 'maximized'){
 				//	//container
@@ -417,18 +417,31 @@ function ContainerHandle(args){
 			}
 		}*/
 		
-		
+		e.preventDefault();
 		//container.show();
 	});
 
 	if(args.closeable){
-		self.append(new Button({
+		var closeButton = new Button({
 			icon:'times',
 			className:'tab-close red quiet',
-			onClick:function(){
+			onClick:function(e){
 				self.container.parent.remove(self.container);
+				e.stopPropagation();
+				e.preventDefault();
 			},
-		}));
+		});
+		closeButton.on('touchstart', function(e){
+			self.container.parent.remove(self.container);
+			e.stopPropagation();
+			e.preventDefault();
+		});
+		closeButton.on('touchend', function(e){
+			self.container.parent.remove(self.container);
+			e.stopPropagation();
+			e.preventDefault();
+		});
+		self.append(closeButton);
 	}
 	
 }
