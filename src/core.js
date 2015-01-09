@@ -26,6 +26,10 @@ function Element(arg1, arg2){
 	this.container = this.element; // Temporary.
 	this.eventListeners;
 	this.addClass(args.className);
+	if (args.content !== undefined){
+		this.append(args.content);
+	}
+	
 	if(args.appendTo instanceof Element){
 		args.appendTo.append(self);
 		this.parent = args.appendTo;
@@ -53,15 +57,29 @@ Element.prototype.setAttribute = function(key, value){
 }
 
 Element.prototype.append = function(element){
-	if(element instanceof Node || element instanceof Text){
-		this.element.appendChild(element);
-	}
-	else if(element instanceof Element){
-		this.element.appendChild(element.element);
-		element.parent = this;
-	}
-	else{
-		this.element.appendChild(new Text(String(element)));
+	for (var arg in arguments){
+		var element = arguments[arg];
+		if (element === undefined || element === null){
+			continue;
+		}
+		else if(element instanceof Node || element instanceof Text){
+			this.element.appendChild(element);
+		}
+		else if(element instanceof Element){
+			this.element.appendChild(element.element);
+			element.parent = this;
+		}
+		else if(element instanceof Array){
+			for (var i in element){
+				this.append(element[i]);
+			}
+		}
+		else if(element instanceof Value){
+			this.append(element.getAsNode());
+		}
+		else if(typeof element === "string" || typeof element === "number" ){
+			this.element.appendChild(new Text(String(element)));
+		}
 	}
 	return this;
 }

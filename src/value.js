@@ -231,3 +231,11 @@ Value.prototype.valueOf = function(){
 Value.prototype.toString = function(){
 	return String(this.get());
 }
+
+Value.prototype.getAsString = function(){
+	return String(this.get());
+}
+
+Value.prototype.getAsNode = function(){
+	return this.getBroadcaster();
+}

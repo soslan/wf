@@ -432,7 +432,6 @@ function ContainerHandle(args){
 			},
 		});
 		closeButton.on('touchstart', function(e){
-			self.container.parent.remove(self.container);
 			e.stopPropagation();
 			e.preventDefault();
 		});
