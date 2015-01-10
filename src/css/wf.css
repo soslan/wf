@@ -71,7 +71,7 @@
 .pink-400 {
   background-color: #ee4e84;
   border-color: #ee4e84;
-  color: #333; }
+  color: #fff; }
 
 .pink-500 {
   background-color: #E91E63;
@@ -271,7 +271,7 @@
 .blue-400 {
   background-color: #55aff6;
   border-color: #55aff6;
-  color: #333; }
+  color: #fff; }
 
 .blue-500 {
   background-color: #2196F3;
@@ -521,7 +521,7 @@
 .light-green-400 {
   background-color: #a5d072;
   border-color: #a5d072;
-  color: #333; }
+  color: #fff; }
 
 .light-green-500 {
   background-color: #8BC34A;
@@ -601,7 +601,7 @@
 .yellow {
   background-color: #FFEB3B;
   border-color: #FFEB3B;
-  color: #333; }
+  color: #fff; }
 
 .yellow-100 {
   background-color: white;
@@ -626,7 +626,7 @@
 .yellow-500 {
   background-color: #FFEB3B;
   border-color: #FFEB3B;
-  color: #333; }
+  color: #fff; }
 
 .yellow-600 {
   background-color: #ffe714;
@@ -671,7 +671,7 @@
 .amber-400 {
   background-color: #ffce3b;
   border-color: #ffce3b;
-  color: #333; }
+  color: #fff; }
 
 .amber-500 {
   background-color: #FFC107;
@@ -811,7 +811,7 @@
 .brown-200 {
   background-color: #b48e81;
   border-color: #b48e81;
-  color: #333; }
+  color: #fff; }
 
 .brown-300 {
   background-color: #a67969;
@@ -851,7 +851,7 @@
 .gray {
   background-color: #9E9E9E;
   border-color: #9E9E9E;
-  color: #333; }
+  color: #fff; }
 
 .gray-100 {
   background-color: white;
@@ -876,7 +876,7 @@
 .gray-500 {
   background-color: #9E9E9E;
   border-color: #9E9E9E;
-  color: #333; }
+  color: #fff; }
 
 .gray-600 {
   background-color: #8b8b8b;
@@ -916,7 +916,7 @@
 .blue-gray-300 {
   background-color: #94aab5;
   border-color: #94aab5;
-  color: #333; }
+  color: #fff; }
 
 .blue-gray-400 {
   background-color: #7894a2;
@@ -947,5 +947,47 @@
   background-color: #060809;
   border-color: #060809;
   color: #fff; }
+
+/* Main Part */
+html {
+  font-size: 17px; }
+
+/* Text Input */
+.text-input {
+  line-height: inherit;
+  font-size: inherit;
+  border: 1px solid black;
+  padding: 0 5px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box; }
+
+/* Toolbar */
+.toolbar {
+  justify-content: space-between;
+  line-height: 26px;
+  height: 26px; }
+
+.toolbar > div > * {
+  margin-right: 5px; }
+
+.toolbar > div > *:last-child,
+.toolbar.group > div > * {
+  margin-right: 0; }
+
+.toolbar.s {
+  line-height: 20px;
+  font-size: 14px;
+  height: 20px;
+  padding: 3px 5px; }
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .button {
+    line-height: 39px; }
+
+  .toolbar {
+    line-height: 36px;
+    height: 36px; } }
 
 /*# sourceMappingURL=wf.css.map */

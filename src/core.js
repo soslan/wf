@@ -412,6 +412,44 @@ Element.prototype.clickable = function(args){
 	this.isClickable = true;
 }
 
+Element.prototype.addAction = function(action){
+	var self = this;
+	this.addEventListener('click', function(e){
+		console.log("onClick");
+		action();
+		e.preventDefault();
+		e.stopPropagation();
+	});
+	this.addEventListener('touchstart', function(e){
+		//e.preventDefault();
+		//console.log("onTouchStart");
+		self.touched = true;
+		var onTouchEnd = function(e){
+			//console.log("onTouchEnd");
+			if(self.moved){
+
+			}
+			else{
+				action();
+			}
+			delete self.moved;
+			self.removeEventListener('touchend', onTouchEnd);
+			self.removeEventListener('touchmove', onTouchMove);
+			e.preventDefault();
+			e.stopPropagation();
+
+		};
+		var onTouchMove = function(e){
+			//console.log("onTouchMove");
+			self.moved = true;
+			self.removeEventListener('touchmove', onTouchMove);
+
+		};
+		self.addEventListener('touchmove', onTouchMove);
+		self.addEventListener('touchend', onTouchEnd);
+	});
+};
+
 Element.prototype.click = function(handler){
 	if(typeof handler == "function"){
 		this.addEventListener('click',handler);

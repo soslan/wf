@@ -84,7 +84,7 @@ $color-darkness-range: 60 70 80 90;
     background-color: $color;
     border-color: $color;
 
-    @if lightness($color) > 60{
+    @if lightness($color) > 65{
         color: $black;
     }
     @else {
@@ -109,5 +109,64 @@ $color-darkness-range: 60 70 80 90;
         .#{$name}-#{$i * 10}{
             @include color-style(darken($value, (( 100 - lightness($value)) / 50 ) * ( $i - 50 )));
         }
+    }
+}
+
+
+/* Main Part */
+html{
+    font-size: 17px;
+}
+
+
+/* Text Input */
+.text-input{
+    //height:26px;
+    line-height:inherit;
+    font-size:inherit;
+    border:1px solid black;
+    padding:0 5px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/* Toolbar */
+.toolbar{
+    justify-content:space-between;
+    line-height:26px;
+    height:26px;
+}
+
+.toolbar > div > *{
+    margin-right:5px;
+}
+
+.toolbar > div > *:last-child,
+.toolbar.group > div > *{
+    margin-right:0;
+}
+
+.toolbar.s{
+    line-height: 20px;
+    font-size: 14px;
+    height: 20px;
+    padding: 3px 5px;
+}
+
+
+
+
+@media 
+(-webkit-min-device-pixel-ratio: 2), 
+(min-resolution: 192dpi) { 
+    .button{
+        line-height: 39px;
+    }
+
+    .toolbar{
+        line-height:36px;
+        height:36px;
     }
 }

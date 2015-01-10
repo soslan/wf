@@ -1230,7 +1230,10 @@ function Toolbar(args){
 Toolbar.prototype = Object.create(Panel.prototype);
 
 Toolbar.prototype.append = function(element,align){
-	if(align === "right"){
+	if(element === undefined){
+		return;
+	}
+	else if(align === "right"){
 		this.right.append(element);
 	}
 	else if(align === "center"){
