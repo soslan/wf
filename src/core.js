@@ -109,6 +109,7 @@ Element.prototype.getHandle = function(args){
 
 Element.prototype.close = function(){
 	//this.hide();
+	//console.log("closing");
 	this.element.parentNode.removeChild(this.element);
 	this.dispatchEvent('closed');
 }
@@ -426,8 +427,8 @@ Element.prototype.setAction = function(action){
 	}
 	var self = this;
 	var onClick = function(e){
-		console.log("onClick");
-		action();
+		//console.log("onClick");
+		action(e);
 		e.preventDefault();
 		e.stopPropagation();
 	};
@@ -437,17 +438,13 @@ Element.prototype.setAction = function(action){
 		//self.touched = true;
 		var onTouchEnd = function(e){
 			//console.log("onTouchEnd");
-			if(self.moved){
-
-			}
-			else{
-				action();
-			}
-			delete self.moved;
+			
+			action(e);
+			//delete self.moved;
 			self.removeEventListener('touchend', onTouchEnd);
 			self.removeEventListener('touchmove', onTouchMove);
 			self.removeEventListener('touchcancel', onTouchCancel);
-			//e.preventDefault();
+			e.preventDefault();
 			e.stopPropagation();
 
 		};

@@ -70,6 +70,30 @@ Control.prototype = Object.create(Element.prototype);
 
 function Button(args){
 	var self = this;
+	args = args || {};
+	Element.call(this, {
+		className: args.className,
+	});
+	this.addClass("button");
+	this.clickable();
+	if(typeof args.action == "function"){
+		this.setAction(args.action);
+	}
+	else{
+		this.setAction(args.onClick);
+	}
+	this.label = new Label({
+		text:args.text || args.label,
+		icon:args.icon
+	});
+
+	this.append(this.label);
+}
+
+Button.prototype = Object.create(Element.prototype);
+
+function Button2(args){
+	var self = this;
 	args = args?args:{};
 	Clickable.call(this,{
 		onClick:args.onClick,
@@ -113,7 +137,7 @@ function Button(args){
 	this.append(this.label);
 }
 
-Button.prototype = Object.create(Clickable.prototype);
+Button2.prototype = Object.create(Clickable.prototype);
 
 function ToggleButton(args){
 	var self = this;

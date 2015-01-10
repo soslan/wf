@@ -425,20 +425,10 @@ function ContainerHandle(args){
 		var closeButton = new Button({
 			icon:'times',
 			className:'tab-close red quiet',
-			onClick:function(e){
+			action:function(e){
+				//console.log("closeButton pressed");
 				self.container.parent.remove(self.container);
-				e.stopPropagation();
-				e.preventDefault();
 			},
-		});
-		closeButton.on('touchstart', function(e){
-			e.stopPropagation();
-			e.preventDefault();
-		});
-		closeButton.on('touchend', function(e){
-			self.container.parent.remove(self.container);
-			e.stopPropagation();
-			e.preventDefault();
 		});
 		self.append(closeButton);
 	}
