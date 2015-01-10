@@ -405,25 +405,36 @@ Element.prototype.edit = function(changes){
 // Clickable
 Element.prototype.clickable = function(args){
 	var self = this;
+	args = args || {};
 	this.focusable(args);
+	this.addClass("clickable");
 	if(typeof args.onClick == "function"){
-		this.addEventListener('click',args.onClick);
+		this.addAction(args.onClick);
 	}
 	this.isClickable = true;
 }
 
-Element.prototype.addAction = function(action){
+Element.prototype.setAction = function(action){
+	if (typeof action !== "function"){
+		return;
+	}
+	if (typeof this.removeAction === "function"){
+		this.removeAction();
+	}
+	if (this.isClickable === undefined){
+		this.clickable();
+	}
 	var self = this;
-	this.addEventListener('click', function(e){
+	var onClick = function(e){
 		console.log("onClick");
 		action();
 		e.preventDefault();
 		e.stopPropagation();
-	});
-	this.addEventListener('touchstart', function(e){
+	};
+	var onTouchStart = function(e){
 		//e.preventDefault();
 		//console.log("onTouchStart");
-		self.touched = true;
+		//self.touched = true;
 		var onTouchEnd = function(e){
 			//console.log("onTouchEnd");
 			if(self.moved){
@@ -435,19 +446,35 @@ Element.prototype.addAction = function(action){
 			delete self.moved;
 			self.removeEventListener('touchend', onTouchEnd);
 			self.removeEventListener('touchmove', onTouchMove);
-			e.preventDefault();
+			self.removeEventListener('touchcancel', onTouchCancel);
+			//e.preventDefault();
 			e.stopPropagation();
 
 		};
 		var onTouchMove = function(e){
 			//console.log("onTouchMove");
-			self.moved = true;
+			//self.moved = true;
+			self.removeEventListener('touchend', onTouchEnd);
 			self.removeEventListener('touchmove', onTouchMove);
+			self.removeEventListener('touchcancel', onTouchCancel);
 
+		};
+		var onTouchCancel = function(e){
+			self.removeEventListener('touchend', onTouchEnd);
+			self.removeEventListener('touchmove', onTouchMove);
+			self.removeEventListener('touchcancel', onTouchCancel);
 		};
 		self.addEventListener('touchmove', onTouchMove);
 		self.addEventListener('touchend', onTouchEnd);
-	});
+		self.addEventListener('touchcancel', onTouchCancel);
+	};
+	this.addEventListener('click', onClick);
+	this.addEventListener('touchstart', onTouchStart);
+	this.removeAction = function(){
+		this.removeEventListener('click', onClick);
+		this.removeEventListener('touchstart', onTouchStart);
+		delete this.removeAction;
+	};
 };
 
 Element.prototype.click = function(handler){
