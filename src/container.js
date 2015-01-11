@@ -364,6 +364,7 @@ function ContainerHandle(args){
 	if(args.container === undefined){
 		return;
 	}
+	this.focusable();
 	this.container = args.container;
 	this.addClass('container-handle');
 	this.append(new Label({
@@ -390,7 +391,12 @@ function ContainerHandle(args){
 		self.removeClass('inactive');
 	}*/
 
-	this.$.on('touchstart mousedown', function(e){
+	this.addEventListener('focus', function(e){
+		self.container.parent.switchTo(self.container);
+	});
+
+	/*this.$.on('touchstart mousedown', function(e){
+		console.log(e.type);
 		if(e.which === 1 || e.type === "touchstart"){
 			if(self.container.parent.activeContainer == self.container){
 				//if(container.displayType.value !== 'maximized'){
@@ -403,23 +409,10 @@ function ContainerHandle(args){
 				self.container.parent.switchTo(self.container);
 			}
 		}
-		/*else if(e.which === 2){
-			if(container.parent.activeContainer == container){
-				if(container.displayType.value !== 'maximized'){
-					//container
-					container.parent.switchTo();
-					container.hide();
-				}
-			}
-			else{
-				//self.switchTo(container);
-				container.hide();
-			}
-		}*/
 		
 		e.preventDefault();
 		//container.show();
-	});
+	});*/
 
 	if(args.closeable){
 		var closeButton = new Button({

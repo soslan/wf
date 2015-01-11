@@ -154,6 +154,7 @@ function ToggleButton(args){
 	}
 
 	this.value.addEventListener('on', function(){
+		console.log("on");
 		self.removeClass('inactive');
 		self.addClass('active');
 		if(args.onIcon != undefined){
@@ -162,6 +163,7 @@ function ToggleButton(args){
 	});
 
 	this.value.addEventListener('off', function(){
+		console.log("off");
 		self.removeClass('active');
 		self.addClass('inactive');
 		if(args.offIcon != undefined){
@@ -169,7 +171,8 @@ function ToggleButton(args){
 		}
 	});
 
-	this.addEventListener('mousedown',function(e){
+	/*this.addEventListener('mousedown touchstart',function(e){
+		console.log(e.type);
 		if(!self.value.get()){
 			self.value.true();
 			e.preventDefault();
@@ -183,18 +186,23 @@ function ToggleButton(args){
 		//e.preventDefault();
 		e.stopPropagation();
 	});
-	this.addEventListener('mouseup',function(e){
+	this.addEventListener('mouseup touchend',function(e){
+		console.log(e.type);
 		if(self.pressed){
 			self.pressed = false;
 		}
 		else{
 			self.value.false();
-		}		
+		}
+		//self.value.false();
 		
 		//self.value.flip();
-		//e.preventDefault();
+		e.preventDefault();
 		e.stopPropagation();
-	});
+	});*/
+	this.setAction(function(){
+		self.value.flip();
+	});;
 }
 
 ToggleButton.prototype = Object.create(Button.prototype);
@@ -261,8 +269,16 @@ function Dropdown(args, dropdownArgs){
 		e.stopPropagation();
 	})
 	this.panel.focusable();
-	this.panel.on('focusaway',function(){
-		self.panel.hide();
+	this.button.on('focusout', function(e){
+		if(self.button.value && e.relatedTarget !== self.panel.e && !self.panel.isAncestorOf(e.relatedTarget)){
+			self.button.value.false();
+		}
+	});
+	this.panel.on('focusaway',function(e){
+		if(e.detail.relatedTarget !== self.button.e){
+			self.panel.hide();
+		}
+		
 	});
 	this.panel.hide();
 	this.append(this.button);

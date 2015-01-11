@@ -211,11 +211,17 @@ Element.prototype.on = Element.prototype.addEventListener;
 Element.prototype.focusable = function(args){
 	var self = this;
 	var args = args || {};
-	this.element.setAttribute('tabindex',args.tabIndex || 1);
+	this.element.setAttribute('tabindex',args.tabIndex || -1);
 	this.addEventListener('focusout', function(e){
 		if(!(self.element == e.relatedTarget) && !self.e.contains(e.relatedTarget)){
-			self.dispatchEvent('focusaway');
+			self.dispatchEvent('focusaway', e);
 		}
+	});
+	this.addEventListener('touchstart', function(e){
+		//console.log("touchstart focusable"+e.type);
+		self.focus();
+		//e.preventDefault();
+		//e.stopPropagation();
 	});
 	if(args.onFocus){
 		this.addEventListener('focus', function(e){
@@ -239,7 +245,7 @@ Element.prototype.focusing = function(focusingElement){
 	var self = this;
 	this.focusingElement = focusingElement;
 
-	this.element.addEventListener('mousedown',function(e){
+	this.element.addEventListener('mousedown touchstart',function(e){
 		self.focusingElement.focus(e);
 		e.stopPropagation();
 		e.preventDefault();
