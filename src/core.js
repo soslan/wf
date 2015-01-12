@@ -434,7 +434,9 @@ Element.prototype.setAction = function(action){
 	var self = this;
 	var onClick = function(e){
 		//console.log("onClick");
-		action(e);
+		if(!self.disabled){
+			action(e);
+		}
 		e.preventDefault();
 		e.stopPropagation();
 	};
@@ -442,6 +444,7 @@ Element.prototype.setAction = function(action){
 		//e.preventDefault();
 		//console.log("onTouchStart");
 		//self.touched = true;
+
 		var onTouchEnd = function(e){
 			//console.log("onTouchEnd");
 			
@@ -467,15 +470,26 @@ Element.prototype.setAction = function(action){
 			self.removeEventListener('touchmove', onTouchMove);
 			self.removeEventListener('touchcancel', onTouchCancel);
 		};
-		self.addEventListener('touchmove', onTouchMove);
-		self.addEventListener('touchend', onTouchEnd);
-		self.addEventListener('touchcancel', onTouchCancel);
+		if(!this.disabled){
+			self.addEventListener('touchmove', onTouchMove);
+			self.addEventListener('touchend', onTouchEnd);
+			self.addEventListener('touchcancel', onTouchCancel);
+		}
+		
 	};
+	var onMouseDown = function(e){
+		if(self.disabled){
+			e.preventDefault();
+			e.stopPropagation();
+		}
+	};
+	this.addEventListener('mousedown', onMouseDown);
 	this.addEventListener('click', onClick);
 	this.addEventListener('touchstart', onTouchStart);
 	this.removeAction = function(){
 		this.removeEventListener('click', onClick);
 		this.removeEventListener('touchstart', onTouchStart);
+		this.removeEventListener('mousedown', onMouseDown);
 		delete this.removeAction;
 	};
 };
@@ -484,6 +498,16 @@ Element.prototype.click = function(handler){
 	if(typeof handler == "function"){
 		this.addEventListener('click',handler);
 	}
+}
+
+Element.prototype.disable = function(){
+	this.addClass('disabled');
+	this.disabled = true;
+};
+
+Element.prototype.activate = function(){
+	this.removeClass('disabled');
+	delete this.disabled;
 }
 
 Element.prototype.draggable = function(args){
