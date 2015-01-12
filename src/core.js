@@ -277,15 +277,18 @@ Element.prototype.blur = function(handler){
 	if(typeof handler == "function"){
 		this.addEventListener('DOMFocusOut',handler);
 	}
-	else if(this.focusingElement){
+	else if(this.focusingElement !== undefined){
 		if(this.focusingElement == this){
 			this.element.dispatchEvent(beforeBlurEvent);
-			this.$.blur();
+			this.e.blur();
 		}
 		else{
 			this.focusingElement.blur();
 			return false;
 		}
+	}
+	else{
+		this.e.blur();
 	}
 }
 
@@ -483,13 +486,20 @@ Element.prototype.setAction = function(action){
 			e.stopPropagation();
 		}
 	};
+	var onSpaceOrEnter = function(e){
+		if(e.which == 13 || e.which == 32){
+			action();
+		}
+	}
 	this.addEventListener('mousedown', onMouseDown);
 	this.addEventListener('click', onClick);
 	this.addEventListener('touchstart', onTouchStart);
+	this.addEventListener('keydown',onSpaceOrEnter);
 	this.removeAction = function(){
 		this.removeEventListener('click', onClick);
 		this.removeEventListener('touchstart', onTouchStart);
 		this.removeEventListener('mousedown', onMouseDown);
+		this.removeEventListener('keydown', onSpaceOrEnter);
 		delete this.removeAction;
 	};
 };
