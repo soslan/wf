@@ -32,7 +32,6 @@ function Element(arg1, arg2){
 	
 	if(args.appendTo instanceof Element){
 		args.appendTo.append(self);
-		this.parent = args.appendTo;
 	}
 	else if(args.appendTo instanceof Node){
 		args.appendTo.appendChild(this.element);
@@ -54,6 +53,20 @@ Element.prototype.value = function(value){
 
 Element.prototype.setAttribute = function(key, value){
 	this.e.setAttribute(key, value);
+}
+
+Element.prototype.getAttribute = function(key){
+	return this.e.getAttribute(key);
+}
+
+
+Element.prototype.attr = function(key, value){
+	if (value !== undefined){
+		this.setAttribute(key, value);
+	}
+	else{
+		return this.getAttribute(key);
+	}
 }
 
 Element.prototype.append = function(element){
@@ -211,7 +224,7 @@ Element.prototype.on = Element.prototype.addEventListener;
 Element.prototype.focusable = function(args){
 	var self = this;
 	var args = args || {};
-	this.element.setAttribute('tabindex',args.tabIndex || -1);
+	this.element.setAttribute('tabindex',args.tabIndex || 1);
 	this.addEventListener('focusout', function(e){
 		if(!(self.element == e.relatedTarget) && !self.e.contains(e.relatedTarget)){
 			self.dispatchEvent('focusaway', e);
