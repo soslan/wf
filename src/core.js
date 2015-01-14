@@ -224,6 +224,9 @@ Element.prototype.on = Element.prototype.addEventListener;
 Element.prototype.focusable = function(args){
 	var self = this;
 	var args = args || {};
+	if (self.isFocusable){
+		return;
+	}
 	this.element.setAttribute('tabindex',args.tabIndex || 1);
 	this.addEventListener('focusout', function(e){
 		if(!(self.element == e.relatedTarget) && !self.e.contains(e.relatedTarget)){

@@ -148,7 +148,7 @@ Windows.prototype.append = function(container){
 		container.maximize();
 	}
 	container.e.style.visibility = "none";
-
+	container.focusable();
 	Container.prototype.append.call(this, container);
 	if(this.activeContainer == undefined){
 		//container.e.style.visibility = "";
@@ -198,6 +198,7 @@ Windows.prototype.switchTo = function(wind, done){
 			this.topZIndex += 1;
 			wind.e.style.opacity = 0;
 			wind.show();
+			wind.focus();
 			this.history.push(wind);
 			wind.$.animate({
 				opacity:1,

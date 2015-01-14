@@ -76,7 +76,10 @@ $colors: 'red' $red,
     'gray' $gray, 
     'blue-gray' $bluegray,
     'error' $red,
-    'success' $green
+    'success' $green,
+    'white' $white,
+    'whitewhite' $white, // To be removed
+    'gainsboro' $gainsboro
 ;
 
 $color-lightness-range: 10 20 30 40;
@@ -87,7 +90,7 @@ $color-darkness-range: 60 70 80 90;
     background-color: $color;
     border-color: $color;
 
-    @if lightness($color) > 65{
+    @if lightness($color) > 60{
         color: $black;
     }
     @else {
@@ -117,17 +120,25 @@ $color-darkness-range: 60 70 80 90;
     // Clickable colors
 
     .#{$name}.clickable:hover{
+        //background-color:darken($value, 5);
         @include color-style(darken($value, 5));
     }
 
     .#{$name}.clickable:active,
     .#{$name}.clickable.active,{
+        //background-color:darken($value, 8);
         @include color-style(darken($value, 8));
     }
 
     .#{$name}.clickable,
     .#{$name}.clickable.disabled{
         @include color-style($value);
+    }
+
+    // Text Input colors
+    .#{$name}.text-input{
+        border-color:darken($value, 5);
+        background-color:lighten($value, 1)
     }
 }
 
@@ -201,6 +212,61 @@ html{
     margin-right:0;
 }
 
+/* Dropdown */
+.dropdown-container{
+    display:inline-block;
+    position:relative;
+}
+
+.dropdown-container > .dropdown{
+    margin-top:5px;
+    box-shadow: 0 0px 12px rgba(0,0,0,.175);
+    //padding:5px 0;
+    z-index:1000;
+}
+
+.dropdown-container.active{
+    //margin-bottom:-10px;
+}
+
+.dropdown.panel{
+}
+
+/*.dropdown::before{
+    position:absolute;
+    top:-10px;
+    left:5px;
+    content:"";
+    width:0;
+    height:0;
+    border-left:5px solid transparent;
+    border-right:5px solid transparent;
+    border-bottom:10px solid @whitewhite;
+}*/
+
+.dropdown-container > .button.active{
+    //padding-bottom:5px;
+    //margin-bottom:-5px;
+}
+
+.dropdown{
+
+    text-align:left;
+    min-width:100px;
+    //display:none;
+    left: 0;
+    top: 100%;
+    position: absolute;
+    padding:10px 0;
+    //background-color: @light-gray;
+    z-index:101;
+}
+
+.dropdown > .button{
+    text-align:left;
+}
+
+
 
 /* Text Input */
 .text-input{
@@ -236,6 +302,17 @@ html{
     font-size: 14px;
     height: 20px;
     padding: 3px 5px;
+}
+
+/* Windows */
+.windows > .maximized,
+.windows > *{
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    outline: none;
 }
 
 

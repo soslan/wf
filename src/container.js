@@ -367,6 +367,7 @@ function ContainerHandle(args){
 	this.focusable();
 	this.container = args.container;
 	this.addClass('container-handle');
+	this.addClass(args.color);
 	this.append(new Label({
 		text:args.text || 'Container',
 	}));

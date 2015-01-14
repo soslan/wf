@@ -222,7 +222,7 @@ function Dropdown(args, dropdownArgs){
 	this.addClass('dropdown-container');
 
 	dropdownArgs = dropdownArgs || {};
-	this.panel = new Panel(dropdownArgs);
+	this.panel = new Container(dropdownArgs);
 	this.panel.addClass('dropdown');
 	this.panel.addEventListener('before-displayed', function(){
 		self.panel.e.style.visibility = 'hidden';
