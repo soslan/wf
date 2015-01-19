@@ -24,6 +24,9 @@
   border-color: #f32c1e;
   background-color: #f4483b; }
 
+.border-red {
+  border-color: #F44336; }
+
 .pink {
   background-color: #E91E63;
   border-color: #E91E63;
@@ -49,6 +52,9 @@
 .pink.text-input {
   border-color: #d81557;
   background-color: #e92366; }
+
+.border-pink {
+  border-color: #E91E63; }
 
 .purple {
   background-color: #9C27B0;
@@ -76,6 +82,9 @@
   border-color: #89229b;
   background-color: #a028b4; }
 
+.border-purple {
+  border-color: #9C27B0; }
+
 .deep-purple {
   background-color: #673AB7;
   border-color: #673AB7;
@@ -101,6 +110,9 @@
 .deep-purple.text-input {
   border-color: #5c34a4;
   background-color: #693bbb; }
+
+.border-deep-purple {
+  border-color: #673AB7; }
 
 .indigo {
   background-color: #3F51B5;
@@ -128,6 +140,9 @@
   border-color: #3849a2;
   background-color: #4053b9; }
 
+.border-indigo {
+  border-color: #3F51B5; }
+
 .blue {
   background-color: #2196F3;
   border-color: #2196F3;
@@ -153,6 +168,9 @@
 .blue.text-input {
   border-color: #0d8aee;
   background-color: #2698f3; }
+
+.border-blue {
+  border-color: #2196F3; }
 
 .light-blue {
   background-color: #03A9F4;
@@ -180,6 +198,9 @@
   border-color: #0398db;
   background-color: #03acf9; }
 
+.border-light-blue {
+  border-color: #03A9F4; }
+
 .cyan {
   background-color: #00BCD4;
   border-color: #00BCD4;
@@ -205,6 +226,9 @@
 .cyan.text-input {
   border-color: #00a5bb;
   background-color: #00c1d9; }
+
+.border-cyan {
+  border-color: #00BCD4; }
 
 .teal {
   background-color: #009688;
@@ -232,6 +256,9 @@
   border-color: #007d71;
   background-color: #009b8d; }
 
+.border-teal {
+  border-color: #009688; }
+
 .green {
   background-color: #4CAF50;
   border-color: #4CAF50;
@@ -257,6 +284,9 @@
 .green.text-input {
   border-color: #449d48;
   background-color: #4eb252; }
+
+.border-green {
+  border-color: #4CAF50; }
 
 .light-green {
   background-color: #8BC34A;
@@ -284,6 +314,9 @@
   border-color: #7eb73d;
   background-color: #8dc44e; }
 
+.border-light-green {
+  border-color: #8BC34A; }
+
 .lime {
   background-color: #CDDC39;
   border-color: #CDDC39;
@@ -309,6 +342,9 @@
 .lime.text-input {
   border-color: #c6d626;
   background-color: #cedd3d; }
+
+.border-lime {
+  border-color: #CDDC39; }
 
 .yellow {
   background-color: #FFEB3B;
@@ -336,6 +372,9 @@
   border-color: #ffe821;
   background-color: #ffec40; }
 
+.border-yellow {
+  border-color: #FFEB3B; }
+
 .amber {
   background-color: #FFC107;
   border-color: #FFC107;
@@ -361,6 +400,9 @@
 .amber.text-input {
   border-color: #ecb100;
   background-color: #ffc20c; }
+
+.border-amber {
+  border-color: #FFC107; }
 
 .orange {
   background-color: #FF9800;
@@ -388,6 +430,9 @@
   border-color: #e68900;
   background-color: #ff9a05; }
 
+.border-orange {
+  border-color: #FF9800; }
+
 .deep-orange {
   background-color: #FF5722;
   border-color: #FF5722;
@@ -413,6 +458,9 @@
 .deep-orange.text-input {
   border-color: #ff4408;
   background-color: #ff5b27; }
+
+.border-deep-orange {
+  border-color: #FF5722; }
 
 .brown {
   background-color: #795548;
@@ -440,6 +488,9 @@
   border-color: #694a3e;
   background-color: #7c574a; }
 
+.border-brown {
+  border-color: #795548; }
+
 .gray {
   background-color: #9E9E9E;
   border-color: #9E9E9E;
@@ -465,6 +516,9 @@
 .gray.text-input {
   border-color: #919191;
   background-color: #a1a1a1; }
+
+.border-gray {
+  border-color: #9E9E9E; }
 
 .blue-gray {
   background-color: #607D8B;
@@ -492,6 +546,9 @@
   border-color: #566f7c;
   background-color: #62808e; }
 
+.border-blue-gray {
+  border-color: #607D8B; }
+
 .error {
   background-color: #F44336;
   border-color: #F44336;
@@ -517,6 +574,9 @@
 .error.text-input {
   border-color: #f32c1e;
   background-color: #f4483b; }
+
+.border-error {
+  border-color: #F44336; }
 
 .success {
   background-color: #4CAF50;
@@ -544,6 +604,9 @@
   border-color: #449d48;
   background-color: #4eb252; }
 
+.border-success {
+  border-color: #4CAF50; }
+
 .white {
   background-color: #fff;
   border-color: #fff;
@@ -569,6 +632,9 @@
 .white.text-input {
   border-color: #f2f2f2;
   background-color: white; }
+
+.border-white {
+  border-color: #fff; }
 
 .whitewhite {
   background-color: #fff;
@@ -596,6 +662,9 @@
   border-color: #f2f2f2;
   background-color: white; }
 
+.border-whitewhite {
+  border-color: #fff; }
+
 .gainsboro {
   background-color: #dcdcdc;
   border-color: #dcdcdc;
@@ -621,6 +690,9 @@
 .gainsboro.text-input {
   border-color: #cfcfcf;
   background-color: #dfdfdf; }
+
+.border-gainsboro {
+  border-color: #dcdcdc; }
 
 /* Main Part */
 html {

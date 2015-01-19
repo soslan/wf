@@ -12,6 +12,13 @@ function Element(arg1, arg2){
 		args = arg2?arg2:{};
 		this.element = arg1;
 	}
+	else if (typeof arg1 === "string"){
+		args = arg2?arg2:{};
+		this.element = document.querySelector(arg1);
+		if (this.element === null){
+			this.element = document.createElement(args.tagName || "div");
+		}
+	}
 	else{
 		args=arg1?arg1:{};
 		this.element = document.createElement(args.tagName || "div");
