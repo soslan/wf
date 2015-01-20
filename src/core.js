@@ -76,6 +76,15 @@ Element.prototype.attr = function(key, value){
 	}
 }
 
+Element.prototype.style = function(args){
+	if (typeof args !== "object"){
+		return;
+	}
+	for (var i in args){
+		this.e.style[i] = args[i];
+	}
+}
+
 Element.prototype.append = function(element){
 	for (var arg in arguments){
 		var element = arguments[arg];

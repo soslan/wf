@@ -24,7 +24,7 @@ $green2-lit:#6b9;
 $jungle-green:#29AB87;
 $jungle-green-shadowed:#199a76;
 $jungle-green-lit:#40bc98;
-$lightgray: #d3d3d3;
+$light-gray: #d3d3d3;
 $gainsboro: #dcdcdc;
 $silver: #c0c0c0;
 $darkgray: #a9a9a9;
@@ -145,13 +145,47 @@ $color-darkness-range: 60 70 80 90;
         border-color:$value;
     }
 
-    
+
 }
 
 
 /* Main Part */
 html{
     font-size: 17px;
+}
+
+:focus, input:focus {
+    outline:2px auto $blue;
+    //outline:0;
+    //box-shadow: 0 0 5px @main-color-light;
+}
+
+.inline{
+    display:inline-block;
+}
+
+.content-blocks{
+    display:flex;
+}
+
+.content-direction-vertical{
+    flex-direction:column;
+}
+
+.content-direction-horizontal{
+    flex-direction:row;
+}
+
+.alignleft{
+    text-align: left;
+}
+
+.alignright{
+    text-align: right;
+}
+
+.aligncenter{
+    text-align: center;
 }
 
 /* Button */
@@ -218,6 +252,143 @@ html{
     margin-right:0;
 }
 
+/* Clickable */
+.clickable{
+    cursor:pointer;
+}
+
+/* Container */
+
+.container{
+    position:relative;
+    padding:0;
+    display:flex;
+    //font-family:Arial;
+    //background-color: @white;
+    //color: @black;
+}
+
+.content-type-blocks{
+    display:flex;
+}
+
+.content-type-lines{
+    display:block;
+}
+
+.container.display-type-new-line.content-type-blocks{
+    display:flex;
+}
+
+.container.display-type-inline.content-type-blocks{
+    display:inline-flex;
+}
+
+.container.display-type-new-line.content-type-lines{
+    display:block;
+}
+
+.container.display-type-inline.content-type-lines{
+    display:inline-block;
+}
+
+.container.display-type-unmaximized, .container.display-type-unmaximized-pinned{
+    z-index:200;
+    position:absolute;
+    width:50%;
+    height:50%;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.175);
+}
+
+.container.display-type-none{
+    display:none;
+}
+
+.container.hidden{
+    display:none;
+}
+
+
+
+/* Container Handle */
+.container-handle{
+    display: flex;
+    cursor:pointer;
+    padding:0 5px;
+    opacity: 0.5;
+}
+
+.container-handle.inactive{
+    opacity: 0.5;
+}
+
+.container-handle.quiet.inactive:not(:hover){
+    background-color: transparent;
+    color:inherit;
+    //opacity:1;
+}
+
+.container-handle.g-style{
+    background-color: inherit;
+    color:inherit;
+    border-bottom-width: 0;
+    border-bottom-style: solid;
+    //padding-bottom:
+}
+
+.container-handle.tab.g-style.active,
+.container-handle.tab.g-style:hover,
+.container-handle-maximized.g-style.active,
+.container-handle-maximized.g-style:hover{
+    border-bottom-width: 5px;
+}
+
+.container-handle.quiet.inactive:hover{
+    //background-color: inherit;
+    //opacity:1;
+}
+
+.container-handle.active{
+    opacity:1;
+}
+
+.container-handle.inactive:hover{
+    opacity: 0.6;
+}
+
+.container-handle.topped .label{
+    //font-weight:bold;
+    //text-decoration:underline;
+}
+
+.container-handle > *{
+    margin-right: 5px;
+}
+
+.container-handle > *:last-child{
+    margin-right: 0;
+}
+
+.container-handle.tab,
+.container-handle-maximized{
+    padding-bottom: 5px;
+    margin-bottom:-5px;
+}
+
+.container-handle.pinned{
+    padding-top: 5px;
+    margin-top:-5px;
+}
+
+/* Containers */
+.containers > .container{
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+}
+
 /* Dropdown */
 .dropdown-container{
     display:inline-block;
@@ -274,6 +445,316 @@ html{
 
 
 
+
+/* Label */
+
+.label{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display:inline;
+}
+
+.label{
+    //padding-right:5px;
+}
+
+.label-icon:after{
+    content:" ",
+}
+
+.label:after{
+    display: inline-block;
+    content:" ",
+}
+
+.label-icon{
+    display:inline;
+    //padding-right: 5px;
+}
+
+.label-icon:empty{
+    padding:0;
+}
+
+.label.noicon .label-icon{
+    display:none;
+}
+
+.label.notext .label-text{
+    display:none;
+}
+
+.label.notext .label-icon:after{
+    display:none;
+}
+
+.label.notext .label-text:after{
+    display:none;
+    content:'';
+}
+
+/* Lines, Blocks */
+.lines{
+    overflow:auto;
+    display:block;
+}
+
+.lines.inline{
+    display:inline-block;
+}
+
+.blocks{
+    display:flex;
+}
+
+.blocks.inline{
+    display:inline-flex;
+}
+
+.rows{
+    display:flex;
+    flex-direction:column,
+}
+
+.rows.inline,
+.columns.inline{
+    display:inline-flex;
+}
+
+.columns{
+    display:flex;
+    flex-direction:row;
+}
+
+/* Panel */
+
+.panel{
+    padding:5px;
+    background-color: $white;
+    color:$black;
+}
+
+.panel:focus{
+    outline:none;
+}
+
+.panel.content-type-blocks.content-direction-vertical > *{
+    margin:0;
+    margin-bottom:5px;
+}
+
+.panel.content-type-blocks.content-direction-vertical > *:last-child{
+    margin-bottom:0;
+}
+
+.panel.content-type-blocks.content-direction-horizontal > *{
+    margin:0;
+    margin-right:5px;
+}
+
+.panel.content-type-blocks.content-direction-horizontal > *:last-child{
+    margin-right:0;
+}
+
+.panel > .toolbar,
+.panel > .panel,
+.toolbar > div > .panel{
+    padding:0;
+}
+
+
+/* Select */
+
+.select{
+    height:26px;
+    outline: none;
+}
+
+.select-container{
+    vertical-align: bottom;
+    display: inline-block;
+    height: 26px;
+}
+
+.select-options{
+    min-width:70px;
+    left:0;
+    //right:20px;
+    //display:none;
+    padding:5px 0;
+    visibility:hidden;
+    opacity:0;
+    position:relative;
+    //margin-right:20px;
+    z-index:100;
+    //top:26px;
+    background-color: $light-gray;
+    //padding-top:5px;
+    //border-top:1px solid @light-gray;
+    //color:@white;
+
+}
+
+.select-option{
+    padding:0 10px;
+    line-height:26px;
+    //padding:0 10px;
+    //color:@white;
+    cursor:pointer;
+}
+
+.select-option.focused{
+    background-color: $blue;
+    color:$white
+}
+
+.select-current{
+    padding-left: 5px;
+    height: 26px;
+    width:100%;
+    cursor:pointer;
+    display: inline-block;
+    //padding-left: 10px;
+    background-color: $light-gray;
+    line-height: 26px;
+}
+
+.select-button{
+    margin-right: 0;
+}
+
+.select-button.active .icon{
+    background-color: $blue;
+}
+
+.select-button:hover .icon{
+    background-color: $blue;
+}
+
+.select-current{
+    //float:none;
+    //padding-left:10px;
+}
+
+/* Slider */
+
+.slider{
+    margin-right:5px;
+    height: 26px;
+}
+
+.slider-container{
+    cursor:pointer;
+    width: 100px;
+    height: 11px;
+    display: inline-block;
+    position: relative;
+    margin:0 5px;
+    margin-bottom: 7px;
+    margin-top: 8px;
+    vertical-align: bottom;
+}
+
+.slider-line{
+    top: 3px;
+    height: 5px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color: $light-gray;
+}
+
+.slider-button{
+    cursor:pointer;
+    position:absolute;
+    left:-5px;
+    //top:-3px;
+    width:11px;
+    height:11px;
+    //border-radius:50%;
+    background-color: $gray;
+}
+
+.slider-button.active{
+    background-color: $blue;
+}
+
+.slider-progress{
+    top:3px;
+    background-color: $blue;
+    position: absolute;
+    height: 5px;
+//display: inline-block;
+//width: 50%;
+}
+
+/* TabView */
+.tab-view{
+    //padding:5px;
+    margin:5px;
+    flex:1;
+    display: flex;
+}
+
+.tab-view-documents{
+    display:flex;
+    flex:1;
+}
+
+.tab-view.content-direction-horizontal .tab-view-tabs{
+    flex-direction:column;
+}
+
+.tab-view.content-direction-horizontal .tab-view-tab{
+    margin-top:5px;
+}
+
+.tab-view.content-direction-vertical .tab-view-tab{
+    margin-left:5px;
+}
+
+.tab-view-tab .label{
+    //padding-left:5px;
+}
+
+.tab-view-tabs{
+    //padding-top: 5px;
+
+}
+
+.tab-view-tab{
+    cursor:pointer;
+    //margin:5px 0 0 5px;
+    float:left;
+    padding-left:10px;
+    padding-right:5px;
+    background-color: $white;
+    color: $black;
+    opacity:0.5;
+}
+
+.tab-view-tab:hover{
+    opacity:0.6;
+}
+
+.tab-view-tab.active,
+.tab-view-tab.active:hover{
+    opacity:1;
+    //background-color: @white;
+}
+
+.tab-view-document{
+    padding:5px;
+    //display:none;
+    //position:absolute;
+    background-color: $white;
+    flex:1;
+}
+
+
+
 /* Text Input */
 .text-input{
     //height:26px;
@@ -286,6 +767,60 @@ html{
     -ms-box-sizing: border-box;
     box-sizing: border-box;
 }
+
+/* Toggle */
+
+.toggle{
+}
+
+.toggle-label{
+    cursor:pointer;
+}
+
+.toggle-label:after{
+    content: " ";
+}
+
+.toggle-main{
+    height:26px;
+    display:inline-block;
+    line-height:26px;
+    cursor:pointer;
+    width:50px;
+    background-color: $light-gray;
+    font-weight:bold;
+    color:$white;
+    position: relative;
+    vertical-align: bottom;
+}
+
+.toggle-main > .toggle-switcher{
+    width:50%;
+    height:100%;
+    display:inline-block;
+    text-align: center;
+    position: absolute;
+}
+
+.toggle .toggle-switcher.on{
+    left:50%;
+    background-color: $blue;
+    content:"I";
+}
+
+.toggle .toggle-switcher.off{
+    left:0%;
+    background-color: $gray;
+}
+
+.toggle .toggle-switcher.off:after{
+    content:"O";
+}
+
+.toggle .toggle-switcher.on:after{
+    content:"I";
+}
+
 
 /* Toolbar */
 .toolbar{
