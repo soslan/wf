@@ -160,6 +160,19 @@ html{
     //box-shadow: 0 0 5px @main-color-light;
 }
 
+.hidden{
+    display:none !important;
+}
+
+.container.root{
+    display: flex;
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+}
+
 .inline{
     display:inline-block;
 }
@@ -531,8 +544,6 @@ html{
 
 .panel{
     padding:5px;
-    background-color: $white;
-    color:$black;
 }
 
 .panel:focus{
