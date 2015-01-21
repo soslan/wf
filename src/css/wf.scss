@@ -56,51 +56,47 @@ $brown: #795548;
 $gray: #9E9E9E;
 $bluegray: #607D8B;
 
-$colors: 'red' $red, 
-    'pink' $pink, 
-    'purple' $purple, 
-    'deep-purple' $deeppurple, 
-    'indigo' $indigo, 
-    'blue' $blue, 
-    'light-blue' $lightblue, 
-    'cyan' $cyan, 
-    'teal' $teal, 
-    'green' $green, 
-    'light-green' $lightgreen, 
-    'lime' $lime,
-    'yellow' $yellow, 
-    'amber' $amber, 
-    'orange' $orange, 
-    'deep-orange' $deeporange, 
-    'brown' $brown, 
-    'gray' $gray, 
-    'blue-gray' $bluegray,
-    'error' $red,
-    'success' $green,
-    'white' $white,
-    'whitewhite' $white, // To be removed
-    'gainsboro' $gainsboro
+$colors: 'red' $red $white, 
+    'pink' $pink $white, 
+    'purple' $purple $white, 
+    'deep-purple' $deeppurple $white, 
+    'indigo' $indigo $white, 
+    'blue' $blue $white, 
+    'light-blue' $lightblue $white, 
+    'cyan' $cyan $white, 
+    'teal' $teal $white, 
+    'green' $green $white, 
+    'light-green' $lightgreen $black, 
+    'lime' $lime $black,
+    'yellow' $yellow $black, 
+    'amber' $amber $white, 
+    'orange' $orange $white, 
+    'deep-orange' $deeporange $white, 
+    'brown' $brown $white, 
+    'gray' $gray $white, 
+    'blue-gray' $bluegray $white,
+    'error' $red $white,
+    'success' $green $white,
+    'white' $white $black,
+    'black' $black $white,
+    'whitesmoke' whitesmoke $black,
+    'whitewhite' $white $black, // To be removed
+    'gainsboro' $gainsboro $black
 ;
 
 $color-lightness-range: 10 20 30 40;
 $color-darkness-range: 60 70 80 90;
 
 
-@mixin color-style($color){
+@mixin color-style($color, $tcolor){
     background-color: $color;
     border-color: $color;
-
-    @if lightness($color) > 60{
-        color: $black;
-    }
-    @else {
-        color: $white;
-    }
+    color: $tcolor;
 }
 
-@each $name, $value in $colors {
+@each $name, $value, $tcolor in $colors {
     .#{$name}{
-        @include color-style($value);
+        @include color-style($value, $tcolor);
     }
 
     // @each $i in $color-lightness-range{
@@ -121,18 +117,18 @@ $color-darkness-range: 60 70 80 90;
 
     .#{$name}.clickable:hover{
         //background-color:darken($value, 5);
-        @include color-style(darken($value, 5));
+        @include color-style(darken($value, 5), $tcolor);
     }
 
     .#{$name}.clickable:active,
     .#{$name}.clickable.active,{
         //background-color:darken($value, 8);
-        @include color-style(darken($value, 8));
+        @include color-style(darken($value, 8), $tcolor);
     }
 
     .#{$name}.clickable,
     .#{$name}.clickable.disabled{
-        @include color-style($value);
+        @include color-style($value, $tcolor);
     }
 
     // Text Input colors
@@ -156,6 +152,7 @@ html{
 
 :focus, input:focus {
     outline:2px auto $blue;
+    outline: none; //Test
     //outline:0;
     //box-shadow: 0 0 5px @main-color-light;
 }
@@ -232,6 +229,7 @@ html{
 .s > div > .button{
     line-height:20px;
     min-height:20px;
+    min-width:20px;
     line-height:inherit;
     
 }
@@ -248,7 +246,8 @@ html{
     padding:0 10px;
 }
 
-.button.simple > .label{
+.button.simple > .label,
+.button.link > .label{
     padding:0;
 }
 
@@ -268,6 +267,9 @@ html{
 /* Clickable */
 .clickable{
     cursor:pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 /* Container */
@@ -329,6 +331,9 @@ html{
     cursor:pointer;
     padding:0 5px;
     opacity: 0.5;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .container-handle.inactive{

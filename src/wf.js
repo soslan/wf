@@ -1065,9 +1065,7 @@ function span(text, className, appendTo){
 	if(typeof className === 'string'){
 		out.addClass(className);
 	}
-	if(typeof text == 'string'){
-		out.append(text);
-	}
+	out.append(text);
 	
 	return out;
 }
