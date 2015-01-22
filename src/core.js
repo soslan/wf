@@ -513,10 +513,13 @@ Element.prototype.setAction = function(action){
 		
 	};
 	var onMouseDown = function(e){
+		console.log('onmousedown');
 		if(self.disabled){
 			e.preventDefault();
 			e.stopPropagation();
 		}
+		e.stopPropagation();
+		e.preventDefault();
 	};
 	var onSpaceOrEnter = function(e){
 		if(e.which == 13 || e.which == 32){

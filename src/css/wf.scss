@@ -115,19 +115,22 @@ $color-darkness-range: 60 70 80 90;
 
     // Clickable colors
 
-    .#{$name}.clickable:hover{
+    .#{$name}.clickable:hover,
+    .#{$name}.dropdown-container > .clickable:hover{
         //background-color:darken($value, 5);
         @include color-style(darken($value, 5), $tcolor);
     }
 
-    .#{$name}.clickable:active,
-    .#{$name}.clickable.active,{
+    .#{$name}.button:active,
+    .#{$name}.button.active,
+    .#{$name}.dropdown-container > .button:active,
+    .#{$name}.dropdown-container > .button.active{
         //background-color:darken($value, 8);
         @include color-style(darken($value, 8), $tcolor);
     }
 
-    .#{$name}.clickable,
-    .#{$name}.clickable.disabled{
+    .#{$name}.button,
+    .#{$name}.button.disabled{
         @include color-style($value, $tcolor);
     }
 
@@ -137,10 +140,21 @@ $color-darkness-range: 60 70 80 90;
         background-color:lighten($value, 1);
     }
 
+    #{$name}.border-darker{
+        border-color:darken($value, 5);
+    }
+
     .border-#{$name}{
         border-color:$value;
     }
 
+    // Dropdown colors
+    .#{$name}.dropdown-container > .dropdown-panel-container > .dropdown{
+        @include color-style($value, $tcolor);
+    }
+    .#{$name}.dropdown-container > .dropdown-panel-container:after{
+        border-bottom-color: $value;
+    }
 
 }
 
@@ -262,6 +276,11 @@ html{
 
 .button > .label.notext > .label-icon{
     margin-right:0;
+}
+
+/* Checkbox */
+.checkbox{
+    border-width:2px;
 }
 
 /* Clickable */
@@ -427,6 +446,64 @@ html{
 .dropdown.panel{
 }
 
+.dropdown-pointer{
+    bottom: -10px;
+    border-style: solid;
+    position: absolute;
+    width: 0;
+    content: ' ';
+    height: 0;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent;
+    z-index: 1000;
+    border-bottom-color: white;
+}
+
+.dropdown-pointer-back{
+    bottom: -9px;
+    border-style: solid;
+    position: absolute;
+    width: 0;
+    content: ' ';
+    height: 0;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent;
+    z-index: 999;
+    border-bottom-color: #ccc;
+}
+
+.dropdown-panel-container{
+    position:static;
+}
+
+.dropdown-panel-container:after{
+    bottom: -10px;
+    border-style: solid;
+    position: absolute;
+    width: 0;
+    content: ' ';
+    height: 0;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent;
+    z-index: 1011;
+    border-bottom-color: white;
+    left:calc(50% - 10px),
+}
+
+.dropdown-panel-container:before{
+    bottom: -9px;
+    border-style: solid;
+    position: absolute;
+    width: 0;
+    content: ' ';
+    height: 0;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent;
+    z-index: 999;
+    border-bottom-color: #ccc;
+    left:calc(50% - 10px),
+}
+
 /*.dropdown::before{
     position:absolute;
     top:-10px;
@@ -445,7 +522,9 @@ html{
 }
 
 .dropdown{
-
+    box-shadow: 0 0px 12px rgba(0,0,0,.175);
+    border: 1px solid #ccc;
+    margin-top: 9px;
     text-align:left;
     min-width:100px;
     //display:none;
@@ -453,8 +532,8 @@ html{
     top: 100%;
     position: absolute;
     padding:10px 0;
-    //background-color: @light-gray;
-    z-index:101;
+    background-color: white;
+    z-index:1010;
 }
 
 .dropdown > .button{

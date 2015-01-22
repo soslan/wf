@@ -222,12 +222,24 @@ function Dropdown(args, dropdownArgs){
 	this.addClass('dropdown-container');
 
 	dropdownArgs = dropdownArgs || {};
+	// this.pointer = new Element({
+	// 	className:'dropdown-pointer',
+	// 	appendTo:this,
+	// });
+	// this.pointerBack = new Element({
+	// 	className:'dropdown-pointer-back',
+	// 	appendTo:this,
+	// });
+	this.panelContainer = new Container({
+		className:'dropdown-panel-container',
+		appendTo:this,
+	});
 	this.panel = new Container(dropdownArgs);
 	this.panel.addClass('dropdown');
-	this.panel.addEventListener('before-displayed', function(){
-		self.panel.e.style.visibility = 'hidden';
-		self.panel.e.style.left = '';
-		self.panel.removeClass('hidden');
+	this.panelContainer.addEventListener('before-displayed', function(){
+		self.panelContainer.e.style.visibility = 'hidden';
+		self.panelContainer.e.style.left = '';
+		self.panelContainer.removeClass('hidden');
 		var width = self.panel.e.offsetWidth;
 		var screenWidth = window.innerWidth;
 
@@ -246,11 +258,11 @@ function Dropdown(args, dropdownArgs){
 				self.panel.e.style.left = (offset) + "px";
 			}
 		}
-		self.panel.e.style.visibility = 'visible';
+		self.panelContainer.e.style.visibility = 'visible';
 		//alert(self.panel.e.offsetLeft);
 		//self.hidden.false();
 	});
-	args.value = this.panel.displayed;
+	args.value = this.panelContainer.displayed;
 	args.style = args.buttonStyle;
 	this.button = new ToggleButton(args);
 	this.panel.on('click', function(e){
@@ -261,7 +273,7 @@ function Dropdown(args, dropdownArgs){
 		e.stopPropagation();
 		//e.preventDefault();
 	});
-	this.panel.on('displayed', function(){
+	this.panelContainer.on('displayed', function(){
 		self.panel.focus();
 	});
 	this.button.on('mousedown',function(e){
@@ -276,13 +288,13 @@ function Dropdown(args, dropdownArgs){
 	});
 	this.panel.on('focusaway',function(e){
 		if(e.detail.relatedTarget !== self.button.e){
-			self.panel.hide();
+			self.panelContainer.hide();
 		}
 		
 	});
-	this.panel.hide();
+	this.panelContainer.hide();
 	this.append(this.button);
-	this.append(this.panel);
+	this.panelContainer.append(this.panel);
 }
 
 Dropdown.prototype = Object.create(Element.prototype);
@@ -771,6 +783,17 @@ function Span(args){
  Requires optimization.
  Dropdown list need to be abstracted.
 */
+
+function CheckBox(args){
+	var self = this;
+	args = args || {};
+	args.tagName = 'input';
+	Element.call(this, args);
+	this.attr('type', 'checkbox');
+	this.addClass('checkbox');
+}
+
+CheckBox.prototype = Object.create(Element.prototype);
 
 function Select(args){
 	var self = this;

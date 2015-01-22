@@ -1,0 +1,84 @@
+// Colors 
+$white: #fff;
+$whitesmoke: whitesmoke;
+$black: #333;
+$gray: #888;
+$light-gray: #ccc;
+$light-light-gray: #ddd;
+$default: '' #ddd;
+$default-lit: #e5e5e5;
+$default-shadowed: #ccc;
+$green: #5a5;
+$red: #b44;
+$green-shadowed: #494;
+$red-shadowed: #a33;
+$green-lit: #5b5;
+$red-lit: #c55;
+$blue:#46a;
+$blue-shadowed:#359;
+$blue-lit:#57b;
+$green2:#55AA88;
+$green2-shadowed:#497;
+$green2-lit:#6b9;
+$jungle-green:#29AB87;
+$jungle-green-shadowed:#199a76;
+$jungle-green-lit:#40bc98;
+$light-gray: #d3d3d3;
+$gainsboro: #dcdcdc;
+$silver: #c0c0c0;
+$darkgray: #a9a9a9;
+$gray: #808080;
+$slategray: #708090;
+$lightslategray: #778899;
+$blackblack: #000;
+$whitewhite: #fff;
+$crayola: #FCE883;
+
+// Material design colors
+$red: #F44336;
+$pink: #E91E63;
+$purple: #9C27B0;
+$deeppurple: #673AB7;
+$indigo: #3F51B5;
+$blue: #2196F3;
+$lightblue: #03A9F4;
+$cyan: #00BCD4;
+$teal: #009688;
+$green: #4CAF50;
+$lightgreen: #8BC34A;
+$lime: #CDDC39;
+$yellow: #FFEB3B;
+$amber: #FFC107;
+$orange: #FF9800;
+$deeporange: #FF5722;
+$brown: #795548;
+$gray: #9E9E9E;
+$bluegray: #607D8B;
+
+$colors: 'red' $red $white, 
+    'pink' $pink $white, 
+    'purple' $purple $white, 
+    'deep-purple' $deeppurple $white, 
+    'indigo' $indigo $white, 
+    'blue' $blue $white, 
+    'light-blue' $lightblue $white, 
+    'cyan' $cyan $white, 
+    'teal' $teal $white, 
+    'green' $green $white, 
+    'light-green' $lightgreen $black, 
+    'lime' $lime $black,
+    'yellow' $yellow $black, 
+    'amber' $amber $white, 
+    'orange' $orange $white, 
+    'deep-orange' $deeporange $white, 
+    'brown' $brown $white, 
+    'gray' $gray $white, 
+    'blue-gray' $bluegray $white,
+    'error' $red $white,
+    'success' $green $white,
+    'white' $white $black,
+    'black' $black $white,
+    'whitesmoke' whitesmoke $black,
+    'whitewhite' $white $black, // To be removed
+    'gainsboro' $gainsboro $black
+;
