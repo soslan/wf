@@ -278,6 +278,42 @@ html{
     margin-right:0;
 }
 
+/* Buuton2 */
+.button2{
+    min-width:1.5em;
+    padding:0 0.6em;
+    display: inline-block;
+    min-height: 1.5em;
+    line-height: 1.5em;
+    vertical-align: baseline;
+    min-width: 1.5em;
+    box-sizing: border-box;
+
+    cursor:pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.button2.s{
+    min-height: 1em;
+    padding:0 0.3em;
+    min-width: 1em;
+    line-height: 1em;
+
+}
+
+.toolbar > div > .button2{
+    min-width: 26px;
+    line-height: inherit;
+    padding: 0 0.6rem;
+}
+
+.button2:empty:after{
+    content:'-';
+    color:transparent;
+}
+
 /* Checkbox */
 .checkbox{
     border-width:2px;
@@ -477,31 +513,31 @@ html{
 }
 
 .dropdown-panel-container:after{
-    bottom: -10px;
-    border-style: solid;
-    position: absolute;
-    width: 0;
-    content: ' ';
-    height: 0;
-    border-width: 0 10px 10px 10px;
-    border-color: transparent;
-    z-index: 1011;
-    border-bottom-color: white;
-    left:calc(50% - 10px),
-}
-
-.dropdown-panel-container:before{
     bottom: -9px;
     border-style: solid;
     position: absolute;
     width: 0;
     content: ' ';
     height: 0;
-    border-width: 0 10px 10px 10px;
+    border-width: 0 9px 9px 9px;
+    border-color: transparent;
+    z-index: 1011;
+    border-bottom-color: white;
+    left:calc(50% - 9px),
+}
+
+.dropdown-panel-container:before{
+    bottom: -8px;
+    border-style: solid;
+    position: absolute;
+    width: 0;
+    content: ' ';
+    height: 0;
+    border-width: 0 9px 9px 9px;
     border-color: transparent;
     z-index: 999;
     border-bottom-color: #ccc;
-    left:calc(50% - 10px),
+    left:calc(50% - 9px),
 }
 
 /*.dropdown::before{
@@ -522,10 +558,14 @@ html{
 }
 
 .dropdown{
+    line-height: initial;
+    font-size: initial;
+    color: initial;
+    background-color: initial;
     box-shadow: 0 0px 12px rgba(0,0,0,.175);
     border: 1px solid #ccc;
-    margin-top: 9px;
-    text-align:left;
+    margin-top: 8px;
+    text-align:initial;
     min-width:100px;
     //display:none;
     left: 0;

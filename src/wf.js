@@ -94,50 +94,22 @@ Button.prototype = Object.create(Element.prototype);
 
 function Button2(args){
 	var self = this;
-	args = args?args:{};
-	Clickable.call(this,{
-		onClick:args.onClick,
-		tabIndex:args.tabIndex || '-1',
-		className:'button',
+	args = args || {};
+	Element.call(this, {
+		className: args.className,
 	});
-	this.addClass(args.className);
-	this.addClass(args.style);
-	//this.addClass('control control-button');
-
-	this.addEventListener('keydown',function(e){
-		if(e.which == 13 || e.which == 32){
-			self.addClass('clicked');
-			args.onClick();
-			self.removeClass('clicked');
-		}
-	});
-
-	this.on('mousedown', function(e){
-		e.stopPropagation();
-		//e.preventDefault();
-		//self.focus
-	});
-
-	/*if(typeof args.caption == "string" || typeof args.text == "string" || typeof args.label == "string"){
-		this.setCaption(args.caption || args.text || args.label);
-	}*/
-
-	this.label = new Label({
-		text:args.text || args.label,
-		icon:args.icon
-	});
-
-	/*if(args.colorScheme == undefined){
-		this.addClass('lightgray');
+	this.addClass("clickable button2");
+	this.focusable();
+	if(typeof args.action == "function"){
+		this.setAction(args.action);
 	}
-	else{
-		this.addClass('args.colorScheme');
-	}*/
-
-	this.append(this.label);
+	else if(typeof args.onClick == "function"){
+		this.setAction(args.onClick);
+	}
+	this.append(args.text || args.caption || args.label);
 }
 
-Button2.prototype = Object.create(Clickable.prototype);
+Button2.prototype = Object.create(Element.prototype);
 
 function ToggleButton(args){
 	var self = this;
