@@ -91,8 +91,13 @@ Element.prototype.append = function(element){
 		if (element === undefined || element === null){
 			continue;
 		}
-		else if(element instanceof Node || element instanceof Text){
+		else if(element instanceof Node){
 			this.element.appendChild(element);
+		}
+		else if(element instanceof Text){
+			var elem = document.createElement('span');
+			elem.appendChild(element);
+			this.element.appendChild(elem);
 		}
 		else if(element instanceof Element){
 			this.element.appendChild(element.element);
@@ -107,7 +112,9 @@ Element.prototype.append = function(element){
 			this.append(element.getAsNode());
 		}
 		else if(typeof element === "string" || typeof element === "number" ){
-			this.element.appendChild(new Text(String(element)));
+			var elem = document.createElement('span');
+			elem.appendChild(new Text(String(element)));
+			this.element.appendChild(elem);
 		}
 	}
 	return this;

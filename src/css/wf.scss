@@ -295,6 +295,15 @@ html{
     -ms-user-select: none;
 }
 
+.button2 > * {
+    //margin-right: 0.3em;
+    display: inline !important;
+}
+
+.button2 > *:after{
+    content: ' ';
+}
+
 .button2.s{
     min-height: 1em;
     padding:0 0.3em;

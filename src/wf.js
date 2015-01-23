@@ -106,10 +106,30 @@ function Button2(args){
 	else if(typeof args.onClick == "function"){
 		this.setAction(args.onClick);
 	}
+	if(args.icon !== undefined){
+		this.appendIcon(args.icon);
+	}
+	else if(args.iconBefore !== undefined){
+		this.append(args.iconBefore);
+	}
 	this.append(args.text || args.caption || args.label);
+	if(args.iconAfter !== undefined){
+		this.append(args.iconAfter);
+	}
 }
 
 Button2.prototype = Object.create(Element.prototype);
+
+Button2.prototype.appendIcon = function(arg){
+	if (arg instanceof Icon){
+		this.append(arg);
+	}
+	else if (arg !== undefined){
+		var icon = new Icon(arg)
+		this.append(icon);
+		return icon;
+	}
+}
 
 function ToggleButton(args){
 	var self = this;
@@ -995,6 +1015,36 @@ Select.prototype.addOption = function(value, select){
 	return this;
 
 };
+
+function Icon(arg1){
+	var self = this;
+	var args;
+	if (typeof arg1 === "string"){
+		args = {};
+		args.icon = arg1;
+	}
+	else if (typeof arg1 === "object"){
+		args = arg1;
+	}
+	else{
+		args = {};
+	}
+
+	args.tagName = 'i';
+	args.className = 'fa icon';
+	Element.call(this, args);
+	this.set(args.icon);
+}
+
+Icon.prototype = Object.create(Element.prototype);
+
+Icon.prototype.set = function(arg1){
+	if (typeof arg1 === "string"){
+		this.removeClass('fa-' + this.icon);
+		this.icon = arg1;
+		this.addClass('fa-' + arg1);
+	}
+}
 
 function SegmentedControl(args){
 	args=args?args:{};
