@@ -282,6 +282,7 @@ html{
 .button2{
     min-width:1.5em;
     padding:0 0.6em;
+    text-align: center;
     display: inline-block;
     min-height: 1.5em;
     line-height: 1.5em;
@@ -297,6 +298,7 @@ html{
 
 .button2 > * {
     //margin-right: 0.3em;
+    line-height: inherit;
     display: inline !important;
 }
 
@@ -304,9 +306,22 @@ html{
     content: ' ';
 }
 
+.button2 > *:first-child{
+    //padding-left: 0.6em;
+}
+
+.button2 > *:last-child{
+    //padding-right: 0.6em;
+}
+
+.button2 > .icon:only-child{
+    padding:0;
+    margin: 0 -0.6em;
+}
+
 .button2.s{
     min-height: 1em;
-    padding:0 0.3em;
+    //padding:0 0.3em;
     min-width: 1em;
     line-height: 1em;
 
@@ -315,7 +330,7 @@ html{
 .toolbar > div > .button2{
     min-width: 26px;
     line-height: inherit;
-    padding: 0 0.6rem;
+    //padding: 0 0.6rem;
 }
 
 .button2:empty:after{
@@ -1007,11 +1022,11 @@ html{
 (-webkit-min-device-pixel-ratio: 2), 
 (min-resolution: 192dpi) { 
     .button{
-        line-height: 39px;
+        //line-height: 39px;
     }
 
     .toolbar{
-        line-height:36px;
-        height:36px;
+        //line-height:36px;
+        //height:36px;
     }
 }
