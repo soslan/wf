@@ -87,6 +87,11 @@ $colors: 'red' $red $white,
 $color-lightness-range: 10 20 30 40;
 $color-darkness-range: 60 70 80 90;
 
+// Sizes
+$S: 20px;
+$M: 26px;
+$L: 36px;
+
 
 @mixin color-style($color, $tcolor){
     background-color: $color;
@@ -175,6 +180,14 @@ html{
     display:none !important;
 }
 
+.s{
+    font-size: 14px;
+}
+
+.l{
+    font-size: #{$L/$M}em;
+}
+
 .container.root{
     display: flex;
     position:fixed;
@@ -212,82 +225,15 @@ html{
     text-align: center;
 }
 
-/* Button */
+/* Buuton */
 .button{
-    line-height: 26px;
-    display:inline-block;
-    padding: 0;
-    margin:0;
-    background-color:inherit;
-    border:none;
-    cursor:pointer;
-    min-height:26px;
-    min-width:26px;
-    vertical-align: bottom;
-    text-align:center;
-}
-
-.button.quiet{
-    //border:none;
-    color:inherit;
-    background-color: transparent;
-}
-
-.button.flat{
-    border:none;
-    border-radius:0;
-}
-
-.button.s,
-.s > .button,
-.s > div > .button{
-    line-height:20px;
-    min-height:20px;
-    min-width:20px;
-    line-height:inherit;
-    
-}
-
-.button.disabled,
-.button.disabled:hover,
-.button.disabled:active{
-    opacity:0.7;
-    cursor:default;
-}
-
-.button > .label{
-    line-height: normal;
-    padding:0 10px;
-}
-
-.button.simple > .label,
-.button.link > .label{
-    padding:0;
-}
-
-.button > .label > .label-icon{
-    //margin-right:5px;
-}
-
-.button > .label.notext{
-    padding:0;
-    width:26px;
-}
-
-.button > .label.notext > .label-icon{
-    margin-right:0;
-}
-
-/* Buuton2 */
-.button2{
-    min-width:1.5em;
-    padding:0 0.6em;
+    min-width:$M;
+    padding:0 #{$M / 4};
     text-align: center;
     display: inline-block;
-    min-height: 1.5em;
-    line-height: 1.5em;
-    vertical-align: baseline;
-    min-width: 1.5em;
+    height: $M;
+    line-height: $M;
+    vertical-align: middle;
     box-sizing: border-box;
 
     cursor:pointer;
@@ -296,46 +242,102 @@ html{
     -ms-user-select: none;
 }
 
-.button2 > * {
-    //margin-right: 0.3em;
+.button.disabled,
+.button.disabled:hover,
+.button.disabled:active,
+.button.disabled.active{
+    opacity:0.7;
+    cursor:default;
+}
+
+.button.quiet{
+    color:inherit;
+    background-color: transparent;
+}
+
+.button > * {
+    vertical-align: baseline;
     line-height: inherit;
     display: inline !important;
 }
 
-.button2 > *:after{
+.button.active:not(.disabled) > *,
+.button:active:not(.disabled) > *{
+    vertical-align:-1.5px;
+}
+
+
+.button > *:after{
     content: ' ';
 }
 
-.button2 > *:first-child{
+.button > *:first-child{
     //padding-left: 0.6em;
 }
 
-.button2 > *:last-child{
+.button > *:last-child{
     //padding-right: 0.6em;
 }
 
-.button2 > .icon:only-child{
+.button > .icon:only-child{
     padding:0;
-    margin: 0 -0.6em;
+    margin: 0 -#{$M / 4};
 }
 
-.button2.s{
-    min-height: 1em;
-    //padding:0 0.3em;
-    min-width: 1em;
-    line-height: 1em;
+.button.s,
+.toolbar.s > div > .button,
+.toolbar.s > div > .dropdown-container > .button,
+.s > .group > .button{
+    height: $S;
+    padding:0 #{$S / 4};
+    min-width: $S;
+    line-height: $S;
+}
+
+
+
+.button.s > .icon:only-child,
+.toolbar.s > div > .button > .icon:only-child,
+.toolbar.s > div > .group > .button > .icon:only-child,
+.toolbar.s > div > .group > .group > .button > .icon:only-child,
+.toolbar.s > div > .dropdown-container > .button > .icon:only-child,
+.s > .group > .button > .icon:only-child{
+    margin: 0 -#{$S / 4};
+}
+
+.button.m{
+    height: $M;
+    padding:0 #{$M / 4};
+    min-width: $M;
+    line-height: $M;
 
 }
 
-.toolbar > div > .button2{
-    min-width: 26px;
+.button.m > .icon:only-child{
+    margin: 0 -#{$M / 4};
+}
+
+.button.l{
+    height: $L;
+    padding:0 #{$L / 4};
+    min-width: $L;
+    line-height: $L;
+
+}
+
+.button.l > .icon:only-child{
+    margin: 0 -#{$L / 4};
+}
+
+.toolbar > div > .button{
+    //min-width: 26px;
     line-height: inherit;
     //padding: 0 0.6rem;
 }
 
-.button2:empty:after{
-    content:'-';
-    color:transparent;
+.button:empty:after{
+    //content:'-';
+    //color:transparent;
 }
 
 /* Checkbox */

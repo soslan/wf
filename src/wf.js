@@ -68,7 +68,7 @@ function Control(args){
 
 Control.prototype = Object.create(Element.prototype);
 
-function Button(args){
+function Button2(args){
 	var self = this;
 	args = args || {};
 	Element.call(this, {
@@ -90,15 +90,15 @@ function Button(args){
 	this.append(this.label);
 }
 
-Button.prototype = Object.create(Element.prototype);
+Button2.prototype = Object.create(Element.prototype);
 
-function Button2(args){
+function Button(args){
 	var self = this;
 	args = args || {};
 	Element.call(this, {
 		className: args.className,
 	});
-	this.addClass("clickable button2");
+	this.addClass("clickable button");
 	this.focusable();
 	if(typeof args.action == "function"){
 		this.setAction(args.action);
@@ -118,9 +118,9 @@ function Button2(args){
 	}
 }
 
-Button2.prototype = Object.create(Element.prototype);
+Button.prototype = Object.create(Element.prototype);
 
-Button2.prototype.appendIcon = function(arg){
+Button.prototype.appendIcon = function(arg){
 	if (arg instanceof Icon){
 		this.append(arg);
 	}
@@ -211,7 +211,7 @@ function Dropdown(args, dropdownArgs){
 	var self = this;
 	var args = args || {};
 	Element.call(this,{});
-	this.addClass('dropdown-container');
+	this.addClass('dropdown-container group');
 
 	dropdownArgs = dropdownArgs || {};
 	// this.pointer = new Element({
