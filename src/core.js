@@ -99,7 +99,8 @@ Element.prototype.append = function(element){
 			elem.appendChild(element);
 			this.element.appendChild(elem);
 		}
-		else if(element instanceof Element){
+		else if(element instanceof Element ||
+				(SVGElement !== undefined && element instanceof SVGElement)){
 			this.element.appendChild(element.element);
 			element.parent = this;
 		}
@@ -526,7 +527,7 @@ Element.prototype.setAction = function(action){
 			e.stopPropagation();
 		}
 		e.stopPropagation();
-		e.preventDefault();
+		//e.preventDefault();
 	};
 	var onSpaceOrEnter = function(e){
 		if(e.which == 13 || e.which == 32){

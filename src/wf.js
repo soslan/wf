@@ -125,7 +125,7 @@ Button.prototype.appendIcon = function(arg){
 		this.append(arg);
 	}
 	else if (arg !== undefined){
-		var icon = new Icon(arg)
+		var icon = new SVGIcon(arg)
 		this.append(icon);
 		return icon;
 	}

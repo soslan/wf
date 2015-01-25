@@ -417,7 +417,7 @@ function ContainerHandle(args){
 
 	if(args.closeable){
 		var closeButton = new Button({
-			icon:'times',
+			icon:'close',
 			className:'tab-close red quiet',
 			action:function(e){
 				//console.log("closeButton pressed");

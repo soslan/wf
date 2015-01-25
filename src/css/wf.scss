@@ -97,6 +97,7 @@ $L: 36px;
     background-color: $color;
     border-color: $color;
     color: $tcolor;
+    fill: $tcolor;
 }
 
 @each $name, $value, $tcolor in $colors {
@@ -230,7 +231,7 @@ html{
     min-width:$M;
     padding:0 #{$M / 4};
     text-align: center;
-    display: inline-block;
+    display: inline-flex;
     height: $M;
     line-height: $M;
     vertical-align: middle;
@@ -252,6 +253,7 @@ html{
 
 .button.quiet{
     color:inherit;
+    fill: inherit;
     background-color: transparent;
 }
 
@@ -261,8 +263,15 @@ html{
     display: inline !important;
 }
 
+.button > .icon{
+    width:26px;
+    height:26px;
+}
+
 .button.active:not(.disabled) > *,
 .button:active:not(.disabled) > *{
+    position:relative;
+    top:1px;
     vertical-align:-1.5px;
 }
 
