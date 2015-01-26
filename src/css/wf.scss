@@ -294,6 +294,7 @@ html{
 }
 
 .button.s,
+.s > .button,
 .toolbar.s > div > .button,
 .toolbar.s > div > .dropdown-container > .button,
 .s > .group > .button{
@@ -301,18 +302,17 @@ html{
     padding:0 #{$S / 4};
     min-width: $S;
     line-height: $S;
+
+    & > .icon:only-child{
+        margin: 0 -#{$S / 4};
+    }
+
+    & > .icon{
+        width: $S;
+        height: $S;
+    }
 }
 
-
-
-.button.s > .icon:only-child,
-.toolbar.s > div > .button > .icon:only-child,
-.toolbar.s > div > .group > .button > .icon:only-child,
-.toolbar.s > div > .group > .group > .button > .icon:only-child,
-.toolbar.s > div > .dropdown-container > .button > .icon:only-child,
-.s > .group > .button > .icon:only-child{
-    margin: 0 -#{$S / 4};
-}
 
 .button.m{
     height: $M;
@@ -348,6 +348,22 @@ html{
     //content:'-';
     //color:transparent;
 }
+
+
+.button.link{
+    padding:0 !important;
+    background-color: inherit !important;
+    color:inherit !important;
+
+    &:hover,
+    &:active,
+    &.active{
+        background-color: inherit;
+        color:inherit;
+        text-decoration: underline;
+    }
+}
+
 
 /* Checkbox */
 .checkbox{
