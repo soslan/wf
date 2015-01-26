@@ -112,7 +112,10 @@ function Button(args){
 	else if(args.iconBefore !== undefined){
 		this.append(args.iconBefore);
 	}
-	this.append(args.text || args.caption || args.label);
+	args.text = args.text || args.caption || args.label;
+	if(args.text !== undefined){
+		this.setText(args.text);
+	}
 	if(args.iconAfter !== undefined){
 		this.append(args.iconAfter);
 	}
@@ -130,6 +133,23 @@ Button.prototype.appendIcon = function(arg){
 		return icon;
 	}
 }
+
+Button.prototype.setText = function(arg1){
+	if (this.text === undefined){
+		this.text = new Element({
+			tagName:'span',
+		});
+		this.append(this.text);
+	}
+	if (typeof arg1 === "string" || typeof arg1 === "number"){
+		this.text.e.innerText = arg1;
+	}
+	else if(arg1 instanceof Value){
+		this.text.append(arg1);
+	}
+}
+
+Button.prototype.setCaption = Button.prototype.setText;
 
 function ToggleButton(args){
 	var self = this;

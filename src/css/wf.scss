@@ -686,6 +686,7 @@ html{
 .lines{
     overflow:auto;
     display:block;
+    flex: 1 0 0px; // Testing
 }
 
 .lines.inline{
@@ -701,6 +702,7 @@ html{
 }
 
 .rows{
+    overflow:auto;
     display:flex;
     flex-direction:column,
 }
@@ -711,6 +713,7 @@ html{
 }
 
 .columns{
+    overflow:auto;
     display:flex;
     flex-direction:row;
 }

@@ -86,39 +86,38 @@ Element.prototype.style = function(args){
 }
 
 Element.prototype.append = function(element){
-	for (var arg in arguments){
-		var element = arguments[arg];
-		if (element === undefined || element === null){
-			continue;
-		}
-		else if(element instanceof Node){
-			this.element.appendChild(element);
-		}
-		else if(element instanceof Text){
-			var elem = document.createElement('span');
-			elem.appendChild(element);
-			this.element.appendChild(elem);
-		}
-		else if(element instanceof Element ||
-				(SVGElement !== undefined && element instanceof SVGElement)){
-			this.element.appendChild(element.element);
-			element.parent = this;
-		}
-		else if(element instanceof Array){
-			for (var i in element){
-				this.append(element[i]);
-			}
-		}
-		else if(element instanceof Value){
-			this.append(element.getAsNode());
-		}
-		else if(typeof element === "string" || typeof element === "number" ){
-			var elem = document.createElement('span');
-			elem.appendChild(new Text(String(element)));
-			this.element.appendChild(elem);
+	if (element === undefined || element === null){
+		return;
+	}
+	else if(element instanceof Node){
+		this.element.appendChild(element);
+	}
+	else if(element instanceof Text){
+		// var elem = document.createElement('span');
+		// elem.appendChild(element);
+		// this.element.appendChild(elem);
+		this.element.appendChild(element);
+	}
+	else if(element instanceof Element ||
+			(SVGElement !== undefined && element instanceof SVGElement)){
+		this.element.appendChild(element.element);
+		element.parent = this;
+	}
+	else if(false && element instanceof Array){
+		for (var i in element){
+			this.append(element[i]);
 		}
 	}
-	return this;
+	else if(element instanceof Value){
+		var elem = element.getAsNode();
+		this.append(elem);
+	}
+	else if(typeof element === "string" || typeof element === "number" ){
+		// var elem = document.createElement('span');
+		// elem.appendChild(new Text(String(element)));
+		var elem = new Text(String(element));
+		this.element.appendChild(elem);
+	}
 }
 
 // To be improved
@@ -261,7 +260,7 @@ Element.prototype.focusable = function(args){
 		//console.log("touchstart focusable"+e.type);
 		self.focus();
 		//e.preventDefault();
-		//e.stopPropagation();
+		e.stopPropagation();
 	});
 	if(args.onFocus){
 		this.addEventListener('focus', function(e){
@@ -527,7 +526,7 @@ Element.prototype.setAction = function(action){
 			e.stopPropagation();
 		}
 		e.stopPropagation();
-		//e.preventDefault();
+		e.preventDefault();
 	};
 	var onSpaceOrEnter = function(e){
 		if(e.which == 13 || e.which == 32){
@@ -776,8 +775,8 @@ function Label(args){
 
 	//if(typeof args.text)
 
-	this.append(this.icon)
-		.append(this.text);
+	this.append(this.icon);
+	this.append(this.text);
 }
 
 Label.prototype = Object.create(Element.prototype);
