@@ -76,14 +76,16 @@ BooleanModel.prototype.and = function(arg){
 	return newBool;
 }
 
-BooleanModel.prototype.switchClass = function(elem, onTrue){
+BooleanModel.prototype.switchClass = function(elem, onTrue, onFalse){
 	this.onTrue(function(){
 		if (elem instanceof Element){
 			elem.addClass(onTrue);
+			elem.removeClass(onFalse);
 		}
 	}, 1);
 	this.onFalse(function(){
 		if (elem instanceof Element){
+			elem.addClass(onFalse);
 			elem.removeClass(onTrue);
 		}
 	}, 1);
