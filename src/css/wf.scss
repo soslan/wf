@@ -367,7 +367,26 @@ html{
 
 /* Checkbox */
 .checkbox{
-    border-width:2px;
+    cursor:pointer;
+    border-width:1px; 
+    -webkit-appearance: none;
+    background-color: white;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    border: 1px solid $black;
+    margin: 4px 0;
+    //border-radius:13px;
+}
+
+.checkbox:checked:after{
+    display: inline-block;
+    background-color: $black;
+    width:10px;
+    height:10px;
+    margin:2px;
+    content: '-';
+    //border-radius:8px;
 }
 
 /* Clickable */

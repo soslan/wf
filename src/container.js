@@ -1178,6 +1178,14 @@ Loader.prototype.setMessage = function(message){
 	}
 };
 
+function Toolbar2(args){
+	var self = this;
+	args = args || {};
+	Element.call(this, {});
+}
+
+Toolbar2.prototype = Object.create(Element.prototype);
+
 function Toolbar(args){
 	var self = this;
 	args = args?args:{};

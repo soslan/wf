@@ -796,16 +796,17 @@ function Span(args){
  Dropdown list need to be abstracted.
 */
 
-function CheckBox(args){
+function Checkbox(args){
 	var self = this;
 	args = args || {};
 	args.tagName = 'input';
 	Element.call(this, args);
 	this.attr('type', 'checkbox');
 	this.addClass('checkbox');
+	//this.addClass()
 }
 
-CheckBox.prototype = Object.create(Element.prototype);
+Checkbox.prototype = Object.create(Element.prototype);
 
 function Select(args){
 	var self = this;
