@@ -365,8 +365,9 @@ html{
 }
 
 
-/* Checkbox */
-.checkbox{
+/* Checkbox, RadioButton */
+.checkbox,
+.radio{
     cursor:pointer;
     border-width:1px; 
     -webkit-appearance: none;
@@ -379,7 +380,8 @@ html{
     //border-radius:13px;
 }
 
-.checkbox:checked:after{
+.checkbox:checked:after,
+.radio:checked:after{
     display: inline-block;
     background-color: $black;
     width:10px;
@@ -387,6 +389,14 @@ html{
     margin:2px;
     content: '-';
     //border-radius:8px;
+}
+
+.radio{
+    border-radius:8px;
+
+    &:checked:after{
+        border-radius: 5px;
+    }
 }
 
 /* Clickable */

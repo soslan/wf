@@ -808,6 +808,18 @@ function Checkbox(args){
 
 Checkbox.prototype = Object.create(Element.prototype);
 
+function RadioButton(args){
+	var self = this;
+	args = args || {};
+	args.tagName = 'input';
+	Element.call(this, args);
+	this.attr('type', 'radio');
+	this.addClass('radio');
+	//this.addClass()
+}
+
+RadioButton.prototype = Object.create(Element.prototype);
+
 function Select(args){
 	var self = this;
 	args=args?args:{};
