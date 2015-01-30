@@ -59,7 +59,16 @@ Element.prototype.value = function(value){
 }
 
 Element.prototype.setAttribute = function(key, value){
-	this.e.setAttribute(key, value);
+	if (typeof value === "string"){
+		this.e.setAttribute(key, value);
+	}
+	else if(value instanceof Value){
+		this.e.setAttribute(key, value.getAsString());
+		value.onChange(function(){
+			this.e.setAttribute(key, value.getAsString());
+		});
+	}
+	
 }
 
 Element.prototype.getAttribute = function(key){

@@ -368,9 +368,11 @@ function ContainerHandle(args){
 	this.container = args.container;
 	this.addClass('container-handle');
 	this.addClass(args.color);
+	args.text = args.text || "Container";
 	this.append(new Label({
 		text:args.text || 'Container',
 	}));
+	this.attr('title', args.text);
 	if(this.container.maximized){
 		this.addClass('container-handle-maximized');
 	}

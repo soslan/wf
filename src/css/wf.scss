@@ -466,6 +466,8 @@ html{
     cursor:pointer;
     padding:0 5px;
     opacity: 0.5;
+    max-width:100px;
+    //min-width:100px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
