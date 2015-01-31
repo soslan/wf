@@ -92,6 +92,11 @@ $S: 20px;
 $M: 26px;
 $L: 36px;
 
+$sizes: 's' $S,
+    'm' $M,
+    'l' $L
+;
+
 
 @mixin color-style($color, $tcolor){
     background-color: $color;
@@ -151,7 +156,7 @@ $L: 36px;
     }
 
     .border-#{$name}{
-        border-color:$value;
+        border-color:$value !important;
     }
 
     // Dropdown colors
@@ -511,6 +516,10 @@ html{
     opacity: 0.6;
 }
 
+.container-handle > .label{
+    text-overflow:clip;
+}
+
 .container-handle.topped .label{
     //font-weight:bold;
     //text-decoration:underline;
@@ -662,7 +671,10 @@ html{
     text-align:left;
 }
 
-
+/* Group */
+.group{
+    display:inline;
+}
 
 
 /* Label */
@@ -783,6 +795,26 @@ html{
     padding:0;
 }
 
+/* Segmented Control */
+.segmented-control{
+    & > *{
+        border:1px solid $black !important;
+        border-right:none !important;
+        background-color:$white;
+        color:$black;
+
+        &:last-child{
+            border-right:1px solid $black !important;
+        }
+
+        &:active,
+        &.active{
+            background-color:$black;
+            color:$white;
+        }
+    }
+}
+
 
 /* Select */
 
@@ -855,6 +887,13 @@ html{
 .select-current{
     //float:none;
     //padding-left:10px;
+}
+
+/* Sizes */
+@each $name, $value in $sizes{
+    #{$name}{
+        // 
+    }
 }
 
 /* Slider */

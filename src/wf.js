@@ -1081,29 +1081,12 @@ Icon.prototype.set = function(arg1){
 
 function SegmentedControl(args){
 	args=args?args:{};
-	args.className = "segmented-control inline";
-	Base.call(this,args);
+	args.className = "segmented-control group";
+	Element.call(this,args);
 	var self = this;
-
-	this.segmentsContainer = document.createElement('span');
-	this.segmentsContainer.className = 'segmented-control-segments';
 }
 
-SegmentedControl.prototype.append = function(args){
-	var button = document.createElement('span');
-	button.className='segmented-control-button';
-
-	if(args.label){
-		button.innerHTML = args.label;
-	}
-	if(args.onClick){
-		$(button).click(function(e){
-			if(e.which == 1){
-				args.onClick();
-			}
-		});
-	}
-}
+SegmentedControl.prototype = Object.create(Element.prototype);
 
 function Menu(args){
 	var self = this;
