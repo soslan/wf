@@ -108,6 +108,39 @@ $sizes: 's' $S,
 @each $name, $value, $tcolor in $colors {
     .#{$name}{
         @include color-style($value, $tcolor);
+
+        &{
+            &.segmented-control{
+                & > *{
+                    border-color:darken($value, 8) !important;
+                }
+            }
+        }
+        
+        &,
+        &.group,
+        & > .group,
+        & > .group > .group{
+            // Segmented Control
+            
+
+            & > .button{
+                @include color-style($value, $tcolor);
+
+                &:active,
+                &.active{
+                    @include color-style(darken($value, 8), $tcolor);
+                }
+
+                &:hover{
+                    @include color-style(darken($value, 5), $tcolor);
+                }
+
+                &.disabled{
+                    @include color-style($value, $tcolor);
+                }
+            }
+        }
     }
 
     // @each $i in $color-lightness-range{
@@ -798,19 +831,21 @@ html{
 /* Segmented Control */
 .segmented-control{
     & > *{
-        border:1px solid $black !important;
-        border-right:none !important;
-        background-color:$white;
-        color:$black;
+        border-style:solid;
+        border-width:1px;
+        border-right:none;
+        //background-color:$white;
+        //color:$black;
 
         &:last-child{
-            border-right:1px solid $black !important;
+            border-right-width:1px;
+            border-right-style:solid;
         }
 
         &:active,
         &.active{
-            background-color:$black;
-            color:$white;
+            //background-color:$black;
+            //color:$white;
         }
     }
 }
@@ -892,7 +927,7 @@ html{
 /* Sizes */
 @each $name, $value in $sizes{
     #{$name}{
-        // 
+        //
     }
 }
 

@@ -172,6 +172,9 @@ function ToggleButton(args){
 		if(args.onIcon != undefined){
 			self.label.setIcon(args.onIcon);
 		}
+		if(typeof args.onOn === "function"){
+			args.onOn();
+		}
 	});
 
 	this.value.addEventListener('off', function(){
@@ -180,6 +183,9 @@ function ToggleButton(args){
 		self.addClass('inactive');
 		if(args.offIcon != undefined){
 			self.label.setIcon(args.offIcon);
+		}
+		if(typeof args.onOff === "function"){
+			args.onOff();
 		}
 	});
 
@@ -1081,8 +1087,8 @@ Icon.prototype.set = function(arg1){
 
 function SegmentedControl(args){
 	args=args?args:{};
-	args.className = "segmented-control group";
 	Element.call(this,args);
+	this.addClass("segmented-control group");
 	var self = this;
 }
 
