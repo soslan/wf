@@ -3,7 +3,7 @@ function BooleanModel(args){
 	args = args || {};
 	args.value = Boolean(args.value);
 
-	Value.call(this, args);
+	
 
 	this.addFilter('set', function(d){
 		if(!d.value){
@@ -18,12 +18,19 @@ function BooleanModel(args){
 	this.onChange(function(d){
 		if(d.value){
 			self.dispatchEvent('on');
+			if(typeof args.onOn === "function"){
+				args.onOn(d);
+			}
 		}
 		else{
 			self.dispatchEvent('off');
+			if(typeof args.onOff === "function"){
+				args.onOff(d);
+			}
 		}
 	});
 
+	Value.call(this, args);
 	
 }
 

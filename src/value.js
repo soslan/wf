@@ -2,10 +2,6 @@
 function Value(args){
 	var self = this;
 	args = args || {};
-	this.eventListeners = {};
-	this.broadcasters = [];
-	this.patterns = [];
-	this.filters = {};
 	if(args.value instanceof Value){
 		this.adaptTo(args.value, function(args){
 			return args[0].get();
@@ -21,6 +17,9 @@ function Value(args){
 }
 
 Value.prototype.addEventListener = function(event, handler){
+	if(typeof this.eventListeners == "undefined"){
+		this.eventListeners = {};
+	}
 	if(typeof this.eventListeners[event] == "undefined"){
 		this.eventListeners[event] = [];
 	}
@@ -31,6 +30,9 @@ Value.prototype.addEventListener = function(event, handler){
 Value.prototype.on = Value.prototype.addEventListener;
 
 Value.prototype.removeEventListener = function(event, handler){
+	if(typeof this.eventListeners == "undefined"){
+		return;
+	}
 	var i = this.eventListeners[event].indexOf(handler);
 	if(i > -1){
 		this.eventListeners[event].splice(i, 1);
@@ -92,6 +94,9 @@ Value.prototype.setValue = function(value, args){
 }
 
 Value.prototype.getBroadcaster = function(args){
+	if (typeof this.broadcasters === "undefined"){
+		this.broadcasters = [];
+	}
 	var broadcaster = document.createTextNode(this.value !== undefined ? this.toString() : '');
 	this.broadcasters.push(broadcaster);
 	return broadcaster;
@@ -100,6 +105,9 @@ Value.prototype.getBroadcaster = function(args){
 Value.prototype.addBroadcaster = Value.prototype.getBroadcaster;
 
 Value.prototype.removeBroadcaster = function(element){
+	if (this.broadcasters === undefined){
+		return;
+	}
 	var i = this.broadcasters.indexOf(element);
 	if (i > -1) {
     	this.broadcasters.splice(i, 1);
@@ -108,6 +116,9 @@ Value.prototype.removeBroadcaster = function(element){
 }
 
 Value.prototype.broadcast = function(changes){
+	if (this.broadcasters === undefined){
+		return;
+	}
 	var self = this;
 	for (var i in this.broadcasters){
 		this.broadcasters[i].nodeValue = changes.value.toString();
@@ -115,6 +126,9 @@ Value.prototype.broadcast = function(changes){
 }
 
 Value.prototype.dispatchEvent = function(event, e){
+	if(typeof this.eventListeners == "undefined"){
+		return this;
+	}
 	var self = this;
 	if(typeof event == "string"){
 		for (i in this.eventListeners[event]){
@@ -125,6 +139,9 @@ Value.prototype.dispatchEvent = function(event, e){
 }
 
 Value.prototype.addFilter = function(filter, handler){
+	if (this.filters === undefined){
+		this.filters = {};
+	}
 	if(typeof this.filters[filter] == "undefined"){
 		this.filters[filter] = [];
 	}
@@ -135,6 +152,9 @@ Value.prototype.addFilter = function(filter, handler){
 Value.prototype.filter = Value.prototype.addFilter;
 
 Value.prototype.removeFilter = function(filter, handler){
+	if (this.filters === undefined){
+		return
+	}
 	var i = this.filters[filter].indexOf(handler);
 	if(i > -1){
 		this.filters[filter].splice(i, 1);
@@ -143,6 +163,9 @@ Value.prototype.removeFilter = function(filter, handler){
 }
 
 Value.prototype.applyFilter = function(filter, data){
+	if (this.filters === undefined){
+		return data;
+	}
 	var self = this;
 	if(typeof filter == "string"){
 		for (i in this.filters[filter]){

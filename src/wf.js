@@ -151,6 +151,7 @@ Button.prototype.setText = function(arg1){
 
 Button.prototype.setCaption = Button.prototype.setText;
 
+// To be rewritten
 function ToggleButton(args){
 	var self = this;
 	args = args?args:{};
@@ -161,33 +162,31 @@ function ToggleButton(args){
 	}
 	else{
 		this.value = new BooleanModel({
-			value:args.defaultValue == undefined ? args.defaultValue : false,
+			value:args.defaultValue == undefined ? false : args.defaultValue,
+			onOn: function(){
+				console.log("on");
+				self.removeClass('inactive');
+				self.addClass('active');
+				if(args.onIcon != undefined){
+					self.label.setIcon(args.onIcon);
+				}
+				if(typeof args.onOn === "function"){
+					args.onOn();
+				}
+			},
+			onOff:function(){
+				console.log("off");
+				self.removeClass('active');
+				self.addClass('inactive');
+				if(args.offIcon != undefined){
+					self.label.setIcon(args.offIcon);
+				}
+				if(typeof args.onOff === "function"){
+					args.onOff();
+				}
+			},
 		});
 	}
-
-	this.value.addEventListener('on', function(){
-		console.log("on");
-		self.removeClass('inactive');
-		self.addClass('active');
-		if(args.onIcon != undefined){
-			self.label.setIcon(args.onIcon);
-		}
-		if(typeof args.onOn === "function"){
-			args.onOn();
-		}
-	});
-
-	this.value.addEventListener('off', function(){
-		console.log("off");
-		self.removeClass('active');
-		self.addClass('inactive');
-		if(args.offIcon != undefined){
-			self.label.setIcon(args.offIcon);
-		}
-		if(typeof args.onOff === "function"){
-			args.onOff();
-		}
-	});
 
 	/*this.addEventListener('mousedown touchstart',function(e){
 		console.log(e.type);

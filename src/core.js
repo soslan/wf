@@ -706,6 +706,19 @@ Element.prototype.valueCarrier = function(args){
 	this.valueCarrier = true;
 }
 
+Element.prototype.display = {
+	get: function(){ return "YES" }
+}
+
+Object.defineProperty(Element.prototype, "display", {
+	//get: function(){ return "YES" },
+	set: function(val){
+		if (typeof val === "string"){
+			this.e.style.display = val;
+		}
+	}
+})
+
 function TextElement(args){
 	var text = "";
 	if(typeof args == "string"){
