@@ -713,8 +713,32 @@ Element.prototype.display = {
 Object.defineProperty(Element.prototype, "display", {
 	//get: function(){ return "YES" },
 	set: function(val){
+		var self = this;
 		if (typeof val === "string"){
 			this.e.style.display = val;
+		}
+		else if(val instanceof Value){
+			if (val.value === true){
+				this.e.style.display = '';
+			}
+			else if (val.value === false){
+				this.e.style.display = 'none';
+			}
+			else{
+				this.e.style.display = val.getAsString();
+			}
+			val.onChange(function(d){
+				if (d.value === true){
+					self.e.style.display = '';
+				}
+				else if (d.value === false){
+					self.e.style.display = 'none';
+				}
+				else{
+					self.e.style.display = val.getAsString();
+				}
+				
+			});
 		}
 	}
 })
