@@ -740,6 +740,14 @@ Object.defineProperty(Element.prototype, "display", {
 				
 			});
 		}
+		else if(typeof val === "boolean"){
+			if(val){
+				this.e.style.display = '';
+			}
+			else{
+				this.e.style.display = 'none';
+			}
+		}
 	}
 })
 

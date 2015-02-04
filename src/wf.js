@@ -1,6 +1,3 @@
-//document.oncontextmenu = function () { // Use document as opposed to window for IE8 compatibility
-//   return false;
-//};
 function Base(args){
 	args=args?args:{};
 	args.tag = args.tag ? args.tag : "div";
@@ -47,8 +44,6 @@ function Block(args){
 
 Block.prototype = Object.create(Element.prototype);
 
-// Controls layer
-
 function Control(args){
 	var self = this;
 	args = args?args:{};
@@ -67,30 +62,6 @@ function Control(args){
 }
 
 Control.prototype = Object.create(Element.prototype);
-
-function Button2(args){
-	var self = this;
-	args = args || {};
-	Element.call(this, {
-		className: args.className,
-	});
-	this.addClass("button");
-	this.clickable();
-	if(typeof args.action == "function"){
-		this.setAction(args.action);
-	}
-	else{
-		this.setAction(args.onClick);
-	}
-	this.label = new Label({
-		text:args.text || args.label,
-		icon:args.icon
-	});
-
-	this.append(this.label);
-}
-
-Button2.prototype = Object.create(Element.prototype);
 
 function Button(args){
 	var self = this;
@@ -150,6 +121,31 @@ Button.prototype.setText = function(arg1){
 }
 
 Button.prototype.setCaption = Button.prototype.setText;
+
+function ToggleButton2(args){
+	var self = this;
+	args = args?args:{};
+	Button.call(this,args);
+
+
+
+	this.setAction(function(){
+		if (typeof self.value !== "boolean" || self.value === false){
+			self.addClass('active on');
+			self.removeClass('off');
+			self.value = true;
+			self.dispatchEvent('on');
+		}
+		else{
+			self.addClass('off');
+			self.removeClass('active on');
+			self.value = false;
+			self.dispatchEvent('off');
+		}
+	});;
+}
+
+ToggleButton2.prototype = Object.create(Button.prototype);
 
 // To be rewritten
 function ToggleButton(args){

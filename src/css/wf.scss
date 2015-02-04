@@ -109,15 +109,9 @@ $sizes: 's' $S,
     .#{$name}{
         @include color-style($value, $tcolor);
 
-        &{
-            &.segmented-control{
-                & > *{
-                    border-color:darken($value, 8) !important;
-                }
-            }
-        }
         
-        &,
+        
+        
         &.group,
         & > .group,
         & > .group > .group{
@@ -138,6 +132,14 @@ $sizes: 's' $S,
 
                 &.disabled{
                     @include color-style($value, $tcolor);
+                }
+            }
+        }
+
+        &{
+            &.segmented-control{
+                & > *{
+                    border-color:darken($value, 8) !important;
                 }
             }
         }
