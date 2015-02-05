@@ -700,18 +700,7 @@ Element.prototype.notDraggable = function(){
 	document.removeEventListener('mousemove',this.documentOnMove);
 };
 
-// Prototype
-Element.prototype.valueCarrier = function(args){
-	var self = this;
-	this.valueCarrier = true;
-}
-
-Element.prototype.display = {
-	get: function(){ return "YES" }
-}
-
 Object.defineProperty(Element.prototype, "display", {
-	//get: function(){ return "YES" },
 	set: function(val){
 		var self = this;
 		if (typeof val === "string"){
@@ -749,7 +738,47 @@ Object.defineProperty(Element.prototype, "display", {
 			}
 		}
 	}
-})
+});
+
+Object.defineProperty(Element.prototype, "visibility", {
+	set: function(val){
+		var self = this;
+		if (typeof val === "string"){
+			this.e.style.visibility = val;
+		}
+		else if(val instanceof Value){
+			if (val.value === true){
+				this.e.style.visibility = '';
+			}
+			else if (val.value === false){
+				this.e.style.visibility = 'hidden';
+			}
+			else{
+				this.e.style.visibility = val.getAsString();
+			}
+			val.onChange(function(d){
+				if (d.value === true){
+					self.e.style.visibility = '';
+				}
+				else if (d.value === false){
+					self.e.style.visibility = 'hidden';
+				}
+				else{
+					self.e.style.visibility = val.getAsString();
+				}
+				
+			});
+		}
+		else if(typeof val === "boolean"){
+			if(val){
+				this.e.style.visibility = '';
+			}
+			else{
+				this.e.style.visibility = 'hidden';
+			}
+		}
+	}
+});
 
 function TextElement(args){
 	var text = "";
