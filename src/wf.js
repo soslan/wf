@@ -125,6 +125,9 @@ Button.prototype.setCaption = Button.prototype.setText;
 function ToggleButton2(args){
 	var self = this;
 	args = args?args:{};
+
+
+
 	Button.call(this,args);
 
 
@@ -135,17 +138,94 @@ function ToggleButton2(args){
 			self.removeClass('off');
 			self.value = true;
 			self.dispatchEvent('on');
+			if(typeof args.onOn === "function"){
+				args.onOn();
+			}
 		}
 		else{
 			self.addClass('off');
 			self.removeClass('active on');
 			self.value = false;
 			self.dispatchEvent('off');
+			if(typeof args.onOff === "function"){
+				args.onOff();
+			}
 		}
-	});;
+	});
 }
 
 ToggleButton2.prototype = Object.create(Button.prototype);
+
+ToggleButton2.prototype.onOn = function(){
+	this.addClass('active on');
+	this.removeClass('off');
+	this.dispatchEvent('on');
+}
+
+ToggleButton2.prototype.onOff = function(){
+	this.removeClass('active on');
+	this.addClass('off');
+	this.dispatchEvent('off');
+}
+
+ToggleButton2.prototype.bindTo = function(arg){
+	var self = this;
+	if(arg instanceof BooleanModel){
+		this.boundTo = arg;
+		arg.onChange(function(d){
+			if(d.value){
+				self.onOn();
+			}
+			else{
+				self.onOff();
+			}
+		});
+	}
+}
+
+ToggleButton2.prototype.setValueCarrier = function(arg){
+	var self = this;
+	if(arg instanceof BooleanModel){
+		this.valueCarrier = arg;
+		arg.onChange(function(d){
+			if(d.value){
+				self.onOn();
+			}
+			else{
+				self.onOff();
+			}
+		});
+	}
+}
+
+Object.defineProperty(ToggleButton2.prototype, "value", {
+	get: function(){
+		var self = this;
+		if (self.valueCarrier instanceof BooleanModel){
+			return self.valueCarrier.get();
+		}
+		else{
+			return self.valueCarrier;
+		}
+	},
+	set: function(val){
+		var self = this;
+		if (typeof val === "boolean"){
+			if (self.valueCarrier instanceof BooleanModel){
+				self.valueCarrier.setValue(val);
+			}
+			else{
+				self.valueCarrier = val;
+				if(val){
+					self.onOn();
+				}
+				else{
+					self.onOff();
+				}
+			}
+		}
+	}
+});
 
 // To be rewritten
 function ToggleButton(args){
@@ -275,9 +355,12 @@ function Dropdown(args, dropdownArgs){
 		//alert(self.panel.e.offsetLeft);
 		//self.hidden.false();
 	});
-	args.value = this.panelContainer.displayed;
+	this.panelDisplayed = this.panelContainer.displayed;
+	//this.panelContainer.display = this.panelDisplayed;
 	args.style = args.buttonStyle;
-	this.button = new ToggleButton(args);
+	args.value = this.panelDisplayed;
+	this.button = new ToggleButton2(args);
+	this.button.setValueCarrier(this.panelDisplayed);
 	this.panel.on('click', function(e){
 		e.stopPropagation();
 		e.preventDefault();
