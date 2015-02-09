@@ -134,22 +134,10 @@ function ToggleButton2(args){
 
 	this.setAction(function(){
 		if (typeof self.value !== "boolean" || self.value === false){
-			self.addClass('active on');
-			self.removeClass('off');
 			self.value = true;
-			self.dispatchEvent('on');
-			if(typeof args.onOn === "function"){
-				args.onOn();
-			}
 		}
 		else{
-			self.addClass('off');
-			self.removeClass('active on');
 			self.value = false;
-			self.dispatchEvent('off');
-			if(typeof args.onOff === "function"){
-				args.onOff();
-			}
 		}
 	});
 }
@@ -166,21 +154,6 @@ ToggleButton2.prototype.onOff = function(){
 	this.removeClass('active on');
 	this.addClass('off');
 	this.dispatchEvent('off');
-}
-
-ToggleButton2.prototype.bindTo = function(arg){
-	var self = this;
-	if(arg instanceof BooleanModel){
-		this.boundTo = arg;
-		arg.onChange(function(d){
-			if(d.value){
-				self.onOn();
-			}
-			else{
-				self.onOff();
-			}
-		});
-	}
 }
 
 ToggleButton2.prototype.setValueCarrier = function(arg){
@@ -205,11 +178,14 @@ Object.defineProperty(ToggleButton2.prototype, "value", {
 			return self.valueCarrier.get();
 		}
 		else{
-			return self.valueCarrier;
+			return Boolean(self.valueCarrier);
 		}
 	},
 	set: function(val){
 		var self = this;
+		if (val == this.value){
+			return;
+		}
 		if (typeof val === "boolean"){
 			if (self.valueCarrier instanceof BooleanModel){
 				self.valueCarrier.setValue(val);
@@ -1301,13 +1277,12 @@ function Lines(args){
 
 Lines.prototype = Object.create(Element.prototype);
 
-function StandardWindow(args){
+function StandardWindow(args, toobarArgs, bodyArgs){
 	var self = this;
 	args = args || {};
-	Container.call(this, {
-		className:'standard-window',
-	});
-	this.addClass(args.className);
+	Container.call(this, args);
+	this.addClass('standard-window');
+	//this.addClass(args.className);
 
 	this.toolbar = new Toolbar({
 		className:'standard-window-toolbar'

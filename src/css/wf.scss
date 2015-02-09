@@ -34,6 +34,7 @@ $lightslategray: #778899;
 $blackblack: #000;
 $whitewhite: #fff;
 $crayola: #FCE883;
+$eee: #EEE;
 
 // Material design colors
 $red: #F44336;
@@ -81,7 +82,8 @@ $colors: 'red' $red $white,
     'black' $black $white,
     'whitesmoke' whitesmoke $black,
     'whitewhite' $white $black, // To be removed
-    'gainsboro' $gainsboro $black
+    'gainsboro' $gainsboro $black,
+    'eee' $eee $black,
 ;
 
 $color-lightness-range: 10 20 30 40;
@@ -511,6 +513,16 @@ html{
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+
+    & > .tab-close{
+        //display: none;
+    }
+}
+
+.container-handle:hover{
+    & > .tab-close{
+        //display: initial;
+    }
 }
 
 .container-handle.inactive{
@@ -709,6 +721,7 @@ html{
 /* Group */
 .group{
     display:inline;
+    line-height: initial;
 }
 
 
@@ -989,7 +1002,7 @@ html{
 /* TabView */
 .tab-view{
     //padding:5px;
-    margin:5px;
+    //margin:5px;
     flex:1;
     display: flex;
 }

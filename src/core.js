@@ -135,6 +135,12 @@ Element.prototype.prepend = function(element){
 	return this;
 }
 
+Element.prototype.removeAllChildren = function(element){
+	while(this.e.firstChild){
+		this.e.removeChild(this.e.firstChild);
+	}
+}
+
 Element.prototype.hide = function(){
 	this.addClass('hidden');
 	this.dispatchEvent('hide');

@@ -1,8 +1,8 @@
-function TabView(args, tabsArgs, bodiesArgs){
+function TabView(args, tabsArgs, bodyArgs){
 	var self = this;
 	args=args?args:{};
 	tabsArgs = tabsArgs || {};
-	bodiesArgs = bodiesArgs || {};
+	bodyArgs = bodyArgs || {};
 	Container.call(this,{
 		contentDirection:args.direction,
 		contentType:'blocks',
@@ -11,10 +11,10 @@ function TabView(args, tabsArgs, bodiesArgs){
 
 	this.tabs = new Toolbar(tabsArgs);
 
-	bodiesArgs.share = 1;
-	//bodiesArgs.contentType
+	bodyArgs.share = 1;
+	//bodyArgs.contentType
 
-	this.bodies = new Containers(bodiesArgs);
+	this.bodies = new Windows(bodyArgs);
 	//this.tabs = [];
 	this.activeTab;
 
