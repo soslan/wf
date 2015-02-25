@@ -364,9 +364,11 @@ function ContainerHandle(args){
 	if(args.container === undefined){
 		return;
 	}
+
 	this.focusable();
 	this.container = args.container;
 	this.addClass('container-handle');
+	args.color = args.color || 'gainsboro';
 	this.addClass(args.color);
 	args.text = args.text || "Container";
 	this.append(new Label({
@@ -420,12 +422,14 @@ function ContainerHandle(args){
 	if(args.closeable){
 		var closeButton = new Button({
 			icon:'close',
-			className:'tab-close red quiet',
+			className:'tab-close quiet',
 			action:function(e){
 				//console.log("closeButton pressed");
 				self.container.parent.remove(self.container);
+				//self.container.close();
 			},
 		});
+		closeButton.addClass(args.color);
 		self.append(closeButton);
 	}
 	

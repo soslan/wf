@@ -122,9 +122,10 @@ Element.prototype.append = function(element){
 		this.append(elem);
 	}
 	else if(typeof element === "string" || typeof element === "number" ){
-		// var elem = document.createElement('span');
+		var elem = document.createElement('span');
 		// elem.appendChild(new Text(String(element)));
-		var elem = new Text(String(element));
+		//var elem = new Text(String(element));
+		elem.textContent = element;
 		this.element.appendChild(elem);
 	}
 }
@@ -575,6 +576,53 @@ Element.prototype.disable = function(){
 Element.prototype.activate = function(){
 	this.removeClass('disabled');
 	delete this.disabled;
+}
+
+// Fullscreen methods are based on https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Using_full_screen_mode
+Element.prototype.requestFullscreen = function(){
+	if (this.e.requestFullscreen) {
+		this.e.requestFullscreen();
+	} 
+	else if (this.e.webkitRequestFullscreen) {
+		this.e.webkitRequestFullscreen();
+	}
+	else if (this.e.mozRequestFullScreen) {
+		this.e.mozRequestFullScreen();
+	} 
+	else if (this.e.msRequestFullscreen) {
+		this.e.msRequestFullscreen();
+	} 
+}
+
+Element.prototype.exitFullscreen = function(){
+	console.log("Edocument.exitFullscreen()");
+	if(document.exitFullscreen){
+		document.exitFullscreen();
+	}
+	else if(document.webkitExitFullscreen){
+		document.webkitExitFullscreen();
+	}
+	else if(document.mozCancelFullScreen){
+		document.mozCancelFullScreen();
+	}
+	else if(document.msExitFullscreen){
+		document.msExitFullscreen();
+	}
+}
+
+Element.prototype.isFullscreen = function(){
+	return !!document.fullscreenElement || 
+			!!document.mozFullScreenElement || !!document.webkitFullscreenElement || !!document.msFullscreenElement;
+}
+
+Element.prototype.toggleFullscreen = function(){
+	if(!document.fullscreenElement && 
+			!document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement){
+		this.requestFullscreen();
+	}
+	else{
+		this.exitFullscreen();
+	}
 }
 
 Element.prototype.draggable = function(args){

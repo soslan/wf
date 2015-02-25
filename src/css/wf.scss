@@ -182,6 +182,7 @@ $sizes: 's' $S,
         @include color-style($value, $tcolor);
     }
 
+
     // Text Input colors
     .#{$name}.text-input{
         border-color:darken($value, 5);
@@ -206,6 +207,15 @@ $sizes: 's' $S,
 
 }
 
+// Second layer
+@each $name, $value, $tcolor in $colors {
+    .active-#{$name}.button:active,
+    .active-#{$name}.button.active,
+    .active-#{$name}.dropdown-container > .button:active,
+    .active-#{$name}.dropdown-container > .button.active{
+        @include color-style(darken($value, 8), $tcolor);
+    }
+}
 
 /* Main Part */
 html{
@@ -229,6 +239,38 @@ html{
 
 .l{
     font-size: #{$L/$M}em;
+}
+
+:-webkit-full-screen > * {
+    width: 100%;
+    height: 100%;
+}
+
+//*|*:not(:root):fullscreen,
+//*|*:not(:root):-webkit-full-screen,
+:-webkit-full-screen {
+    position:fixed !important;
+    top:0 !important; right:0 !important; bottom:0 !important; left:0 !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+    min-width:0 !important;
+    max-width:none !important;
+    min-height:0 !important;
+    max-height:none !important;
+    width:100% !important;
+    height:100% !important;
+    object-fit:contain !important;
+    background:black;
+}
+
+iframe:-webkit-full-screen {
+    border:none;
+}
+
+*|*:-webkit-full-screen::backdrop {
+    position:fixed;
+    top:0; right:0; bottom:0; left:0;
+    background:black;
 }
 
 .container.root{
@@ -278,6 +320,7 @@ html{
     line-height: $M;
     vertical-align: middle;
     box-sizing: border-box;
+    align-items: center;
 
     cursor:pointer;
     -webkit-user-select: none;
@@ -293,6 +336,10 @@ html{
     cursor:default;
 }
 
+.button.round{
+    border-radius:$M;                                                   
+}
+
 .button.quiet{
     color:inherit;
     fill: inherit;
@@ -303,6 +350,7 @@ html{
     vertical-align: baseline;
     line-height: inherit;
     display: inline !important;
+    flex-grow: 1;
 }
 
 .button > .icon{

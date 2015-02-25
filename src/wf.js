@@ -99,7 +99,8 @@ Button.prototype.appendIcon = function(arg){
 		this.append(arg);
 	}
 	else if (arg !== undefined){
-		var icon = new SVGIcon(arg)
+		var icon = new SVGIcon(arg);
+		this.icon = icon;
 		this.append(icon);
 		return icon;
 	}
@@ -113,7 +114,7 @@ Button.prototype.setText = function(arg1){
 		this.append(this.text);
 	}
 	if (typeof arg1 === "string" || typeof arg1 === "number"){
-		this.text.e.innerText = arg1;
+		this.text.e.textContent = arg1;
 	}
 	else if(arg1 instanceof Value){
 		this.text.append(arg1);
@@ -140,6 +141,13 @@ function ToggleButton2(args){
 			self.value = false;
 		}
 	});
+	if(typeof args.onOn === "function"){
+		this.addEventListener('on', args.onOn);
+	}
+	if(typeof args.onOff === "function"){
+		this.addEventListener('off', args.onOff);
+	}
+
 }
 
 ToggleButton2.prototype = Object.create(Button.prototype);
