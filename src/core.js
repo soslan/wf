@@ -1,3 +1,35 @@
+"use strict";
+
+(function(){
+	function Class(){}
+
+	Class.subclass = function(properies){
+		if(typeof properies.constructor === "function"){
+			var constructor = properies.constructor;
+			constructor.prototype = Object.create(this.prototype);
+			constructor.prototype.constructor = constructor;
+			constructor.subclass = this.subclass;
+			constructor.def = this.def;
+			constructor.prototype.super = this.prototype;
+			constructor.super = this.prototype;
+			for(var i in properies){
+				if(i !== 'constructor' && typeof properies[i] === "function"){
+					constructor.def(i, properies[i]);
+				}
+			}
+			return constructor;
+		}
+	}
+
+	Class.def = function(name, method){
+		if(typeof name === "string" && typeof method === "function"){
+			this.prototype[name] = method;
+		}
+	}
+
+	window.Class = Class;
+})();
+
 // Core layer
 var beforeFocusEvent = new Event('beforefocus');
 var dragEvent = new Event('drag');

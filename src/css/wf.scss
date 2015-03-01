@@ -762,6 +762,10 @@ iframe:-webkit-full-screen {
     z-index:1010;
 }
 
+.dropdown > *{
+    flex:1;
+}
+
 .dropdown > .button{
     text-align:left;
 }
@@ -825,7 +829,7 @@ iframe:-webkit-full-screen {
 .lines{
     overflow:auto;
     display:block;
-    flex: 1 0 0px; // Testing
+    //flex: 1 0 0px; // Testing
 }
 
 .lines.inline{

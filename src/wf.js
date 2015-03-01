@@ -1,3 +1,5 @@
+"use strict";
+
 function Base(args){
 	args=args?args:{};
 	args.tag = args.tag ? args.tag : "div";
@@ -315,14 +317,23 @@ function Dropdown(args, dropdownArgs){
 	this.panel.addClass('dropdown');
 	this.panelContainer.addEventListener('before-displayed', function(){
 		self.panelContainer.e.style.visibility = 'hidden';
-		self.panelContainer.e.style.left = '';
+		self.panel.e.style.left = '';
+		self.panel.e.style.bottom = '';
 		self.panelContainer.removeClass('hidden');
 		var width = self.panel.e.offsetWidth;
 		var screenWidth = window.innerWidth;
+		var height = self.panel.e.offsetHeight;
+		var screenHeight = window.innerHeight;
+		var positionWW; // Position within window
+		positionWW = self.panel.positionWithinWindow(); // Temporary
+		var offset;
 
 
 		if (width >= screenWidth){
-			var offset = self.panel.positionWithinWindow()[0];
+			if (positionWW === undefined){
+				positionWW = self.panel.positionWithinWindow();
+			}
+			offset = positionWW[0];
 			self.panel.e.style.left = (-offset)+"px";
 			self.panel.e.style.right = (-offset + screenWidth - width) + "px";
 		}
@@ -334,6 +345,12 @@ function Dropdown(args, dropdownArgs){
 			else if(offset < 0){
 				self.panel.e.style.left = (offset) + "px";
 			}
+		}
+		if (height + positionWW[1] >= screenHeight){
+			if (positionWW === undefined){
+				positionWW = self.panel.positionWithinWindow();
+			}
+			self.panel.e.style.bottom = (-(screenHeight - positionWW[1])) + "px";
 		}
 		self.panelContainer.e.style.visibility = 'visible';
 		//alert(self.panel.e.offsetLeft);

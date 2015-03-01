@@ -1,40 +1,77 @@
-function BooleanModel(args){
-	var self = this;
-	args = args || {};
-	args.value = Boolean(args.value);
+var BooleanModel = Model.subclass({
+	constructor: function(args){
+		var self = this;
+		args = args || {};
+		args.value = Boolean(args.value);
+
+		
+
+		this.addFilter('set', function(d){
+			if(!d.value){
+				d.value = false;
+			}
+			else{
+				d.value = true;
+			}
+			return d;
+		});
+
+		this.onChange(function(d){
+			if(d.value){
+				self.dispatchEvent('on');
+				if(typeof args.onOn === "function"){
+					args.onOn(d);
+				}
+			}
+			else{
+				self.dispatchEvent('off');
+				if(typeof args.onOff === "function"){
+					args.onOff(d);
+				}
+			}
+		});
+
+		this.super.constructor.call(this, args);
+	},
+});
+
+// function BooleanModel(args){
+// 	var self = this;
+// 	args = args || {};
+// 	args.value = Boolean(args.value);
 
 	
 
-	this.addFilter('set', function(d){
-		if(!d.value){
-			d.value = false;
-		}
-		else{
-			d.value = true;
-		}
-		return d;
-	});
+// 	this.addFilter('set', function(d){
+// 		if(!d.value){
+// 			d.value = false;
+// 		}
+// 		else{
+// 			d.value = true;
+// 		}
+// 		return d;
+// 	});
 
-	this.onChange(function(d){
-		if(d.value){
-			self.dispatchEvent('on');
-			if(typeof args.onOn === "function"){
-				args.onOn(d);
-			}
-		}
-		else{
-			self.dispatchEvent('off');
-			if(typeof args.onOff === "function"){
-				args.onOff(d);
-			}
-		}
-	});
+// 	this.onChange(function(d){
+// 		if(d.value){
+// 			self.dispatchEvent('on');
+// 			if(typeof args.onOn === "function"){
+// 				args.onOn(d);
+// 			}
+// 		}
+// 		else{
+// 			self.dispatchEvent('off');
+// 			if(typeof args.onOff === "function"){
+// 				args.onOff(d);
+// 			}
+// 		}
+// 	});
 
-	Value.call(this, args);
+// 	Value.call(this, args);
 	
-}
+// }
 
-BooleanModel.prototype = Object.create(Value.prototype);
+// BooleanModel.prototype = Object.create(Value.prototype);
 
 BooleanModel.prototype.flip = function(args){
 	if(this.value){
@@ -227,56 +264,107 @@ DateModel.prototype.getHBroadcaster = function(){
 
 }
 
-function StringModel(args){
-	if (args == undefined){
-		args = {};
-	}
-	else if (typeof args === "string"){
-		args = {
-			value:args,
+var StringModel = Model.subclass({
+	constructor:function(args){
+		if (args == undefined){
+			args = {};
 		}
-	}
+		else if (typeof args === "string"){
+			args = {
+				value:args,
+			}
+		}
 
-	if(args.value === undefined){
-		args.value = '';
-	}
+		if(args.value === undefined){
+			args.value = '';
+		}
+		 
+		Value.call(this, {
+			value:String(args.value),
+		});
+		this.filter('set', function(d){
+			d.value = String(d.value);
+			return d;
+		});
+	},
+});
+
+// function StringModel(args){
+// 	if (args == undefined){
+// 		args = {};
+// 	}
+// 	else if (typeof args === "string"){
+// 		args = {
+// 			value:args,
+// 		}
+// 	}
+
+// 	if(args.value === undefined){
+// 		args.value = '';
+// 	}
 	 
-	Value.call(this, {
-		value:String(args.value),
-	});
-	this.filter('set', function(d){
-		d.value = String(d.value);
-		return d;
-	})
+// 	Value.call(this, {
+// 		value:String(args.value),
+// 	});
+// 	this.filter('set', function(d){
+// 		d.value = String(d.value);
+// 		return d;
+// 	})
 
-}
+// }
 
-StringModel.prototype = Object.create(Value.prototype);
+// StringModel.prototype = Object.create(Value.prototype);
 
-function NumberModel(args){
-	if (args == undefined){
-		args = {};
-	}
-	else if (typeof args === "number"){
-		args = {
-			value:args,
+var NumberModel = Model.subclass({
+	constructor:function(args){
+		if (args == undefined){
+			args = {};
 		}
-	}
-	if (args.value === undefined || Number(args.value) == NaN){
-		args.value = 0;
-	}
-
-	Value.call(this, {
-		value: Number(args.value),
-	});
-	this.filter('set', function(d){
-		d.value = Number(d.value);
-		if(d.value == NaN){
-			d.cancel = true;
+		else if (typeof args === "number"){
+			args = {
+				value:args,
+			}
 		}
-		return d;
-	});
+		if (args.value === undefined || Number(args.value) == NaN){
+			args.value = 0;
+		}
 
-}
+		Value.call(this, {
+			value: Number(args.value),
+		});
+		this.filter('set', function(d){
+			d.value = Number(d.value);
+			if(d.value == NaN){
+				d.cancel = true;
+			}
+			return d;
+		});
+	},
+});
+// function NumberModel(args){
+// 	if (args == undefined){
+// 		args = {};
+// 	}
+// 	else if (typeof args === "number"){
+// 		args = {
+// 			value:args,
+// 		}
+// 	}
+// 	if (args.value === undefined || Number(args.value) == NaN){
+// 		args.value = 0;
+// 	}
 
-NumberModel.prototype = Object.create(Value.prototype);
+// 	Value.call(this, {
+// 		value: Number(args.value),
+// 	});
+// 	this.filter('set', function(d){
+// 		d.value = Number(d.value);
+// 		if(d.value == NaN){
+// 			d.cancel = true;
+// 		}
+// 		return d;
+// 	});
+
+// }
+
+// NumberModel.prototype = Object.create(Value.prototype);

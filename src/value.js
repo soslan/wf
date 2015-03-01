@@ -1,20 +1,38 @@
+var Model = Class.subclass({
+	constructor:function(args){
+		var self = this;
+		args = args || {};
+		if(args.value instanceof Value){
+			this.adaptTo(args.value, function(args){
+				return args[0].get();
+			});
+			this.setValue(args.value.get());
+		}
+		else{
+			this.set({
+				value:args.value,
+			});
+		}
+	},
+});
 
-function Value(args){
-	var self = this;
-	args = args || {};
-	if(args.value instanceof Value){
-		this.adaptTo(args.value, function(args){
-			return args[0].get();
-		});
-		this.setValue(args.value.get());
-	}
-	else{
-		this.set({
-			value:args.value,
-		});
-	}
+Value = Model;
+// function Value(args){
+// 	var self = this;
+// 	args = args || {};
+// 	if(args.value instanceof Value){
+// 		this.adaptTo(args.value, function(args){
+// 			return args[0].get();
+// 		});
+// 		this.setValue(args.value.get());
+// 	}
+// 	else{
+// 		this.set({
+// 			value:args.value,
+// 		});
+// 	}
 
-}
+// }
 
 Value.prototype.addEventListener = function(event, handler){
 	if(typeof this.eventListeners == "undefined"){
