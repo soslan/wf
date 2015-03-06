@@ -375,8 +375,8 @@ function ContainerHandle(args){
 		text:args.text || 'Container',
 	}));
 	this.attr('title', args.text);
-	if(this.container.maximized){
-		this.addClass('container-handle-maximized');
+	if(this.container.windowMode){
+		this.addClass('container-handle-'+this.container.windowMode);
 	}
 
 	this.container.on('activated', function(){

@@ -634,6 +634,11 @@ iframe:-webkit-full-screen {
     margin-bottom:-5px;
 }
 
+.container-handle.floating,
+.container-handle-floating{
+    padding-top: 5px;
+    margin-top:-5px;
+}
 .container-handle.pinned{
     padding-top: 5px;
     margin-top:-5px;
@@ -646,6 +651,11 @@ iframe:-webkit-full-screen {
     bottom:0;
     left:0;
     right:0;
+}
+
+/* Draggable */
+.draggable{
+    cursor: pointer;
 }
 
 /* Dropdown */
@@ -1217,6 +1227,37 @@ iframe:-webkit-full-screen {
     outline: none;
 }
 
+.windows{
+    & > .inactive.window-mode-maximized{
+        opacity: 0.6 !important;
+    }
+
+    & > .inactive.window-mode-floating > *{
+        //opacity: 0.5 !important;
+    }
+
+    & > .window-mode-maximized{
+        position:absolute;
+        top:0;
+        bottom:0;
+        left:0;
+        right:0;
+        outline: none;
+    }
+    & > .window-mode-floating{
+        position:absolute;
+        top:20px;
+        //bottom:0;
+        left:20px;
+        //right:0;
+        width:50%;
+        height: 50%;
+        outline: none;
+        border-width:1px;
+        border-style:solid;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.175);
+    }
+}
 
 
 

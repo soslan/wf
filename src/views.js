@@ -135,6 +135,8 @@ function Windows(args){
 	this.windows = [];
 	this.topZIndex = 200;
 	this.active;
+	this.activeWindows = [];
+	this.activeFloatingWindows = [];
 	this.history = [];
 }
 
@@ -147,7 +149,13 @@ Windows.prototype.append = function(container){
 	if (container.maximized === undefined){
 		container.maximize();
 	}
-	container.e.style.visibility = "none";
+	if(container.windowMode === undefined){
+		container.setWindowMode('maximized');
+	}
+	if(container.windowMode === "floating"){
+
+	}
+	container.e.style.visibility = "hidden";
 	container.focusable();
 	Container.prototype.append.call(this, container);
 	if(this.activeContainer == undefined){
@@ -157,6 +165,9 @@ Windows.prototype.append = function(container){
 	else{
 		container.hide();
 	}
+	container.on('focusin', function(){
+		self.switchTo(container);
+	});
 	container.e.style.visibility = "";
 	this.dispatchEvent('container-added', {
 		container:container,
@@ -186,32 +197,72 @@ Windows.prototype.appendAndShow = function(container){
 };
 
 Windows.prototype.switchTo = function(wind, done){
-	if (wind === this.activeContainer){
+	var self = this;
+	if (wind === this.activeContainer ){
 		return;
 	}
 	if (this.isParentOf(wind)){
-		if (wind.maximized){
+		if (wind.windowMode === "maximized"){
 			var previousActive = this.activeContainer;
-		
+			var previousMaximized = this.currentMaximized;
 			this.activeContainer = wind;
+			this.currentMaximized = wind;
 			wind.e.style.zIndex = this.topZIndex + 1;
 			this.topZIndex += 1;
-			wind.e.style.opacity = 0;
+			//wind.e.style.opacity = 0;
 			wind.show();
 			wind.focus();
 			this.history.push(wind);
+			
 			wind.$.animate({
 				opacity:1,
 			}, 40, function(){
+				wind.removeClass('inactive');
 				wind.dispatchEvent('activated');
-				if(previousActive !== undefined){
-					if (typeof done == "function"){
-						done();
+				self.activeWindows.forEach(function(w){
+					if(w !== wind){
+						w.dispatchEvent('deactivated');
+						w.addClass('inactive');
+						w.hide();
 					}
+					
+				});
+				self.activeWindows = [];
+				self.activeFloatingWindows = [];
+				self.activeWindows.push(wind);
+				if(previousActive !== undefined){
 					previousActive.dispatchEvent('deactivated');
+					previousActive.addClass('inactive');
 					previousActive.hide();
 				}
+				if(previousMaximized !== undefined && previousMaximized !== previousActive && previousMaximized !== wind){
+					previousMaximized.dispatchEvent('deactivated');
+					previousMaximized.addClass('inactive');
+					previousMaximized.hide();
+				}
+				wind.e.style.opacity = null;
+				if (typeof done == "function"){
+					done();
+				}
 			});
+		}
+		else if(wind.windowMode === "floating"){
+			this.activeFloatingWindows.forEach(function(w){
+				w.dispatchEvent('deactivated');
+				w.addClass('inactive');
+			});
+			this.activeFloatingWindows.push(wind);
+			this.activeWindows.push(wind);
+			var previousActive = this.activeContainer;
+			this.activeContainer = wind;
+			wind.e.style.zIndex = this.topZIndex + 1;
+			this.topZIndex += 1;
+			wind.show();
+			wind.focus();
+			wind.removeClass('inactive');
+			wind.dispatchEvent('activated');
+			//previousActive.dispatchEvent('deactivated');
+			//previousActive.addClass('inactive');
 		}
 	}
 }

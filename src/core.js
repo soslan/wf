@@ -267,6 +267,11 @@ Element.prototype.removeClass = function(className){
 	return this;
 }
 
+Element.prototype.flipClass = function(add, remove){
+	this.addClass(add);
+	this.removeClass(remove);
+}
+
 Element.prototype.addEventListener = function(type, handler, useCapture){
 	var useCapture = useCapture || false;
 	if (typeof type == "string" && typeof handler == "function"){
@@ -304,7 +309,7 @@ Element.prototype.focusable = function(args){
 			self.dispatchEvent('focusaway', e);
 		}
 	});
-	this.addEventListener('touchstart', function(e){
+	this.addEventListener('touchstart mousedown', function(e){
 		//console.log("touchstart focusable"+e.type);
 		self.focus();
 		//e.preventDefault();
@@ -382,6 +387,41 @@ Element.prototype.blur = function(handler){
 Element.prototype.maximize = function(args){
 	this.addClass('maximized');
 	this.maximized = true;
+}
+
+Element.prototype.unmaximize = function(args){
+	this.removeClass('maximized');
+	//this.addClass('unmaximized');
+	this.maximized = false;
+}
+
+Element.prototype.setWindowMode = function(val){
+	console.log("Setting window mode");
+	var ev = {
+		oldValue: this.windowMode,
+		value: val,
+		target: this,
+	};
+	if(ev.oldValue === "floating" && ev.value !== "floating"){
+		this.notDraggable();
+	}
+	this.windowMode = val;
+	if(this.windowMode === "floating"){
+		if(this.draggedBy instanceof Element){
+			this.draggedBy.draggable({
+				target: this,
+			})
+		}
+		else{
+			this.draggable({
+
+			});
+		}
+		
+	}
+
+	this.flipClass('window-mode-'+ev.value, 'window-mode-'+ev.oldValue);
+	this.dispatchEvent('windowmodechange', ev);
 }
 
 Element.prototype.beforeFocus = function(handler){
@@ -665,6 +705,7 @@ Element.prototype.draggable = function(args){
 	var position = [0,0];
 	var newPositionY = 0;
 	var newPositionX = 0;
+	var target = args.target instanceof Element ? args.target : this;
 	this.draggingMode = args.mode || 'hv';
 	if(this.draggingMode == 'h'){
 		this.vDraggable = false;
@@ -678,6 +719,7 @@ Element.prototype.draggable = function(args){
 		this.vDraggable = true;
 		this.hDraggable = true;
 	}
+	this.addClass('draggable');
 	this.documentOnMove = function(e){
 		var shift = [0,0];
 		dragged = true;
@@ -707,7 +749,7 @@ Element.prototype.draggable = function(args){
 			//left:newPositionX,
 			//top:newPositionY,
 		//});
-		self.e.style.webkitTransform = 'translate('+newPositionX+'px, '+newPositionY+'px)';
+		target.e.style.webkitTransform = 'translate('+newPositionX+'px, '+newPositionY+'px)';
 		//console.log('translate('+newPositionX+', '+newPositionY+')');
 		e.stopPropagation();
 		e.preventDefault();
@@ -735,6 +777,7 @@ Element.prototype.draggable = function(args){
 	}
 
 	this.onMouseDown = function(e){
+		console.log("draggable(); onmousedown");
 		if(e.which === 1){
 			dragged = false;
 			if(typeof args.minX == "function"){
@@ -765,7 +808,7 @@ Element.prototype.draggable = function(args){
 			//self.latestElementPositionOnMD = self.$.position();
 			document.addEventListener('mousemove',self.documentOnMove);
 			document.addEventListener('mouseup',self.documentOnMouseUp);
-			e.preventDefault();
+			//e.preventDefault();
 			e.stopPropagation();
 		}
 	};
@@ -890,6 +933,7 @@ function TextInputCore(args){
 	Element.call(this,args);
 	this.addClass("text-input");
 	this.setAttribute('type', 'text');
+	this.focusable(); // Testing
 }
 
 TextInputCore.prototype = Object.create(Element.prototype);
