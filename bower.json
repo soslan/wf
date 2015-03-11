@@ -1,0 +1,25 @@
+{
+  "name": "wf",
+  "version": "0.3.0",
+  "homepage": "https://github.com/soslan/wf",
+  "authors": [
+    "Soslan Khubulov <soslanx@gmail.com>"
+  ],
+  "description": "JavaScript Framework",
+  "keywords": [
+    "javascript",
+    "framework",
+    "html",
+    "css",
+    "html5",
+    "toolkit"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

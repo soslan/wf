@@ -16,7 +16,7 @@ var Model = Class.subclass({
 	},
 });
 
-Value = Model;
+var Value = Model;
 // function Value(args){
 // 	var self = this;
 // 	args = args || {};
@@ -149,7 +149,7 @@ Value.prototype.dispatchEvent = function(event, e){
 	}
 	var self = this;
 	if(typeof event == "string"){
-		for (i in this.eventListeners[event]){
+		for (var i in this.eventListeners[event]){
 			this.eventListeners[event][i](e);
 		}
 	}
@@ -186,7 +186,7 @@ Value.prototype.applyFilter = function(filter, data){
 	}
 	var self = this;
 	if(typeof filter == "string"){
-		for (i in this.filters[filter]){
+		for (var i in this.filters[filter]){
 			data = this.filters[filter][i](data) || data;
 		}
 	}
