@@ -1,10 +1,15 @@
 var BooleanModel = Model.subclass({
-	constructor: function(args){
-		var self = this;
+	constructor: function(){
+		var args, self = this;
 		args = args || {};
+		if(typeof arguments[0] === "boolean"){
+			args = typeof arguments[1] === "object" ? arguments[1] : {};
+			args.value = arguments[0];
+		}
+		else if(typeof arguments[0] === "object"){
+			args = arguments[0];
+		}
 		args.value = Boolean(args.value);
-
-		
 
 		this.addFilter('set', function(d){
 			if(!d.value){
@@ -140,7 +145,7 @@ BooleanModel.prototype.switchClass = function(elem, onTrue, onFalse){
 
 function DataTableModel(args){
 	var self = this;
-	args = args || {};
+	var args = args || {};
 	args.value = args.value || [];
 	Value.call(this, args);
 
@@ -266,6 +271,7 @@ DateModel.prototype.getHBroadcaster = function(){
 
 var StringModel = Model.subclass({
 	constructor:function(args){
+		var args;
 		if (args == undefined){
 			args = {};
 		}

@@ -1,5 +1,3 @@
-"use strict";
-
 function Base(args){
 	args=args?args:{};
 	args.tag = args.tag ? args.tag : "div";

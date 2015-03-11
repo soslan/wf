@@ -1,7 +1,7 @@
 var Model = Class.subclass({
 	constructor:function(args){
 		var self = this;
-		args = args || {};
+		var args = args || {};
 		if(args.value instanceof Value){
 			this.adaptTo(args.value, function(args){
 				return args[0].get();

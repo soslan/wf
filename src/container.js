@@ -277,6 +277,7 @@ function Container(args){
 			this.maximized.set({
 				value:true,
 			});
+			self.element.style.flex = self.share.get();
 		}
 		else{
 			this.maximized.set({
