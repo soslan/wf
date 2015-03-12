@@ -5,9 +5,20 @@
 
 	Class.subclass = function(properies){
 		if(typeof properies.constructor === "function"){
-			var constructor = properies.constructor;
+			var constructor = function(){
+				if (!(this instanceof constructor)){
+					return new constructor.dummyConstructor(arguments);
+				} 
+				else{
+					properies.constructor.apply(this, arguments);
+				}
+			}
 			constructor.prototype = Object.create(this.prototype);
 			constructor.prototype.constructor = constructor;
+			constructor.dummyConstructor = function(args){
+				constructor.apply(this, args);
+			}
+			constructor.dummyConstructor.prototype = constructor.prototype;
 			constructor.subclass = this.subclass;
 			constructor.def = this.def;
 			constructor.prototype.super = this.prototype;
