@@ -48,49 +48,50 @@ var afterDragEvent = new Event('afterdrag');
 var afterDragNoMoveEvent = new Event('afterdragnomove');
 var beforeDragEvent = new Event('beforedrag');
 
-function Element(arg1, arg2){
-	var self = this;
-	var args;
-	if (arg1 instanceof Node){
-		args = arg2?arg2:{};
-		this.element = arg1;
-	}
-	else if (typeof arg1 === "string"){
-		args = arg2?arg2:{};
-		this.element = document.querySelector(arg1);
-		if (this.element === null){
+var Element = Class.subclass({
+	constructor: function(arg1, arg2){
+		var self = this;
+		var args;
+		if (arg1 instanceof Node){
+			args = arg2?arg2:{};
+			this.element = arg1;
+		}
+		else if (typeof arg1 === "string"){
+			args = arg2?arg2:{};
+			this.element = document.querySelector(arg1);
+			if (this.element === null){
+				this.element = document.createElement(args.tagName || "div");
+			}
+		}
+		else{
+			args=arg1?arg1:{};
 			this.element = document.createElement(args.tagName || "div");
 		}
-	}
-	else{
-		args=arg1?arg1:{};
-		this.element = document.createElement(args.tagName || "div");
-	}
-	
-	this.e = this.element;
-	this.element.wfElement = this;
-	this.wfe = this;
-	this.$element = $(this.element);
-	this.$ = this.$element;
+		
+		this.e = this.element;
+		this.element.wfElement = this;
+		this.wfe = this;
+		this.$element = $(this.element);
+		this.$ = this.$element;
 
-	this.container = this.element; // Temporary.
-	this.eventListeners;
-	this.addClass(args.className);
-	if (args.content !== undefined){
-		this.append(args.content);
+		this.container = this.element; // Temporary.
+		this.eventListeners;
+		this.addClass(args.className);
+		if (args.content !== undefined){
+			this.append(args.content);
+		}
+		
+		if(args.appendTo instanceof Element){
+			args.appendTo.append(self);
+		}
+		else if(args.appendTo instanceof Node){
+			args.appendTo.appendChild(this.element);
+		}
+		if(args.focusable){
+			this.focusable();
+		}
 	}
-	
-	if(args.appendTo instanceof Element){
-		args.appendTo.append(self);
-	}
-	else if(args.appendTo instanceof Node){
-		args.appendTo.appendChild(this.element);
-	}
-	if(args.focusable){
-		this.focusable();
-	}
-
-}
+});
 
 Element.prototype.value = function(value){
 	if(value){
@@ -434,6 +435,55 @@ Element.prototype.setWindowMode = function(val){
 	this.flipClass('window-mode-'+ev.value, 'window-mode-'+ev.oldValue);
 	this.dispatchEvent('windowmodechange', ev);
 }
+
+Element.def('onViewConstraint', function(constraints, handler){
+	if(this.viewConstraints === undefined){
+		this.viewConstraints = [];
+	}
+	else if(!(this.viewConstraints instanceof Array)){
+		return
+	}
+
+	this.viewConstraints.push({
+		constraints: constraints,
+		handler: handler,
+	});
+});
+
+Element.def('prepareForViewData', function(data, done){
+	if(this.viewConstraints instanceof Array){
+		var width = data.width;
+		var height = data.height;
+		for (var i in this.viewConstraints){
+			var cs = this.viewConstraints[i].constraints;
+			if(cs === "xs" && width < 768) {
+				this.viewConstraints[i].handler(); 
+				break;
+			}
+			else if((cs === "s" || cs === "xs") && width >= 768) {
+				this.viewConstraints[i].handler(); 
+				break;
+			}
+			else if((cs === "m" || cs === "s" || cs === "xs") && width >= 970) {
+				this.viewConstraints[i].handler(); 
+				break;
+			}
+			else if((cs === "l" || cs === "m" || cs === "s" || cs === "xs") && width >= 1170) {
+				this.viewConstraints[i].handler(); 
+				break;
+			}
+			else if(typeof cs === "object"){
+				if(typeof cs.minWidth === "number" && width < cs.minWidth) continue;
+				if(typeof cs.maxWidth === "number" && width > cs.maxWidth) continue;
+				if(typeof cs.minHeight === "number" && height < cs.minHeight) continue;
+				if(typeof cs.maxHeight === "number" && height > cs.maxHeight) continue;
+				this.viewConstraints[i].handler(); 
+				break;
+			}
+			
+		}
+	}
+});
 
 Element.prototype.beforeFocus = function(handler){
 	if(typeof handler == "function"){

@@ -146,6 +146,10 @@ Windows.prototype.append = function(container){
 	var self = this;
 	var displayType;
 	container.hide();
+	container.prepareForViewData({
+		width: this.e.offsetWidth,
+		height: this.e.offsetHeight,
+	});
 	if (container.maximized === undefined){
 		container.maximize();
 	}
