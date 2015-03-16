@@ -3,29 +3,51 @@
 (function(){
 	function Class(){}
 
-	Class.subclass = function(properies){
-		if(typeof properies.constructor === "function"){
+	Class.subclass = function(){
+		var self = this;
+		var properties;
+		if(typeof arguments[0] === "function"){
+			properties = {
+				constructor: arguments[0],
+			};
+		}
+		else if(typeof arguments[0] === "object"){
+			properties = arguments[0];
+		}
+		else{
+			properties = {
+				//constructor: function(){}
+			};
+		}
+		if(typeof properties.constructor === "function"){
 			var constructor = function(){
 				if (!(this instanceof constructor)){
 					return new constructor.dummyConstructor(arguments);
 				} 
 				else{
-					properies.constructor.apply(this, arguments);
+					var savedSuper = this.super;
+					this.super = constructor.super;
+					properties.constructor.apply(this, arguments);
+					this.super = savedSuper;
 				}
 			}
+			//constructor = properties.constructor;
 			constructor.prototype = Object.create(this.prototype);
 			constructor.prototype.constructor = constructor;
 			constructor.dummyConstructor = function(args){
+				var savedSuper = this.super;
+				this.super = constructor.super;
 				constructor.apply(this, args);
+				this.super = savedSuper;
 			}
 			constructor.dummyConstructor.prototype = constructor.prototype;
 			constructor.subclass = this.subclass;
 			constructor.def = this.def;
 			constructor.prototype.super = this.prototype;
 			constructor.super = this.prototype;
-			for(var i in properies){
-				if(i !== 'constructor' && typeof properies[i] === "function"){
-					constructor.def(i, properies[i]);
+			for(var i in properties){
+				if(i !== 'constructor' && typeof properties[i] === "function"){
+					constructor.def(i, properties[i]);
 				}
 			}
 			return constructor;
@@ -33,8 +55,15 @@
 	}
 
 	Class.def = function(name, method){
+		var self = this;
 		if(typeof name === "string" && typeof method === "function"){
-			this.prototype[name] = method;
+			this.prototype[name] = function(){
+				var savedSuper = this.super;
+				this.super = self.super;
+				method.apply(this, arguments);
+				this.super = savedSuper;
+			}
+			//this.prototype[name] = method;
 		}
 	}
 
