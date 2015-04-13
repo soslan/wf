@@ -1,4 +1,4 @@
-function SVGElement(args){
+var SVGElement = Class.subclass(function (args){
 	var self = this;
 	args=args?args:{};
 	args.tagName = typeof args.tagName == "string" ? args.tagName : "svg";
@@ -11,7 +11,8 @@ function SVGElement(args){
 	if(typeof args.className == "string"){
 		this.addClass(args.className);
 	}
-}
+});
+
 
 SVGElement.prototype.append = function(element){
 	this.element.appendChild(element.element);
@@ -98,4 +99,10 @@ SVGIcon.paths = {
 	'fullscreen-exit': "M10 32h6v6h4V28H10v4zm6-16h-6v4h10V10h-4v6zm12 22h4v-6h6v-4H28v10zm4-22v-6h-4v10h10v-4h-6z",
 	'messenger': "M40 4H8C5.79 4 4 5.79 4 8v36l8-8h28c2.21 0 4-1.79 4-4V8c0-2.21-1.79-4-4-4z",
 	'forum': "M42 12h-4v18H12v4c0 1.1.9 2 2 2h22l8 8V14c0-1.1-.9-2-2-2zm-8 12V6c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2v28l8-8h20c1.1 0 2-.9 2-2z",
+	'left': "M30.83 14.83L28 12 16 24l12 12 2.83-2.83L21.66 24z",
+	'right': "M20 12l-2.83 2.83L26.34 24l-9.17 9.17L20 36l12-12z",
+	'up': "M24 16L12 28l2.83 2.83L24 21.66l9.17 9.17L36 28z",
+	'down': "M33.17 17.17L24 26.34l-9.17-9.17L12 20l12 12 12-12z",
+	'refresh': "M35.3 12.7C32.41 9.8 28.42 8 24 8 15.16 8 8.02 15.16 8.02 24S15.16 40 24 40c7.45 0 13.69-5.1 15.46-12H35.3c-1.65 4.66-6.07 8-11.3 8-6.63 0-12-5.37-12-12s5.37-12 12-12c3.31 0 6.28 1.38 8.45 3.55L26 22h14V8l-4.7 4.7z",
+	'minus': "M38 26H10v-4h28v4z",
 }

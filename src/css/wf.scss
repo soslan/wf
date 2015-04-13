@@ -215,6 +215,12 @@ $sizes: 's' $S,
     .active-#{$name}.dropdown-container > .button.active{
         @include color-style(darken($value, 8), $tcolor);
     }
+
+    .content-#{$name}{
+        color: $value;
+        stroke: $value;
+        fill: $value;
+    }
 }
 
 /* Main Part */
@@ -452,6 +458,12 @@ iframe:-webkit-full-screen {
         color:inherit;
         text-decoration: underline;
     }
+}
+
+/* Chart */
+.chart > .line{
+    fill: transparent;
+    //stroke: black;
 }
 
 

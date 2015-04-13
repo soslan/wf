@@ -184,6 +184,9 @@ Windows.prototype.remove = function(arg1){
 			var prev = this.history.pop();
 			while(prev === arg1 || !this.isParentOf(prev)){
 				prev = this.history.pop();
+				if (prev === undefined){
+					break;
+				}
 			}
 			this.switchTo(prev,function(){
 				arg1.close();
@@ -205,7 +208,13 @@ Windows.prototype.switchTo = function(wind, done){
 	if (wind === this.activeContainer ){
 		return;
 	}
-	if (this.isParentOf(wind)){
+	else if(wind === undefined){
+		var previousActive = this.activeContainer;
+		if (typeof done == "function"){
+			done();
+		}
+	}
+	else if (this.isParentOf(wind)){
 		if (wind.windowMode === "maximized"){
 			var previousActive = this.activeContainer;
 			var previousMaximized = this.currentMaximized;
@@ -217,7 +226,7 @@ Windows.prototype.switchTo = function(wind, done){
 			wind.show();
 			wind.focus();
 			this.history.push(wind);
-			
+			wind.e.style.opacity = 1;
 			wind.$.animate({
 				opacity:1,
 			}, 40, function(){
