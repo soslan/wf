@@ -1,4 +1,4 @@
-var SVGElement = Class.subclass(function (args){
+function SVGElement(args){
 	var self = this;
 	args=args?args:{};
 	args.tagName = typeof args.tagName == "string" ? args.tagName : "svg";
@@ -11,7 +11,7 @@ var SVGElement = Class.subclass(function (args){
 	if(typeof args.className == "string"){
 		this.addClass(args.className);
 	}
-});
+}
 
 
 SVGElement.prototype.append = function(element){

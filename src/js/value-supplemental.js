@@ -1,82 +1,42 @@
-var BooleanModel = Model.subclass({
-	constructor: function(){
-		var args, self = this;
-		args = args || {};
-		if(typeof arguments[0] === "boolean"){
-			args = typeof arguments[1] === "object" ? arguments[1] : {};
-			args.value = arguments[0];
+function BooleanModel(){
+	var args, self;
+	args = args || {};
+	if(typeof arguments[0] === "boolean"){
+		args = typeof arguments[1] === "object" ? arguments[1] : {};
+		args.value = arguments[0];
+	}
+	else if(typeof arguments[0] === "object"){
+		args = arguments[0];
+	}
+	args.value = Boolean(args.value);
+	Model.call(this, args);
+	self = this;
+	this.addFilter('set', function(d){
+		if(!d.value){
+			d.value = false;
 		}
-		else if(typeof arguments[0] === "object"){
-			args = arguments[0];
+		else{
+			d.value = true;
 		}
-		args.value = Boolean(args.value);
-
-		this.addFilter('set', function(d){
-			if(!d.value){
-				d.value = false;
+		return d;
+	});
+	this.onChange(function(d){
+		if(d.value){
+			self.dispatchEvent('on');
+			if(typeof args.onOn === "function"){
+				args.onOn(d);
 			}
-			else{
-				d.value = true;
+		}
+		else{
+			self.dispatchEvent('off');
+			if(typeof args.onOff === "function"){
+				args.onOff(d);
 			}
-			return d;
-		});
+		}
+	});
+}
 
-		this.onChange(function(d){
-			if(d.value){
-				self.dispatchEvent('on');
-				if(typeof args.onOn === "function"){
-					args.onOn(d);
-				}
-			}
-			else{
-				self.dispatchEvent('off');
-				if(typeof args.onOff === "function"){
-					args.onOff(d);
-				}
-			}
-		});
-
-		this.super.constructor.call(this, args);
-	},
-});
-
-// function BooleanModel(args){
-// 	var self = this;
-// 	args = args || {};
-// 	args.value = Boolean(args.value);
-
-	
-
-// 	this.addFilter('set', function(d){
-// 		if(!d.value){
-// 			d.value = false;
-// 		}
-// 		else{
-// 			d.value = true;
-// 		}
-// 		return d;
-// 	});
-
-// 	this.onChange(function(d){
-// 		if(d.value){
-// 			self.dispatchEvent('on');
-// 			if(typeof args.onOn === "function"){
-// 				args.onOn(d);
-// 			}
-// 		}
-// 		else{
-// 			self.dispatchEvent('off');
-// 			if(typeof args.onOff === "function"){
-// 				args.onOff(d);
-// 			}
-// 		}
-// 	});
-
-// 	Value.call(this, args);
-	
-// }
-
-// BooleanModel.prototype = Object.create(Value.prototype);
+BooleanModel.prototype = Object.create(Model.prototype);
 
 BooleanModel.prototype.flip = function(args){
 	if(this.value){
@@ -269,108 +229,55 @@ DateModel.prototype.getHBroadcaster = function(){
 
 }
 
-var StringModel = Model.subclass({
-	constructor:function(args){
-		var args;
-		if (args == undefined){
-			args = {};
+function StringModel(args){
+	var args;
+	if (args == undefined){
+		args = {};
+	}
+	else if (typeof args === "string"){
+		args = {
+			value:args,
 		}
-		else if (typeof args === "string"){
-			args = {
-				value:args,
-			}
-		}
+	}
 
-		if(args.value === undefined){
-			args.value = '';
-		}
-		 
-		Value.call(this, {
-			value:String(args.value),
-		});
-		this.filter('set', function(d){
-			d.value = String(d.value);
-			return d;
-		});
-	},
-});
-
-// function StringModel(args){
-// 	if (args == undefined){
-// 		args = {};
-// 	}
-// 	else if (typeof args === "string"){
-// 		args = {
-// 			value:args,
-// 		}
-// 	}
-
-// 	if(args.value === undefined){
-// 		args.value = '';
-// 	}
+	if(args.value === undefined){
+		args.value = '';
+	}
 	 
-// 	Value.call(this, {
-// 		value:String(args.value),
-// 	});
-// 	this.filter('set', function(d){
-// 		d.value = String(d.value);
-// 		return d;
-// 	})
+	Model.call(this, {
+		value:String(args.value),
+	});
+	this.filter('set', function(d){
+		d.value = String(d.value);
+		return d;
+	});
+}
 
-// }
+StringModel.prototype = Object.create(Model.prototype);
 
-// StringModel.prototype = Object.create(Value.prototype);
-
-var NumberModel = Model.subclass({
-	constructor:function(args){
-		if (args == undefined){
-			args = {};
+function NumberModel(args){
+	if (args == undefined){
+		args = {};
+	}
+	else if (typeof args === "number"){
+		args = {
+			value:args,
 		}
-		else if (typeof args === "number"){
-			args = {
-				value:args,
-			}
+	}
+	if (args.value === undefined || Number(args.value) == NaN){
+		args.value = 0;
+	}
+
+	Model.call(this, {
+		value: Number(args.value),
+	});
+	this.filter('set', function(d){
+		d.value = Number(d.value);
+		if(d.value == NaN){
+			d.cancel = true;
 		}
-		if (args.value === undefined || Number(args.value) == NaN){
-			args.value = 0;
-		}
+		return d;
+	});
+}
 
-		Value.call(this, {
-			value: Number(args.value),
-		});
-		this.filter('set', function(d){
-			d.value = Number(d.value);
-			if(d.value == NaN){
-				d.cancel = true;
-			}
-			return d;
-		});
-	},
-});
-// function NumberModel(args){
-// 	if (args == undefined){
-// 		args = {};
-// 	}
-// 	else if (typeof args === "number"){
-// 		args = {
-// 			value:args,
-// 		}
-// 	}
-// 	if (args.value === undefined || Number(args.value) == NaN){
-// 		args.value = 0;
-// 	}
-
-// 	Value.call(this, {
-// 		value: Number(args.value),
-// 	});
-// 	this.filter('set', function(d){
-// 		d.value = Number(d.value);
-// 		if(d.value == NaN){
-// 			d.cancel = true;
-// 		}
-// 		return d;
-// 	});
-
-// }
-
-// NumberModel.prototype = Object.create(Value.prototype);
+StringModel.prototype = Object.create(Model.prototype);

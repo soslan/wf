@@ -1,75 +1,3 @@
-"use strict";
-
-(function(){
-	function Class(){}
-
-	Class.subclass = function(){
-		var self = this;
-		var properties;
-		if(typeof arguments[0] === "function"){
-			properties = {
-				constructor: arguments[0],
-			};
-		}
-		else if(typeof arguments[0] === "object"){
-			properties = arguments[0];
-		}
-		else{
-			properties = {
-				//constructor: function(){}
-			};
-		}
-		if(typeof properties.constructor === "function"){
-			var constructor = function(){
-				if (!(this instanceof constructor)){
-					return new constructor.dummyConstructor(arguments);
-				} 
-				else{
-					var savedSuper = this.super;
-					this.super = constructor.super;
-					properties.constructor.apply(this, arguments);
-					this.super = savedSuper;
-				}
-			}
-			//constructor = properties.constructor;
-			constructor.prototype = Object.create(this.prototype);
-			constructor.prototype.constructor = constructor;
-			constructor.dummyConstructor = function(args){
-				var savedSuper = this.super;
-				this.super = constructor.super;
-				constructor.apply(this, args);
-				this.super = savedSuper;
-			}
-			constructor.dummyConstructor.prototype = constructor.prototype;
-			constructor.subclass = this.subclass;
-			constructor.def = this.def;
-			constructor.prototype.super = this.prototype;
-			constructor.super = this.prototype;
-			for(var i in properties){
-				if(i !== 'constructor' && typeof properties[i] === "function"){
-					constructor.def(i, properties[i]);
-				}
-			}
-			return constructor;
-		}
-	}
-
-	Class.def = function(name, method){
-		var self = this;
-		if(typeof name === "string" && typeof method === "function"){
-			this.prototype[name] = function(){
-				var savedSuper = this.super;
-				this.super = self.super;
-				method.apply(this, arguments);
-				this.super = savedSuper;
-			}
-			//this.prototype[name] = method;
-		}
-	}
-
-	window.Class = Class;
-})();
-
 // Core layer
 var beforeFocusEvent = new Event('beforefocus');
 var dragEvent = new Event('drag');
@@ -77,50 +5,48 @@ var afterDragEvent = new Event('afterdrag');
 var afterDragNoMoveEvent = new Event('afterdragnomove');
 var beforeDragEvent = new Event('beforedrag');
 
-var Element = Class.subclass({
-	constructor: function(arg1, arg2){
-		var self = this;
-		var args;
-		if (arg1 instanceof Node){
-			args = arg2?arg2:{};
-			this.element = arg1;
-		}
-		else if (typeof arg1 === "string"){
-			args = arg2?arg2:{};
-			this.element = document.querySelector(arg1);
-			if (this.element === null){
-				this.element = document.createElement(args.tagName || "div");
-			}
-		}
-		else{
-			args=arg1?arg1:{};
+function Element(arg1, arg2){
+	var self = this;
+	var args;
+	if (arg1 instanceof Node){
+		args = arg2?arg2:{};
+		this.element = arg1;
+	}
+	else if (typeof arg1 === "string"){
+		args = arg2?arg2:{};
+		this.element = document.querySelector(arg1);
+		if (this.element === null){
 			this.element = document.createElement(args.tagName || "div");
 		}
-		
-		this.e = this.element;
-		this.element.wfElement = this;
-		this.wfe = this;
-		this.$element = $(this.element);
-		this.$ = this.$element;
-
-		this.container = this.element; // Temporary.
-		this.eventListeners;
-		this.addClass(args.className);
-		if (args.content !== undefined){
-			this.append(args.content);
-		}
-		
-		if(args.appendTo instanceof Element){
-			args.appendTo.append(self);
-		}
-		else if(args.appendTo instanceof Node){
-			args.appendTo.appendChild(this.element);
-		}
-		if(args.focusable){
-			this.focusable();
-		}
 	}
-});
+	else{
+		args=arg1?arg1:{};
+		this.element = document.createElement(args.tagName || "div");
+	}
+	
+	this.e = this.element;
+	this.element.wfElement = this;
+	this.wfe = this;
+	this.$element = $(this.element);
+	this.$ = this.$element;
+
+	this.container = this.element; // Temporary.
+	this.eventListeners;
+	this.addClass(args.className);
+	if (args.content !== undefined){
+		this.append(args.content);
+	}
+	
+	if(args.appendTo instanceof Element){
+		args.appendTo.append(self);
+	}
+	else if(args.appendTo instanceof Node){
+		args.appendTo.appendChild(this.element);
+	}
+	if(args.focusable){
+		this.focusable();
+	}
+}
 
 Element.prototype.value = function(value){
 	if(value){
@@ -465,7 +391,7 @@ Element.prototype.setWindowMode = function(val){
 	this.dispatchEvent('windowmodechange', ev);
 }
 
-Element.def('onViewConstraint', function(constraints, handler){
+Element.prototype.onViewConstraint = function(constraints, handler){
 	if(this.viewConstraints === undefined){
 		this.viewConstraints = [];
 	}
@@ -477,9 +403,9 @@ Element.def('onViewConstraint', function(constraints, handler){
 		constraints: constraints,
 		handler: handler,
 	});
-});
+};
 
-Element.def('prepareForViewData', function(data, done){
+Element.prototype.prepareForViewData = function(data, done){
 	if(this.viewConstraints instanceof Array){
 		var width = data.width;
 		var height = data.height;
@@ -512,7 +438,7 @@ Element.def('prepareForViewData', function(data, done){
 			
 		}
 	}
-});
+};
 
 Element.prototype.beforeFocus = function(handler){
 	if(typeof handler == "function"){

@@ -1,9 +1,10 @@
 function ChartCanvas(args){
-	var self = this;
+	console.log("ChartCanvas");
 	args=args?args:{};
 	args.share = args.share || 1;
 	args.contentDirection = 'vertical';
-	Container.call(this,args);
+	Container.call(this, args);
+	var self = this;
 	this.addClass('chart');
 
 	//this.channels = [];
@@ -28,111 +29,11 @@ function ChartCanvas(args){
 
 ChartCanvas.prototype = Object.create(Container.prototype);
 
-function ChartLine2(args){
-	var self = this;
-	args = args || {};
-	args.tagName = 'g';
-	SVGElement.call(this,args);
-	this.addClass('chart-line');
-
-	this.limits = new Value();
-	this.path = new SVGElement({
-		tagName:'path',
-		className:'line',
-	});
-	this.append(this.path);
-}
-
-ChartLine2.prototype = Object.create(SVGElement.prototype);
-
-ChartLine2.prototype.applyTo = function(canvas){
-	if(canvas instanceof ChartCanvas){
-		canvas.svg.append(this);
-		this.canvas = canvas;
-	}
-};
-
-ChartLine2.prototype.setData = function(data){
-	if(data instanceof DataTableModel){
-		this.data = data;
-	}
-}
-
-ChartLine2.prototype.getCanvasSize = function(){
-	if(this.canvas instanceof ChartCanvas){
-		return {
-			width:this.canvas.$.width(),
-			height:this.canvas.$.height(),
-		}
-	}
-};
-
-ChartLine2.prototype.draw = function(){
-	var self = this;
-	var canvasSize = this.getCanvasSize();
-	var limits = this.limits.get();
-	var limits = {
-		top:10,
-		right:10,
-		bottom:0,
-		left:0,
-	}
-	var pxpu = { // Pixels per unit
-		x:canvasSize.width / (limits.right - limits.left),
-		y:canvasSize.height / (limits.top - limits.bottom),
-	};
-
-	var data = this.data.get();
-
-	var path = "";
-
-	var x,y;
-	if(typeof this.x === 'string'){
-		x = function(row){
-			return row[self.x]
-		};
-	}
-	else if(typeof this.x === 'function'){
-		x = this.x;
-	}
-	else{
-		x = function(row, i){
-			return i;
-		}
-	}
-	if(typeof this.y === 'string'){
-		y = function(row){
-			return row[self.y]
-		};
-	}
-	else if(typeof this.y === 'function'){
-		y = this.y;
-	}
-	else{
-		y = function(row, i){
-			return i;
-		}
-	}
-
-	path += 'M ' + (( x(data[0],0) - limits.left ) * pxpu.x) + ' ' + (( y(data[0],0) - limits.bottom ) * pxpu.y);
-
-	for (var i in data){
-		var posX = ( x(data[i],i) - limits.left ) * pxpu.x;
-		var posY = ( y(data[i],i) - limits.bottom ) * pxpu.y;
-		if(typeof posX !== 'undefined' && typeof posY !== 'undefined'){
-			path += ' L '+posX+' '+posY;
-		}
-		
-	}
-	this.path.setAttribute('d', path);
-
-};
-
 function DataTableChart(args){
-	var self = this;
 	args = args || {};
 	args.tagName = 'g';
-	SVGElement.call(this,args);
+	SVGElement.call(this, args);
+	var self = this;
 	this.addClass('chart-line');
 
 	this.limits = new Value();
@@ -175,20 +76,17 @@ function DataTableChart(args){
 }
 
 DataTableChart.prototype = Object.create(SVGElement.prototype);
-
 DataTableChart.prototype.applyTo = function(canvas){
 	if(canvas instanceof ChartCanvas){
 		canvas.svg.append(this);
 		this.canvas = canvas;
 	}
-};
-
+}
 DataTableChart.prototype.setData = function(data){
 	if(data instanceof DataTableModel){
 		this.data = data;
 	}
 }
-
 DataTableChart.prototype.getCanvasSize = function(){
 	if(this.canvas instanceof ChartCanvas){
 		return {
@@ -196,23 +94,16 @@ DataTableChart.prototype.getCanvasSize = function(){
 			height:this.canvas.$.height(),
 		}
 	}
-};
-
+}
 DataTableChart.prototype.getActiveKeys = function(){
 	return ['x', 'y', 'r'];
 }
-
 DataTableChart.prototype.addChannel = function(ch){
 	var channel = {};
 	ch = ch || {};
 	channel.keySettings = ch;
 	this.channels.push(channel);
 }
-
-DataTableChart.prototype.processLimits = function(){
-
-};
-
 DataTableChart.prototype.draw = function(){
 	var self = this;
 	var tempLimits = {};
@@ -390,13 +281,14 @@ DataTableChart.prototype.draw = function(){
 			
 		}
 	}
-};
+}
 
-var ChartBase = SVGElement.subclass(function(args){
-	var self = this;
+function ChartBase(args){
+	var self;
 	args = args || {};
 	args.tagName = 'g';
-	this.super.constructor.call(this, args);
+	SVGElement.call(this, args);
+	self = this;
 	//SVGElement.call(this,args);
 	this.addClass('chart');
 	this.physicalLimits = {};
@@ -408,24 +300,26 @@ var ChartBase = SVGElement.subclass(function(args){
 	this.allKeys = [];
 	this.setData(args.data);
 	this.applyTo(args.canvas);
-});
+}
+
+ChartBase.prototype = Object.create(SVGElement.prototype);
 
 ChartBase.defaultColors = ['blue', 'red', 'green', 'black', 'indigo'];
 
-ChartBase.def('setData', function(data){
+ChartBase.prototype.setData = function(data){
 	if(data instanceof DataTableModel){
 		this.data = data;
 	}
-});
+};
 
-ChartBase.def('applyTo', function(canvas){
+ChartBase.prototype.applyTo = function(canvas){
 	if(canvas instanceof ChartCanvas){
 		canvas.svg.append(this);
 		this.canvas = canvas;
 	}
-});
+};
 
-ChartBase.def('addChannel', function(ch){
+ChartBase.prototype.addChannel = function(ch){
 	if(ch.color === undefined ){
 		try{
 			ch.color = ChartBase.defaultColors[this.channels.length];
@@ -436,9 +330,9 @@ ChartBase.def('addChannel', function(ch){
 		
 	}
 	this.channels.push(ch)
-});
+};
 
-ChartBase.def('filterData', function(){
+ChartBase.prototype.filterData = function(){
 	var rows = this.data.get();
 	for(var i in this.channels){
 		this.channels[i].tmpData = [];
@@ -463,9 +357,9 @@ ChartBase.def('filterData', function(){
 			}
 		}
 	}
-});
+};
 
-ChartBase.def('calculateLimits', function(){
+ChartBase.prototype.calculateLimits = function(){
 	var vl = this.virtualLimits;
 	var data = this.data.get();
 	var tempLimits = {};
@@ -559,18 +453,18 @@ ChartBase.def('calculateLimits', function(){
 		}
 	}
 	this.tmpLimits = tempLimits;
-});
+};
 
-ChartBase.def('calculateBasis', function(){
+ChartBase.prototype.calculateBasis = function(){
 	var basis = {};
 	for(var i in this.tmpLimits){
 		basis[i] = (this.physicalLimits[i][1] - this.physicalLimits[i][0]) / (this.tmpLimits[i][1] - this.tmpLimits[i][0]);
 	}
 	this.tmpBasis = basis;
-});
+};
 
-var ChartLine = ChartBase.subclass(function(args){
-	this.super.constructor.call(this, args);
+function ChartLine(args){
+	ChartBase.call(this, args);
 	this.physicalLimits = {
 		x:[0, undefined],
 		y:[undefined, 0],
@@ -587,9 +481,11 @@ var ChartLine = ChartBase.subclass(function(args){
 	}
 
 	this.allKeys = ['x', 'y'];
-});
+}
 
-ChartLine.def('draw', function(){
+ChartLine.prototype = Object.create(ChartBase.prototype);
+
+ChartLine.prototype.draw = function(){
 	var data = this.data.get();
 	var tmp, x, y;
 	var pathInitialized = false;
@@ -651,4 +547,4 @@ ChartLine.def('draw', function(){
 		var channel = this.channels[i];
 		channel.tmpPath.setAttribute("d", channel.tmpPathString);
 	}
-});
+};

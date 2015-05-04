@@ -1,4 +1,5 @@
 module.exports = (grunt) ->
+	require('load-grunt-tasks')(grunt)
 	grunt.initConfig(
 		pkg: grunt.file.readJSON('package.json')
 		uglify: 
@@ -11,9 +12,11 @@ module.exports = (grunt) ->
 			options:
 				separator: grunt.util.linefeed + ';' + grunt.util.linefeed
 			dist:
-				src: ['src/core.js', 'src/value.js', 'src/value-supplemental.js', 'src/container.js', 'src/wf.js',
-					'src/containers.js', 'src/views.js', 'src/svg.js', 'src/chart.js'
+				# expand: true
+				src: ['src/js/core.js', 'src/js/value.js', 'src/js/value-supplemental.js', 'src/js/container.js', 'src/js/wf.js',
+					'src/js/containers.js', 'src/js/views.js', 'src/js/svg.js', 'src/js/chart.js'
 					]
+				# src: 'src/es6/*.js'
 				dest: 'build/<%= pkg.name %>.js'
 		sass:
 			dist:
@@ -27,7 +30,20 @@ module.exports = (grunt) ->
 			dist:
 				src: 'build/<%= pkg.name %>.css'
 				dest: 'build/<%= pkg.name %>.css'
-
+		babel:
+			options:
+				sourceMap: false
+				compact: false
+			dist:
+				# files: [
+				# 	expand: true
+				# 	cwd: 'src/es6/'
+				# 	dest: 'build/src/es5/'
+				# 	src: '*.js'
+				# ]
+				src: 'build/wf.es6.js'
+				dest: 'build/wf.js'
+					
 		)
 
 	grunt.loadNpmTasks('grunt-contrib-uglify')

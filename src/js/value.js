@@ -1,20 +1,18 @@
-var Model = Class.subclass({
-	constructor:function(args){
-		var self = this;
-		var args = args || {};
-		if(args.value instanceof Value){
-			this.adaptTo(args.value, function(args){
-				return args[0].get();
-			});
-			this.setValue(args.value.get());
-		}
-		else{
-			this.set({
-				value:args.value,
-			});
-		}
-	},
-});
+function Model(args){
+	var self = this;
+	var args = args || {};
+	if(args.value instanceof Value){
+		this.adaptTo(args.value, function(args){
+			return args[0].get();
+		});
+		this.setValue(args.value.get());
+	}
+	else{
+		this.set({
+			value:args.value,
+		});
+	}
+}
 
 var Value = Model;
 // function Value(args){
