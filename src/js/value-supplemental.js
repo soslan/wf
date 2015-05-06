@@ -106,12 +106,38 @@ BooleanModel.prototype.switchClass = function(elem, onTrue, onFalse){
 function DataTableModel(args){
 	var self = this;
 	var args = args || {};
+	var row;
 	args.value = args.value || [];
-	Value.call(this, args);
 
+	this.filter('newrow', function(row){
+		if(typeof row !== "object"){
+			row = {};
+		}
+		return row;
+	});
+
+	this.filter('set', function(data){
+		var table = [];
+		if(data.value instanceof Array){
+			for (var i in data.value){
+				var row = data.value[i];
+				if(typeof row === "object"){
+					row = self.applyFilter('newrow', row);
+					table.push(row);
+				}
+				else{
+					continue;
+				}
+			}
+		}
+		data.value = table;
+		return data;
+	});
+
+	Model.call(this, args);
 }
 
-DataTableModel.prototype = Object.create(Value.prototype);
+DataTableModel.prototype = Object.create(Model.prototype);
 
 DataTableModel.prototype.extract = function(){
 	var out = {
