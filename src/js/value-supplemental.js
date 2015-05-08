@@ -329,3 +329,11 @@ RangeModel.prototype.setMin = function(val){
 RangeModel.prototype.setMax = function(val){
 	this.value.max = val;
 }
+
+RangeModel.prototype.getMin = function(){
+	return this.value.min;
+}
+
+RangeModel.prototype.getMax = function(){
+	return this.value.max;
+}

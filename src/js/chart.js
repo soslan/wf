@@ -305,6 +305,15 @@ ChartConfig.prototype.set = function(key, column, range){
 	this.setRange(key, range);
 }
 
+ChartConfig.prototype.getColumn = function(dimension){
+	return this.config[dimension].column;
+}
+
+ChartConfig.prototype.getRange = function(dimension){
+	return this.config[dimension].range;
+}
+
+
 ChartConfig.prototype.setRange = function(key, range){
 	//if(range === undefined)
 	if(this.config[key] === undefined){
@@ -313,6 +322,26 @@ ChartConfig.prototype.setRange = function(key, range){
 	}
 	if(range instanceof RangeModel){
 		this.config[key].range = range;
+	}
+	else{
+		this.config[key].range = new RangeModel();
+	}
+}
+
+ChartConfig.prototype.forEachDimension = function(callback){
+	for (var i in this.config){
+		if(typeof callback === "function"){
+			callback(i, this.config[i]);
+		}
+	}
+}
+
+ChartConfig.prototype.hasDimension = function(dimension){
+	if(typeof this.config[dimension] === "object"){
+		return true;
+	}
+	else{
+		return false;
 	}
 }
 
@@ -345,24 +374,29 @@ ChartBase.prototype.setData = function(data){
 	}
 };
 
-ChartBase.prototype.applyTo = function(canvas){
+ChartBase.prototype.setCanvas = function(canvas){
 	if(canvas instanceof ChartCanvas){
 		canvas.svg.append(this);
 		this.canvas = canvas;
 	}
 };
 
+ChartBase.prototype.applyTo = ChartBase.prototype.setCanvas;
+
 ChartBase.prototype.addChannel = function(ch){
-	if(ch.color === undefined ){
-		try{
-			ch.color = ChartBase.defaultColors[this.channels.length];
+	if(ch instanceof ChartConfig){
+		if(ch.color === undefined ){
+			try{
+				ch.color = ChartBase.defaultColors[this.channels.length];
+			}
+			catch(e){
+				ch.color = 'black';
+			}
+			
 		}
-		catch(e){
-			ch.color = 'black';
-		}
-		
+		this.channels.push(ch);
 	}
-	this.channels.push(ch)
+	
 };
 
 ChartBase.prototype.filterData = function(){
@@ -400,13 +434,13 @@ ChartBase.prototype.calculateLimits = function(){
 	for(var i in this.channels){
 		var channel = this.channels[i];
 		channel.tmpCount = 0;
-		if(channel.tmpLimits === undefined){
-			channel.tmpLimits = {};
-		}
+		channel.tmpLimits = {};
+
 		for(var ki in this.allKeys){
 			var k = this.allKeys[ki];
-			if(typeof channel[k] === "string"){
+			if(channel.hasDimension(k)){
 				channel.tmpLimits[k] = [undefined, undefined];
+				channel.getRange(k).tmp = [undefined, undefined];
 			}
 		}
 	}
@@ -418,15 +452,18 @@ ChartBase.prototype.calculateLimits = function(){
 			var isVisible = true;
 			for(var ki in this.allKeys){
 				var k = this.allKeys[ki];
-				if(typeof channel[k] === "string"){
-					var key = channel[k];
+				if(channel.hasDimension(k)){
+					var key = channel.getColumn(k);
+					var range = channel.getRange(k);
+					var min = range.getMin();
+					var max = range.getMax();
 					if(row[key] === undefined){
 						isVisible = false;
 					}
-					else if(this.virtualLimits[k][0] !== undefined && row[key] < this.virtualLimits[k][0]){
+					else if(min !== undefined && row[key] < min){
 						isVisible = false;
 					}
-					else if(this.virtualLimits[k][1] !== undefined && row[key] > this.virtualLimits[k][1]){
+					else if(max !== undefined && row[key] > max){
 						isVisible = false;
 					}
 				}
@@ -440,8 +477,8 @@ ChartBase.prototype.calculateLimits = function(){
 				for(var ki in this.allKeys){
 					var k = this.allKeys[ki];
 
-					if(typeof channel[k] === "string"){
-						var key = channel[k];
+					if(channel.hasDimension(k)){
+						var key = channel.getColumn(k);
 						if(channel.tmpLimits[k][0] === undefined || channel.tmpLimits[k][0] > row[key] ){
 							channel.tmpLimits[k][0] = row[key]
 						}
@@ -460,40 +497,55 @@ ChartBase.prototype.calculateLimits = function(){
 		//console.log("COUNT", channel.tmpCount);
 		for(var ki in this.allKeys){
 			var k = this.allKeys[ki];
-			if(typeof channel[k] === "string"){
-				if(tempLimits[k] === undefined){
-					tempLimits[k] = [channel.tmpLimits[k][0], channel.tmpLimits[k][1]];
+			if(channel.hasDimension(k)){
+				var range = channel.getRange(k);
+				var min = range.tmp[0];
+				var max = range.tmp[1];
+				if(min === undefined || min > channel.tmpLimits[k][0]){
+					range.tmp[0] = channel.tmpLimits[k][0];
 				}
-				else{
-					if(tempLimits[k][0] > channel.tmpLimits[k][0]){
-						tempLimits[k][0] = channel.tmpLimits[k][0];
-					}
-					if(tempLimits[k][1] < channel.tmpLimits[k][1]){
-						tempLimits[k][1] = channel.tmpLimits[k][1];
-					}
-				} 
+				if(max === undefined || max < channel.tmpLimits[k][1]){
+					range.tmp[1] = channel.tmpLimits[k][1];
+				}
 			}
 			
 		}
 	}
 
-	for(var i in tempLimits){
-		if(this.virtualLimits[i][0] !== undefined){
-			tempLimits[i][0] = this.virtualLimits[i][0];
-		}
-		if(this.virtualLimits[i][1] !== undefined){
-			tempLimits[i][1] = this.virtualLimits[i][1];
+	for(var i in this.channels){
+		var channel = this.channels[i];
+		//console.log("COUNT", channel.tmpCount);
+		for(var ki in this.allKeys){
+			var k = this.allKeys[ki];
+			if(channel.hasDimension(k)){
+				var range = channel.getRange(k);
+				var min = range.getMin();
+				var max = range.getMax();
+				if(min !== undefined){
+					range.tmp[0] = min;
+				}
+				if(max !== undefined){
+					range.tmp[1] = max;
+				}
+			}
 		}
 	}
-	this.tmpLimits = tempLimits;
 };
 
 ChartBase.prototype.calculateBasis = function(){
-	var basis = {};
-	for(var i in this.tmpLimits){
-		basis[i] = (this.physicalLimits[i][1] - this.physicalLimits[i][0]) / (this.tmpLimits[i][1] - this.tmpLimits[i][0]);
+	for(var i in this.channels){
+		var channel = this.channels[i];
+		channel.tmpBasis = {};
+		for(var ki in this.allKeys){
+			var k = this.allKeys[ki];
+			if(channel.hasDimension(k)){
+				var range = channel.getRange(k);
+				var min = range.tmp[0];
+				var max = range.tmp[1];
+				channel.tmpBasis[k] = (this.physicalLimits[k][1] - this.physicalLimits[k][0]) / (max -min);
+			}
+		}
 	}
-	this.tmpBasis = basis;
 };
 
 function ChartLine(args){
@@ -542,29 +594,30 @@ ChartLine.prototype.draw = function(){
 		channel.tmpPathString = "";
 		channel.tmpPathInitialized = false;
 	}
-	if(isNaN(this.tmpBasis.x)){
-		;
-	}
-	else if(isNaN(this.tmpBasis.y)){
-		;
-	}
-	else{
+	if(true){
 		for (var i in data){
 			var row = data[i];
+			var col;
+			var val;
+			var start;
 			for (var j in this.channels){
 				var channel = this.channels[j];
-				if(channel.x === undefined){
+				if(!channel.hasDimension('y')){
 					continue;
 				}
 				else{
-					x = this.physicalLimits.x[0] + this.tmpBasis.x * (row[channel.x] - this.tmpLimits.x[0]);
+					val = row[channel.getColumn('x')];
+					start = channel.getRange('x').tmp[0];
+					x = this.physicalLimits.x[0] + channel.tmpBasis.x * (val - start);
 					//pointElement.setAttribute('cx', this.canvasLimits.x[0] + basis.x * (row[channel.x] - tempLimits.x[0]));
 				}
-				if(channel.y === undefined){
+				if(!channel.hasDimension('y')){
 					continue;
 				}
 				else{
-					y = this.physicalLimits.y[0] + this.tmpBasis.y * (row[channel.y] - this.tmpLimits.y[0]);
+					val = row[channel.getColumn('y')];
+					start = channel.getRange('y').tmp[0];
+					y = this.physicalLimits.y[0] + channel.tmpBasis.y * (val - start);
 					//pointElement.setAttribute('cy', this.canvasLimits.y[0] + basis.y * (row[channel.y] - tempLimits.y[0]));
 				}
 				if(!channel.tmpPathInitialized){
