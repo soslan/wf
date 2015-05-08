@@ -307,3 +307,25 @@ function NumberModel(args){
 }
 
 StringModel.prototype = Object.create(Model.prototype);
+
+function RangeModel(args){
+	var self = this;
+	this.filter('set', function(d){
+		if(typeof d.value !== "object"){
+			d.value = {};
+		}
+		return d;
+	});
+	Model.call(this, args);
+
+}
+
+RangeModel.prototype = Object.create(Model.prototype);
+
+RangeModel.prototype.setMin = function(val){
+	this.value.min = val;
+}
+
+RangeModel.prototype.setMax = function(val){
+	this.value.max = val;
+}

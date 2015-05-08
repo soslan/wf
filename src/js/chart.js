@@ -283,6 +283,39 @@ DataTableChart.prototype.draw = function(){
 	}
 }
 
+function ChartConfig(args){
+	this.config = {};
+	args = args || {};
+	args.columns = args.columns || {};
+	args.ranges = args.ranges || {};
+	for(var i in args.columns){
+		this.set(i, args.columns[i]);
+	}
+	for(var i in args.ranges){
+		this.setRange(i, args.ranges[i]);
+	}
+}
+
+ChartConfig.prototype.set = function(key, column, range){
+	//if(range === undefined)
+	if(this.config[key] === undefined){
+		this.config[key] = {};
+	}
+	this.config[key].column = column;
+	this.setRange(key, range);
+}
+
+ChartConfig.prototype.setRange = function(key, range){
+	//if(range === undefined)
+	if(this.config[key] === undefined){
+		return;
+		//throw "No such dimension";
+	}
+	if(range instanceof RangeModel){
+		this.config[key].range = range;
+	}
+}
+
 function ChartBase(args){
 	var self;
 	args = args || {};
