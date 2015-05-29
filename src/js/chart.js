@@ -29,6 +29,14 @@ function ChartCanvas(args){
 
 ChartCanvas.prototype = Object.create(Container.prototype);
 
+ChartCanvas.prototype.getWidth = function(){
+	return this.$.width();
+}
+
+ChartCanvas.prototype.getHeight = function(){
+	return this.$.height();
+}
+
 function DataTableChart(args){
 	args = args || {};
 	args.tagName = 'g';
@@ -281,6 +289,271 @@ DataTableChart.prototype.draw = function(){
 			
 		}
 	}
+}
+
+function Chart(args){
+	var args = args || {};
+	this.ranges = {};
+	this.dims = {};
+	if(typeof args.dims === "object"){
+		for (var i in args.dims){
+			this.setDim(i, args.dims[i]);
+		}
+	}
+	if(args.data != null){
+		this.setData(args.data);
+	}
+	if(args.canvas != null){
+		this.setCanvas(args.canvas);
+	}
+}
+
+Chart.prototype.relevantDims = [];
+
+Chart.prototype.setCanvas = function(canvas){
+	if(canvas instanceof ChartCanvas){
+		// TODO clean-up
+		this.canvas = canvas;
+		this.container = new SVGElement({
+			tagName:'g',
+			className:'chart',
+		});
+		this.canvas.svg.append(this.container);
+	}
+}
+
+Chart.prototype.setData = function(data){
+	if(data instanceof DataTableModel){
+		this.data = data;
+	}
+	else{
+		throw "Error";
+	}
+}
+
+Chart.prototype.hasDim = function(dim){
+	return typeof dim === "string" && typeof col === "string";
+}
+
+Chart.prototype.setDim = function(dim, col){
+	if(typeof dim === "string" && typeof col === "string"){
+		this.dims[dim] = col;
+	}
+}
+
+Chart.prototype.setRange = function(dim, range){
+	if(typeof dim === "string" && range instanceof ChartRange){
+		this.ranges[dim] = range;
+	}
+}
+
+Chart.prototype.calculatePhysicalRanges = function(){
+	if(!(this.canvas instanceof ChartCanvas)){
+		throw("Error: Canvas is not set.")
+	}
+	this.calculatedPhysicalRanges = {
+		x:[0, this.canvas.getWidth()],
+		y:[this.canvas.getHeight(), 0],
+	};
+	return this.calculatedPhysicalRanges;
+}
+
+Chart.prototype.calculateBasis = function(){
+	var physRanges = this.calculatePhysicalRanges();
+	this.calculatedBasis = {};
+	for(var dim in physRanges){
+		if(this.ranges[dim] != null){
+			var range = this.ranges[dim];
+			var min = range.min;
+			var max = range.max;
+			this.calculatedBasis[dim] = (physRanges[dim].max - physRanges[dim].min) / (max -min);
+		}		
+	}
+	return this.calculatedBasis;
+}
+
+Chart.prototype.calculateRanges = function(){
+	var vl = this.virtualLimits;
+	var data = this.data.get();
+	var tempLimits = {};
+	var channel;
+	this.calculatedRanges = {};
+	var calcRanges = this.calculatedRanges;
+	var ranges = this.ranges;
+	for(var dim in this.dims){
+		if(calcRanges[dim] == null){
+			calcRanges[dim] = {}
+		}	
+	}
+	
+	for (var i in data){
+		var row = data[i];
+		var isVisible = true;
+		for(var dim in ranges){
+			var key = this.dims[dim];
+			var range = ranges[dim];
+			if(row[key] == null){
+				isVisible = false;
+			}
+			else if(range.min != null && row[key] < range.min){
+				isVisible = false;
+			}
+			else if(range.max != null && row[key] > range.max){
+				isVisible = false;
+			}
+		}
+
+
+		// TODO determine if item is within common limits. row.reduce()
+		if(isVisible){
+			for (var dim in this.dims){
+				var key = this.dims[dim];
+				var range = calcRanges[dim];
+				if(range.min == null || range.min > row[key] ){
+					range.min = row[key];
+				}
+				if(range.max == null || range.max < row[key] ){
+					range.max = row[key]
+				}
+			}
+		}
+	}
+}
+
+Chart.prototype.applyCalculatedRanges = function(){
+	for (var dim in this.calculatedRanges){
+		if(this.ranges[dim] == null){
+			this.ranges[dim] = {};
+		}
+		var range = this.ranges[dim];
+		var calcRange = this.calculatedRanges[dim];
+		if(range.min == null){
+			range.min = calcRange.min;
+		}
+		if(range.max == null){
+			range.max = calcRange.max;
+		}
+	}
+}
+
+function ChartRange(args){
+	var self = this;
+	this.filter('set', function(d){
+		if(typeof d.value !== "object"){
+			d.value = {};
+		}
+		return d;
+	});
+	Model.call(this, args);
+}
+
+ChartRange.prototype = Object.create(Model.prototype);
+
+ChartRange.prototype.setMin = function(val){
+	this.value.min = val;
+}
+
+ChartRange.prototype.setMax = function(val){
+	this.value.max = val;
+}
+
+ChartRange.prototype.getMin = function(){
+	return this.value.min;
+}
+
+ChartRange.prototype.getMax = function(){
+	return this.value.max;
+}
+
+Object.defineProperty(ChartRange.prototype, 'min', {
+	get: function(){
+		return this.value.min;
+	},
+	set: function(val){
+		this.value.min = val;
+	}
+});
+
+function LineChart(args){
+	Chart.call(this, args);
+}
+
+LineChart.prototype = Object.create(Chart.prototype);
+
+LineChart.prototype.calculatePhysicalRanges = function(){
+	if(!(this.canvas instanceof ChartCanvas)){
+		throw("Error: Canvas is not set.")
+	}
+	this.calculatedPhysicalRanges = {
+		x:{
+			min: 0, 
+			max: this.canvas.getWidth()
+		},
+		y:{
+			min: this.canvas.getHeight(), 
+			max: 0
+		},
+	};
+	return this.calculatedPhysicalRanges;
+}
+
+LineChart.prototype.render = function(){
+	var data = this.data.get();
+	var tmp, x, y, path;
+	var pathInitialized = false;
+	var ranges = this.ranges;
+	var basis = this.calculatedBasis;
+	var physRanges = this.calculatedPhysicalRanges;
+	if(this.path == null){
+		this.path = new SVGElement({
+			tagName:'path',
+			className:'line',
+		});
+		this.path.setAttribute('fill-opacity', '0');
+		this.path.addClass("content-" + ( this.color || "blue" ) );
+		//x = this.physicalLimits.x[0] + this.tmpBasis.x * (data[0])
+		this.container.append(this.path);
+	}
+
+	if(true){
+		for (var i in data){
+			var row = data[i];
+			var col;
+			var val;
+			var start;
+			if(this.dims.x == null){
+				continue;
+			}
+			else{
+				val = row[this.dims['x']];
+				start = this.ranges['x'].min;
+				x = physRanges.x.min + basis.x * (val - start);
+				//pointElement.setAttribute('cx', this.canvasLimits.x[0] + basis.x * (row[channel.x] - tempLimits.x[0]));
+			}
+			if(this.dims.y == null){
+				continue;
+			}
+			else{
+				val = row[this.dims['y']];
+				start = this.ranges['y'].min;
+				y = physRanges.y.min + basis.y * (val - start);
+				//pointElement.setAttribute('cy', this.canvasLimits.y[0] + basis.y * (row[channel.y] - tempLimits.y[0]));
+			}
+			if(!pathInitialized){
+				path = "M " + x + " " + y;
+				pathInitialized = true;
+			}
+			path += " L " + x + " " + y;
+		}
+	}
+	this.path.setAttribute("d", path);
+}
+
+LineChart.prototype.draw = function(){
+	this.calculateRanges();
+	this.applyCalculatedRanges();
+	this.calculateBasis();
+	this.render();
 }
 
 function ChartConfig(args){

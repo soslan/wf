@@ -154,6 +154,8 @@ Value.prototype.dispatchEvent = function(event, e){
 	return this;
 }
 
+Value.prototype.trigger = Value.prototype.dispatchEvent;
+
 Value.prototype.addFilter = function(filter, handler){
 	if (this.filters === undefined){
 		this.filters = {};

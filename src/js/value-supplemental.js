@@ -306,7 +306,7 @@ function NumberModel(args){
 	});
 }
 
-StringModel.prototype = Object.create(Model.prototype);
+NumberModel.prototype = Object.create(Model.prototype);
 
 function RangeModel(args){
 	var self = this;
@@ -317,7 +317,6 @@ function RangeModel(args){
 		return d;
 	});
 	Model.call(this, args);
-
 }
 
 RangeModel.prototype = Object.create(Model.prototype);
@@ -337,3 +336,12 @@ RangeModel.prototype.getMin = function(){
 RangeModel.prototype.getMax = function(){
 	return this.value.max;
 }
+
+Object.defineProperty(RangeModel.prototype, 'min', {
+	get: function(){
+		return this.value.min;
+	},
+	set: function(val){
+		this.value.min = val;
+	}
+});
