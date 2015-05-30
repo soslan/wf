@@ -436,6 +436,43 @@ Chart.prototype.applyCalculatedRanges = function(){
 	}
 }
 
+
+LineChart.prototype.draw = function(){
+	this.calculateRanges();
+	this.applyCalculatedRanges();
+	this.calculateBasis();
+	this.render();
+}
+
+
+function ChartGroup(args){
+	this.charts = [];
+}
+
+ChartGroup.prototype.add = function(chart){
+	if(chart instanceof Chart){
+		this.charts.push(chart);
+	}
+}
+
+ChartGroup.prototype.draw = function(){
+	for(var i in this.charts){
+		var chart = this.charts[i];
+		chart.calculateRanges();
+	}
+
+	for(var i in this.charts){
+		var chart = this.charts[i];
+		chart.applyCalculatedRanges();
+	}
+
+	for(var i in this.charts){
+		var chart = this.charts[i];
+		chart.calculateBasis();
+		chart.render();
+	}
+}
+
 function ChartRange(args){
 	var self = this;
 	this.filter('set', function(d){
@@ -547,13 +584,6 @@ LineChart.prototype.render = function(){
 		}
 	}
 	this.path.setAttribute("d", path);
-}
-
-LineChart.prototype.draw = function(){
-	this.calculateRanges();
-	this.applyCalculatedRanges();
-	this.calculateBasis();
-	this.render();
 }
 
 function ChartConfig(args){
