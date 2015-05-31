@@ -306,6 +306,27 @@ function Chart(args){
 	if(args.canvas != null){
 		this.setCanvas(args.canvas);
 	}
+	if(typeof args.color === "string"){
+		this.color = args.color;
+	}
+	else{
+		this.color = Chart.getColor();
+	}
+}
+
+Chart.colors = ['blue', 'red', 'green', 'black', 'indigo'];
+
+Chart.colorIndex = 0;
+
+Chart.getColor = function(){
+	var out = this.colors[this.colorIndex];
+	if(this.colorIndex + 1 === this.colors.length){
+		this.colorIndex = 0;
+	}
+	else{
+		this.colorIndex = this.colorIndex + 1;
+	}
+	return out;
 }
 
 Chart.prototype.relevantDims = [];
@@ -450,9 +471,12 @@ function ChartGroup(args){
 }
 
 ChartGroup.prototype.add = function(chart){
-	if(chart instanceof Chart){
-		this.charts.push(chart);
+	for(var arg in arguments){
+		if(arguments[arg] instanceof Chart){
+			this.charts.push(arguments[arg]);
+		}
 	}
+	return this;
 }
 
 ChartGroup.prototype.draw = function(){
@@ -504,10 +528,19 @@ ChartRange.prototype.getMax = function(){
 
 Object.defineProperty(ChartRange.prototype, 'min', {
 	get: function(){
-		return this.value.min;
+		return Number(this.value.min);
 	},
 	set: function(val){
 		this.value.min = val;
+	}
+});
+
+Object.defineProperty(ChartRange.prototype, 'max', {
+	get: function(){
+		return Number(this.value.max);
+	},
+	set: function(val){
+		this.value.max = val;
 	}
 });
 
