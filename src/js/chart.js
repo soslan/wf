@@ -569,7 +569,7 @@ LineChart.prototype.calculatePhysicalRanges = function(){
 
 LineChart.prototype.render = function(){
 	var data = this.data.get();
-	var tmp, x, y, path;
+	var tmp, x, y, path="";
 	var pathInitialized = false;
 	var ranges = this.ranges;
 	var basis = this.calculatedBasis;
@@ -582,8 +582,20 @@ LineChart.prototype.render = function(){
 		this.path.setAttribute('fill-opacity', '0');
 		this.path.addClass("content-" + ( this.color || "blue" ) );
 		//x = this.physicalLimits.x[0] + this.tmpBasis.x * (data[0])
+
+		// this.bgpath = new SVGElement({
+		// 	tagName:'path',
+		// 	className:'line-bg',
+		// });
+		// this.bgpath.setAttribute('fill-opacity', '.5');
+		// this.bgpath.addClass("content-" + ( this.color || "blue" ) );
+		// //x = this.physicalLimits.x[0] + this.tmpBasis.x * (data[0])
+		// this.container.append(this.bgpath);
+
 		this.container.append(this.path);
 	}
+
+	//var bgpath = " M " + physRanges.x.min + " " + physRanges.y.min;
 
 	if(true){
 		for (var i in data){
@@ -610,13 +622,98 @@ LineChart.prototype.render = function(){
 				//pointElement.setAttribute('cy', this.canvasLimits.y[0] + basis.y * (row[channel.y] - tempLimits.y[0]));
 			}
 			if(!pathInitialized){
-				path = "M " + x + " " + y;
+				path += " M " + x + " " + y;
 				pathInitialized = true;
 			}
 			path += " L " + x + " " + y;
+			//bgpath += " L " + x + " " + y;
 		}
 	}
+
+	//bgpath += " L " + physRanges.x.max + " " + physRanges.y.min;
+
 	this.path.setAttribute("d", path);
+	//this.bgpath.setAttribute("d", bgpath);
+}
+
+function BubbleChart(args){
+	Chart.call(this, args);
+}
+
+BubbleChart.prototype = Object.create(Chart.prototype);
+
+BubbleChart.prototype.calculatePhysicalRanges = function(){
+	var area, cr;
+	if(!(this.canvas instanceof ChartCanvas)){
+		throw("Error: Canvas is not set.")
+	}
+	this.calculatedPhysicalRanges = {
+		x:{
+			min: 0, 
+			max: this.canvas.getWidth()
+		},
+		y:{
+			min: this.canvas.getHeight(), 
+			max: 0
+		},
+	};
+	cr = this.calculatedPhysicalRanges;
+	area = Math.abs((cr.x.max - cr.x.min) * (cr.y.max - cr.y.min));
+	cr.r = {
+		min:Math.max(Math.pow(( (0.0001 * area) / Math.PI ) , 0.5),2),
+		max:Math.max(Math.pow(( (0.01 * area) / Math.PI ) , 0.5),5)
+	}
+	return this.calculatedPhysicalRanges;
+}
+
+BubbleChart.prototype.render = function(){
+	var data = this.data.get();
+	var tmp, x, y, r, path="";
+	var pathInitialized = false;
+	var ranges = this.ranges;
+	var basis = this.calculatedBasis;
+	var physRanges = this.calculatedPhysicalRanges;
+
+	if(true){
+		for (var i in data){
+			var row = data[i];
+			var col;
+			var val;
+			var start;
+			var pointElement = new SVGElement({
+				tagName:'circle',
+				className: 'bubble'
+			});
+			if(this.dims.x == null){
+				continue;
+			}
+			else{
+				val = row[this.dims['x']];
+				start = this.ranges['x'].min;
+				x = physRanges.x.min + basis.x * (val - start);
+				pointElement.setAttribute('cx', x);
+			}
+			if(this.dims.y == null){
+				continue;
+			}
+			else{
+				val = row[this.dims['y']];
+				start = this.ranges['y'].min;
+				y = physRanges.y.min + basis.y * (val - start);
+				pointElement.setAttribute('cy', y);
+			}
+			if(this.dims.r == null){
+				continue;
+			}
+			else{
+				val = row[this.dims['r']];
+				start = this.ranges['r'].min;
+				r = physRanges.r.min + basis.r * (val - start);
+				pointElement.setAttribute('r', r);
+			}
+			this.container.append(pointElement);
+		}
+	}
 }
 
 function ChartConfig(args){

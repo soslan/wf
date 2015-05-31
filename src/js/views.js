@@ -253,6 +253,7 @@ Windows.prototype.switchTo = function(wind, done){
 					previousMaximized.addClass('inactive');
 					previousMaximized.hide();
 				}
+				wind.focus();
 				wind.e.style.opacity = null;
 				if (typeof done == "function"){
 					done();
