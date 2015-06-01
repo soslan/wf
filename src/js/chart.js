@@ -664,6 +664,11 @@ BubbleChart.prototype.calculatePhysicalRanges = function(){
 		max:Math.max(Math.pow(( (0.01 * area) / Math.PI ) , 0.5),5)
 	}
 	cr.r['default'] = cr.r.min;
+	cr.a = {
+		min:Math.max( ( 0.0001 * area ) / Math.PI, 2),
+		max:Math.max( ( 0.01 * area ) / Math.PI, 5)
+	}
+	cr.a['default'] = cr.a.min;
 	cr.o = {
 		min: 0.2,
 		max: 0.8,
@@ -714,7 +719,7 @@ BubbleChart.prototype.render = function(){
 				y = physRanges.y.min + basis.y * (val - start);
 				pointElement.setAttribute('cy', y);
 			}
-			// Radius
+			// Radius. To be removed
 			if(this.dims.r == null){
 				pointElement.setAttribute('r', physRanges.r['default']);
 			}
@@ -723,6 +728,18 @@ BubbleChart.prototype.render = function(){
 				start = this.ranges['r'].min;
 				r = physRanges.r.min + basis.r * (val - start);
 				pointElement.setAttribute('r', r);
+			}
+			// Area
+			if(this.dims.a == null){
+				a = Math.pow(physRanges.a['default'], 0.5);
+				pointElement.setAttribute('r', a);
+			}
+			else{
+				val = row[this.dims['a']];
+				start = this.ranges['a'].min;
+				a = physRanges.a.min + basis.a * (val - start);
+				a = Math.pow(a, 0.5);
+				pointElement.setAttribute('r', a);
 			}
 			// Opacity
 			if(this.dims.o == null){
