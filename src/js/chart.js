@@ -661,12 +661,12 @@ BubbleChart.prototype.calculatePhysicalRanges = function(){
 	area = Math.abs((cr.x.max - cr.x.min) * (cr.y.max - cr.y.min));
 	cr.r = {
 		min:Math.max(Math.pow(( (0.0001 * area) / Math.PI ) , 0.5),2),
-		max:Math.max(Math.pow(( (0.01 * area) / Math.PI ) , 0.5),5)
+		max:Math.max(Math.pow(( (0.001 * area) / Math.PI ) , 0.5),5)
 	}
 	cr.r['default'] = cr.r.min;
 	cr.a = {
 		min:Math.max( ( 0.0001 * area ) / Math.PI, 2),
-		max:Math.max( ( 0.01 * area ) / Math.PI, 5)
+		max:Math.max( ( 0.002 * area ) / Math.PI, 5)
 	}
 	cr.a['default'] = cr.a.min;
 	cr.o = {
@@ -699,7 +699,13 @@ BubbleChart.prototype.render = function(){
 				tagName:'circle',
 				className: 'bubble'
 			});
+			var titleElement = new SVGElement({
+				tagName:'title',
+			});
+			pointElement.append(titleElement);
+			var title = "";
 			pointElement.addClass("content-"+this.color);
+			pointElement.setAttribute('title', "TEST");
 			//pointElement.setAttribute('stroke-');
 			if(this.dims.x == null){
 				continue;
@@ -709,6 +715,7 @@ BubbleChart.prototype.render = function(){
 				start = this.ranges['x'].min;
 				x = physRanges.x.min + basis.x * (val - start);
 				pointElement.setAttribute('cx', x);
+				title += this.dims['x'] + ": " + val + "\n";
 			}
 			if(this.dims.y == null){
 				continue;
@@ -718,6 +725,7 @@ BubbleChart.prototype.render = function(){
 				start = this.ranges['y'].min;
 				y = physRanges.y.min + basis.y * (val - start);
 				pointElement.setAttribute('cy', y);
+				title += this.dims['y'] + ": " + val + "\n";
 			}
 			// Radius. To be removed
 			if(this.dims.r == null){
@@ -740,6 +748,7 @@ BubbleChart.prototype.render = function(){
 				a = physRanges.a.min + basis.a * (val - start);
 				a = Math.pow(a, 0.5);
 				pointElement.setAttribute('r', a);
+				title += this.dims['a'] + ": " + val + "\n";
 			}
 			// Opacity
 			if(this.dims.o == null){
@@ -750,7 +759,9 @@ BubbleChart.prototype.render = function(){
 				start = this.ranges['o'].min;
 				o = physRanges.o.min + basis.o * (val - start);
 				pointElement.setAttribute('fill-opacity', o);
+				title += this.dims['o'] + ": " + val + "\n";
 			}
+			titleElement.e.innerHTML = title;
 			this.container.append(pointElement);
 		}
 	}

@@ -471,6 +471,10 @@ iframe:-webkit-full-screen {
 .chart > .bubble{
     //fill-opacity: .5;
     stroke-opacity:0;
+
+    &:hover{
+        //stroke-opacity:1;
+    }
 }
 
 
