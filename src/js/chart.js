@@ -663,6 +663,12 @@ BubbleChart.prototype.calculatePhysicalRanges = function(){
 		min:Math.max(Math.pow(( (0.0001 * area) / Math.PI ) , 0.5),2),
 		max:Math.max(Math.pow(( (0.01 * area) / Math.PI ) , 0.5),5)
 	}
+	cr.r['default'] = cr.r.min;
+	cr.o = {
+		min: 0.2,
+		max: 0.8,
+		'default': 0.5,
+	};
 	return this.calculatedPhysicalRanges;
 }
 
@@ -674,6 +680,10 @@ BubbleChart.prototype.render = function(){
 	var basis = this.calculatedBasis;
 	var physRanges = this.calculatedPhysicalRanges;
 
+	while(this.container.e.firstChild){
+		this.container.e.removeChild(this.container.e.firstChild);
+	}
+
 	if(true){
 		for (var i in data){
 			var row = data[i];
@@ -684,6 +694,8 @@ BubbleChart.prototype.render = function(){
 				tagName:'circle',
 				className: 'bubble'
 			});
+			pointElement.addClass("content-"+this.color);
+			//pointElement.setAttribute('stroke-');
 			if(this.dims.x == null){
 				continue;
 			}
@@ -702,14 +714,25 @@ BubbleChart.prototype.render = function(){
 				y = physRanges.y.min + basis.y * (val - start);
 				pointElement.setAttribute('cy', y);
 			}
+			// Radius
 			if(this.dims.r == null){
-				continue;
+				pointElement.setAttribute('r', physRanges.r['default']);
 			}
 			else{
 				val = row[this.dims['r']];
 				start = this.ranges['r'].min;
 				r = physRanges.r.min + basis.r * (val - start);
 				pointElement.setAttribute('r', r);
+			}
+			// Opacity
+			if(this.dims.o == null){
+				pointElement.setAttribute('fill-opacity', physRanges.o['default'] );
+			}
+			else{
+				val = row[this.dims['o']];
+				start = this.ranges['o'].min;
+				o = physRanges.o.min + basis.o * (val - start);
+				pointElement.setAttribute('fill-opacity', o);
 			}
 			this.container.append(pointElement);
 		}
