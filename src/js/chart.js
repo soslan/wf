@@ -37,260 +37,6 @@ ChartCanvas.prototype.getHeight = function(){
 	return this.$.height();
 }
 
-function DataTableChart(args){
-	args = args || {};
-	args.tagName = 'g';
-	SVGElement.call(this, args);
-	var self = this;
-	this.addClass('chart-line');
-
-	this.limits = new Value();
-	//this.append(this.path);
-	this.channels = [];
-
-	this.canvasLimits = {
-		x:[0, undefined],
-		y:[undefined, 0],
-		r:[5, 50],
-		cR:[0, 255],
-		cG:[0,255],
-		cB:[0,255],
-		o:[0.2,1],
-	};
-
-	this.limits = {
-		x:[undefined, undefined],
-		y:[undefined, undefined],
-		r:[undefined, undefined],
-		cR:[undefined, undefined],
-		cG:[undefined, undefined],
-		cB:[undefined, undefined],
-		o:[undefined, undefined],
-	};
-
-	//this.tempLimits = {};
-
-	this.canvasDefaults = {
-		x:undefined,
-		y:undefined,
-		r:5,
-		cR:0,
-		cG:0,
-		cB:0,
-		o:0.8,
-	};
-
-	this.defaultsB = this.canvasDefaults;
-}
-
-DataTableChart.prototype = Object.create(SVGElement.prototype);
-DataTableChart.prototype.applyTo = function(canvas){
-	if(canvas instanceof ChartCanvas){
-		canvas.svg.append(this);
-		this.canvas = canvas;
-	}
-}
-DataTableChart.prototype.setData = function(data){
-	if(data instanceof DataTableModel){
-		this.data = data;
-	}
-}
-DataTableChart.prototype.getCanvasSize = function(){
-	if(this.canvas instanceof ChartCanvas){
-		return {
-			width:this.canvas.$.width(),
-			height:this.canvas.$.height(),
-		}
-	}
-}
-DataTableChart.prototype.getActiveKeys = function(){
-	return ['x', 'y', 'r'];
-}
-DataTableChart.prototype.addChannel = function(ch){
-	var channel = {};
-	ch = ch || {};
-	channel.keySettings = ch;
-	this.channels.push(channel);
-}
-DataTableChart.prototype.draw = function(){
-	var self = this;
-	var tempLimits = {};
-	var rows = this.data.get();
-	this.canvasLimits.x[1] = this.canvas.$.width();
-	this.canvasLimits.y[0] = this.canvas.$.height();
-	for(var i in this.channels){
-		this.channels[i].rows = [];
-	}
-	for(var i in rows){
-		var row = rows[i];
-		for(var j in this.channels){
-			var channel = this.channels[j];
-			//channel.rows = [];
-			var ok = true;
-			for(var k in channel.keySettings){
-				var key = channel.keySettings[k];
-				if(row[key] !== undefined && row[key] !== null){
-					
-				}
-				else{
-					ok = false;
-				}
-			}
-			if(ok){
-				channel.rows.push(row);
-			}
-		}
-	}
-	for(var i in this.channels){
-		var channel = this.channels[i];
-		if(channel.limits === undefined){
-			channel.limits = {};
-		}
-		for(var k in channel.keySettings){
-			channel.limits[k] = [undefined, undefined];
-		}
-		for(var j in channel.rows){
-			var row = channel.rows[j]
-			var isVisible = true;
-			// TODO determine if item is within common limits. row.reduce()
-			if(isVisible){
-				for(var k in channel.keySettings){
-					var key = channel.keySettings[k];
-					if(channel.limits[k][0] === undefined || channel.limits[k][0] > row[key] ){
-						channel.limits[k][0] = row[key]
-					}
-					if(channel.limits[k][1] === undefined || channel.limits[k][1] < row[key] ){
-						channel.limits[k][1] = row[key]
-					}
-				}
-			}
-			
-		}
-	}
-
-	for(var i in this.channels){
-		var channel = this.channels[i];
-		for(var k in channel.keySettings){
-			if(tempLimits[k] === undefined){
-				tempLimits[k] = [channel.limits[k][0], channel.limits[k][1]];
-			}
-			else{
-				if(tempLimits[k][0] > channel.limits[k][0]){
-					tempLimits[k][0] = channel.limits[k][0];
-				}
-				if(tempLimits[k][1] < channel.limits[k][1]){
-					tempLimits[k][1] = channel.limits[k][1];
-				}
-			} 
-		}
-	}
-
-	for(var i in tempLimits){
-		if(this.limits[i][0] !== undefined){
-			tempLimits[i][0] = this.limits[i][0];
-		}
-		if(this.limits[i][1] !== undefined){
-			tempLimits[i][1] = this.limits[i][1];
-		}
-	}
-
-	var basis = {};
-	for(var i in tempLimits){
-		basis[i] = (this.canvasLimits[i][1] - this.canvasLimits[i][0]) / (tempLimits[i][1] - tempLimits[i][0]);
-	}
-	
-
-	for(var i in this.channels){
-		var channel = this.channels[i];
-		
-		for(var j in channel.rows){
-			var row = channel.rows[j];
-			var ks = channel.keySettings;
-			var pointElement = new SVGElement({
-				tagName:'circle',
-			});
-			//pointElement.setAttribute('cx', pointB.x);
-			//pointElement.setAttribute('cy', pointB.y);
-			//pointElement.setAttribute('r', pointB.r);
-			if(ks.x === undefined){
-				continue;
-			}
-			else{
-				pointElement.setAttribute('cx', this.canvasLimits.x[0] + basis.x * (row[ks.x] - tempLimits.x[0]));
-			}
-			if(ks.y === undefined){
-				continue;
-			}
-			else{
-				pointElement.setAttribute('cy', this.canvasLimits.y[0] + basis.y * (row[ks.y] - tempLimits.y[0]));
-			}
-			if(ks.r === undefined){
-				if(this.defaultsB.r === undefined){
-					continue;
-				}
-				else{
-					pointElement.setAttribute('r', this.defaultsB.r);
-				}
-			}
-			else{
-				pointElement.setAttribute('r', this.canvasLimits.r[0] + basis.r * (row[ks.r] - tempLimits.r[0]));
-			}
-			if(ks.o === undefined){
-				if(this.defaultsB.o === undefined){
-					continue;
-				}
-				else{
-					pointElement.e.style.opacity = this.defaultsB.o;
-				}
-			}
-			else{
-				pointElement.e.style.opacity = this.canvasLimits.o[0] + basis.o * (row[ks.o] - tempLimits.o[0]);
-			}
-			var color = {};
-			if(ks.cR === undefined){
-				if(this.defaultsB.cR === undefined){
-					continue;
-				}
-				else{
-					color.r = this.defaultsB.cR;
-				}
-			}
-			else{
-				color.r = this.canvasLimits.cR[0] + basis.cR * (row[ks.cR] - tempLimits.cR[0]);
-			}
-			if(ks.cG === undefined){
-				if(this.defaultsB.cG === undefined){
-					continue;
-				}
-				else{
-					color.g = this.defaultsB.cG;
-				}
-			}
-			else{
-				color.g = this.canvasLimits.cG[0] + basis.cG * (row[ks.cG] - tempLimits.cG[0]);
-			}
-			if(ks.cB === undefined){
-				if(this.defaultsB.cB === undefined){
-					continue;
-				}
-				else{
-					color.b = this.defaultsB.cB;
-				}
-			}
-			else{
-				color.b = this.canvasLimits.cB[0] + basis.cB * (row[ks.cB] - tempLimits.cB[0]);
-			}
-			for(var i in color){
-				color[i] = Math.round(color[i]);
-			}
-			pointElement.setAttribute('fill', 'rgb('+color.r+','+color.g+','+color.b+')');
-			this.append(pointElement);
-			
-			
-		}
-	}
-}
-
 function Chart(args){
 	var args = args || {};
 	this.ranges = {};
@@ -357,8 +103,15 @@ Chart.prototype.hasDim = function(dim){
 }
 
 Chart.prototype.setDim = function(dim, col){
+	if(this.relevantDims.indexOf(dim) === -1){
+		console.log("Dimension "+dim+" is not relevant.");
+		return;
+	}
 	if(typeof dim === "string" && typeof col === "string"){
 		this.dims[dim] = col;
+		if(this.ranges[dim] == null){
+			this.setRange(dim, new ChartRange());
+		}
 	}
 }
 
@@ -448,17 +201,17 @@ Chart.prototype.applyCalculatedRanges = function(){
 		}
 		var range = this.ranges[dim];
 		var calcRange = this.calculatedRanges[dim];
-		if(range.min == null){
+		if(range.min == null || range.min == Number.NEGATIVE_INFINITY){
 			range.min = calcRange.min;
 		}
-		if(range.max == null){
+		if(range.max == null || range.max == Number.POSITIVE_INFINITY){
 			range.max = calcRange.max;
 		}
 	}
 }
 
 
-LineChart.prototype.draw = function(){
+Chart.prototype.draw = function(){
 	this.calculateRanges();
 	this.applyCalculatedRanges();
 	this.calculateBasis();
@@ -499,6 +252,7 @@ ChartGroup.prototype.draw = function(){
 
 function ChartRange(args){
 	var self = this;
+	args = args || {};
 	this.filter('set', function(d){
 		if(typeof d.value !== "object"){
 			d.value = {};
@@ -506,6 +260,8 @@ function ChartRange(args){
 		return d;
 	});
 	Model.call(this, args);
+	this.min = args.min;
+	this.max = args.max;
 }
 
 ChartRange.prototype = Object.create(Model.prototype);
@@ -531,7 +287,12 @@ Object.defineProperty(ChartRange.prototype, 'min', {
 		return Number(this.value.min);
 	},
 	set: function(val){
-		this.value.min = val;
+		if(isNaN(Number(val))){
+			this.value.min = Number.NEGATIVE_INFINITY;
+		}
+		else{
+			this.value.min = Number(val);
+		}	
 	}
 });
 
@@ -540,7 +301,12 @@ Object.defineProperty(ChartRange.prototype, 'max', {
 		return Number(this.value.max);
 	},
 	set: function(val){
-		this.value.max = val;
+		if(isNaN(Number(val))){
+			this.value.max = Number.POSITIVE_INFINITY;
+		}
+		else{
+			this.value.max = Number(val);
+		}	
 	}
 });
 
@@ -549,6 +315,8 @@ function LineChart(args){
 }
 
 LineChart.prototype = Object.create(Chart.prototype);
+
+LineChart.prototype.relevantDims = ['x', 'y'];
 
 LineChart.prototype.calculatePhysicalRanges = function(){
 	if(!(this.canvas instanceof ChartCanvas)){
@@ -642,6 +410,8 @@ function BubbleChart(args){
 
 BubbleChart.prototype = Object.create(Chart.prototype);
 
+BubbleChart.prototype.relevantDims = ['x', 'y', 'a', 'o'];
+
 BubbleChart.prototype.calculatePhysicalRanges = function(){
 	var area, cr;
 	if(!(this.canvas instanceof ChartCanvas)){
@@ -659,11 +429,6 @@ BubbleChart.prototype.calculatePhysicalRanges = function(){
 	};
 	cr = this.calculatedPhysicalRanges;
 	area = Math.abs((cr.x.max - cr.x.min) * (cr.y.max - cr.y.min));
-	cr.r = {
-		min:Math.max(Math.pow(( (0.0001 * area) / Math.PI ) , 0.5),2),
-		max:Math.max(Math.pow(( (0.001 * area) / Math.PI ) , 0.5),5)
-	}
-	cr.r['default'] = cr.r.min;
 	cr.a = {
 		min:Math.max( ( 0.0001 * area ) / Math.PI, 2),
 		max:Math.max( ( 0.002 * area ) / Math.PI, 5)
@@ -679,7 +444,7 @@ BubbleChart.prototype.calculatePhysicalRanges = function(){
 
 BubbleChart.prototype.render = function(){
 	var data = this.data.get();
-	var tmp, x, y, r, path="";
+	var tmp, x, y, a, o, path="";
 	var pathInitialized = false;
 	var ranges = this.ranges;
 	var basis = this.calculatedBasis;
@@ -727,16 +492,6 @@ BubbleChart.prototype.render = function(){
 				pointElement.setAttribute('cy', y);
 				title += this.dims['y'] + ": " + val + "\n";
 			}
-			// Radius. To be removed
-			if(this.dims.r == null){
-				pointElement.setAttribute('r', physRanges.r['default']);
-			}
-			else{
-				val = row[this.dims['r']];
-				start = this.ranges['r'].min;
-				r = physRanges.r.min + basis.r * (val - start);
-				pointElement.setAttribute('r', r);
-			}
 			// Area
 			if(this.dims.a == null){
 				a = Math.pow(physRanges.a['default'], 0.5);
@@ -766,355 +521,3 @@ BubbleChart.prototype.render = function(){
 		}
 	}
 }
-
-function ChartConfig(args){
-	this.config = {};
-	args = args || {};
-	args.columns = args.columns || {};
-	args.ranges = args.ranges || {};
-	for(var i in args.columns){
-		this.set(i, args.columns[i]);
-	}
-	for(var i in args.ranges){
-		this.setRange(i, args.ranges[i]);
-	}
-}
-
-ChartConfig.prototype.set = function(key, column, range){
-	//if(range === undefined)
-	if(this.config[key] === undefined){
-		this.config[key] = {};
-	}
-	this.config[key].column = column;
-	this.setRange(key, range);
-}
-
-ChartConfig.prototype.getColumn = function(dimension){
-	return this.config[dimension].column;
-}
-
-ChartConfig.prototype.getRange = function(dimension){
-	return this.config[dimension].range;
-}
-
-
-ChartConfig.prototype.setRange = function(key, range){
-	//if(range === undefined)
-	if(this.config[key] === undefined){
-		return;
-		//throw "No such dimension";
-	}
-	if(range instanceof RangeModel){
-		this.config[key].range = range;
-	}
-	else{
-		this.config[key].range = new RangeModel();
-	}
-}
-
-ChartConfig.prototype.forEachDimension = function(callback){
-	for (var i in this.config){
-		if(typeof callback === "function"){
-			callback(i, this.config[i]);
-		}
-	}
-}
-
-ChartConfig.prototype.hasDimension = function(dimension){
-	if(typeof this.config[dimension] === "object"){
-		return true;
-	}
-	else{
-		return false;
-	}
-}
-
-function ChartBase(args){
-	var self;
-	args = args || {};
-	args.tagName = 'g';
-	SVGElement.call(this, args);
-	self = this;
-	//SVGElement.call(this,args);
-	this.addClass('chart');
-	this.physicalLimits = {};
-	this.virtualLimits = {};
-	this.defaults = {};
-	this.channels = [];
-	this.mandatoryKeys = [];
-	this.optionalKeys = [];
-	this.allKeys = [];
-	this.setData(args.data);
-	this.applyTo(args.canvas);
-}
-
-ChartBase.prototype = Object.create(SVGElement.prototype);
-
-ChartBase.defaultColors = ['blue', 'red', 'green', 'black', 'indigo'];
-
-ChartBase.prototype.setData = function(data){
-	if(data instanceof DataTableModel){
-		this.data = data;
-	}
-};
-
-ChartBase.prototype.setCanvas = function(canvas){
-	if(canvas instanceof ChartCanvas){
-		canvas.svg.append(this);
-		this.canvas = canvas;
-	}
-};
-
-ChartBase.prototype.applyTo = ChartBase.prototype.setCanvas;
-
-ChartBase.prototype.addChannel = function(ch){
-	if(ch instanceof ChartConfig){
-		if(ch.color === undefined ){
-			try{
-				ch.color = ChartBase.defaultColors[this.channels.length];
-			}
-			catch(e){
-				ch.color = 'black';
-			}
-			
-		}
-		this.channels.push(ch);
-	}
-	
-};
-
-ChartBase.prototype.filterData = function(){
-	var rows = this.data.get();
-	for(var i in this.channels){
-		this.channels[i].tmpData = [];
-	}
-	for(var i in rows){
-		var row = rows[i];
-		//console.log("Row is ", row);
-		for(var j in this.channels){
-			var channel = this.channels[j];
-			var ok = true;
-			for(var k in channel.keySettings){
-				var key = channel.keySettings[k];
-				if(row[key] !== undefined && row[key] !== null){
-					
-				}
-				else{
-					ok = false;
-				}
-			}
-			if(ok){
-				channel.tmpData.push(row);
-			}
-		}
-	}
-};
-
-ChartBase.prototype.calculateLimits = function(){
-	var vl = this.virtualLimits;
-	var data = this.data.get();
-	var tempLimits = {};
-	var channel;
-	for(var i in this.channels){
-		var channel = this.channels[i];
-		channel.tmpCount = 0;
-		channel.tmpLimits = {};
-
-		for(var ki in this.allKeys){
-			var k = this.allKeys[ki];
-			if(channel.hasDimension(k)){
-				channel.tmpLimits[k] = [undefined, undefined];
-				channel.getRange(k).tmp = [undefined, undefined];
-			}
-		}
-	}
-	
-	for (var i in data){
-		var row = data[i];
-		for (var ch in this.channels){
-			var channel = this.channels[ch];
-			var isVisible = true;
-			for(var ki in this.allKeys){
-				var k = this.allKeys[ki];
-				if(channel.hasDimension(k)){
-					var key = channel.getColumn(k);
-					var range = channel.getRange(k);
-					var min = range.getMin();
-					var max = range.getMax();
-					if(row[key] === undefined){
-						isVisible = false;
-					}
-					else if(min !== undefined && row[key] < min){
-						isVisible = false;
-					}
-					else if(max !== undefined && row[key] > max){
-						isVisible = false;
-					}
-				}
-				
-			}
-
-
-			// TODO determine if item is within common limits. row.reduce()
-			if(isVisible){
-				channel.tmpCount += 1;
-				for(var ki in this.allKeys){
-					var k = this.allKeys[ki];
-
-					if(channel.hasDimension(k)){
-						var key = channel.getColumn(k);
-						if(channel.tmpLimits[k][0] === undefined || channel.tmpLimits[k][0] > row[key] ){
-							channel.tmpLimits[k][0] = row[key]
-						}
-						if(channel.tmpLimits[k][1] === undefined || channel.tmpLimits[k][1] < row[key] ){
-							channel.tmpLimits[k][1] = row[key]
-						}
-					}
-					
-				}
-			}
-		}
-	}
-
-	for(var i in this.channels){
-		var channel = this.channels[i];
-		//console.log("COUNT", channel.tmpCount);
-		for(var ki in this.allKeys){
-			var k = this.allKeys[ki];
-			if(channel.hasDimension(k)){
-				var range = channel.getRange(k);
-				var min = range.tmp[0];
-				var max = range.tmp[1];
-				if(min === undefined || min > channel.tmpLimits[k][0]){
-					range.tmp[0] = channel.tmpLimits[k][0];
-				}
-				if(max === undefined || max < channel.tmpLimits[k][1]){
-					range.tmp[1] = channel.tmpLimits[k][1];
-				}
-			}
-			
-		}
-	}
-
-	for(var i in this.channels){
-		var channel = this.channels[i];
-		//console.log("COUNT", channel.tmpCount);
-		for(var ki in this.allKeys){
-			var k = this.allKeys[ki];
-			if(channel.hasDimension(k)){
-				var range = channel.getRange(k);
-				var min = range.getMin();
-				var max = range.getMax();
-				if(min !== undefined){
-					range.tmp[0] = min;
-				}
-				if(max !== undefined){
-					range.tmp[1] = max;
-				}
-			}
-		}
-	}
-};
-
-ChartBase.prototype.calculateBasis = function(){
-	for(var i in this.channels){
-		var channel = this.channels[i];
-		channel.tmpBasis = {};
-		for(var ki in this.allKeys){
-			var k = this.allKeys[ki];
-			if(channel.hasDimension(k)){
-				var range = channel.getRange(k);
-				var min = range.tmp[0];
-				var max = range.tmp[1];
-				channel.tmpBasis[k] = (this.physicalLimits[k][1] - this.physicalLimits[k][0]) / (max -min);
-			}
-		}
-	}
-};
-
-function ChartLine(args){
-	ChartBase.call(this, args);
-	this.physicalLimits = {
-		x:[0, undefined],
-		y:[undefined, 0],
-	}
-	this.virtualLimits = {
-		x:[undefined, undefined],
-		y:[undefined, undefined],
-		r:[undefined, undefined],
-	}
-
-	this.defaults = {
-		x:undefined,
-		y:undefined
-	}
-
-	this.allKeys = ['x', 'y'];
-}
-
-ChartLine.prototype = Object.create(ChartBase.prototype);
-
-ChartLine.prototype.draw = function(){
-	var data = this.data.get();
-	var tmp, x, y;
-	var pathInitialized = false;
-	this.physicalLimits.x[1] = this.canvas.$.width();
-	this.physicalLimits.y[0] = this.canvas.$.height();
-	this.calculateLimits();
-	this.calculateBasis();
-	
-	for(var i in this.channels){
-		var channel = this.channels[i];
-		if(channel.tmpPath === undefined){
-			channel.tmpPath = new SVGElement({
-				tagName:'path',
-				className:'line',
-			});
-			channel.tmpPath.setAttribute('fill-opacity', '0');
-			channel.tmpPath.addClass("content-" + channel.color);
-			//x = this.physicalLimits.x[0] + this.tmpBasis.x * (data[0])
-			this.append(channel.tmpPath);
-		}
-		channel.tmpPathString = "";
-		channel.tmpPathInitialized = false;
-	}
-	if(true){
-		for (var i in data){
-			var row = data[i];
-			var col;
-			var val;
-			var start;
-			for (var j in this.channels){
-				var channel = this.channels[j];
-				if(!channel.hasDimension('y')){
-					continue;
-				}
-				else{
-					val = row[channel.getColumn('x')];
-					start = channel.getRange('x').tmp[0];
-					x = this.physicalLimits.x[0] + channel.tmpBasis.x * (val - start);
-					//pointElement.setAttribute('cx', this.canvasLimits.x[0] + basis.x * (row[channel.x] - tempLimits.x[0]));
-				}
-				if(!channel.hasDimension('y')){
-					continue;
-				}
-				else{
-					val = row[channel.getColumn('y')];
-					start = channel.getRange('y').tmp[0];
-					y = this.physicalLimits.y[0] + channel.tmpBasis.y * (val - start);
-					//pointElement.setAttribute('cy', this.canvasLimits.y[0] + basis.y * (row[channel.y] - tempLimits.y[0]));
-				}
-				if(!channel.tmpPathInitialized){
-					channel.tmpPathString = "M " + x + " " + y;
-					channel.tmpPathInitialized = true;
-				}
-				channel.tmpPathString += " L " + x + " " + y;
-			}
-		}
-	}
-	
-	for(var i in this.channels){
-		var channel = this.channels[i];
-		channel.tmpPath.setAttribute("d", channel.tmpPathString);
-	}
-};
