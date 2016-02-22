@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../build/wf.css" />
+		<script src="vendor/jquery-2.0.3.min.js"></script>
+		<script src="../build/wf.js"></script>
+
+	</head>
+	<body>
+		<script type="text/javascript">
+			var bar = new Bar();
+
+			bar.append(new Button({
+				icon: 'close',
+				caption: 'Close',
+				className:'red',
+			}));
+			bar.append(new Button({
+				icon: 'right',
+				caption: 'Next',
+				className:'blue',
+			}));
+			document.body.appendChild(bar.e);
+
+		</script>
+	</body>
+</html>
